@@ -106,7 +106,7 @@ if (!customStats || customStats.length === 0) {
     localStorage.setItem('customStats', JSON.stringify(customStats));
 }
 
-// MODIFICACIÓN CLAVE: renderCustomStats para el diseño COMPACTO y correcto
+// MODIFICACIÓN CLAVE: renderCustomStats para el diseño COMPACTO con botones verticales
 function renderCustomStats() {
     generalStatsContainer.innerHTML = ''; // Limpiar el contenedor
     customStats.forEach(stat => {
@@ -114,22 +114,23 @@ function renderCustomStats() {
         statCard.classList.add('stat-card');
         statCard.dataset.statId = stat.id;
 
-        // Se reestructura el HTML para que los botones estén a los lados del resultado.
         statCard.innerHTML = `
-            <h3>
+            <h3 class="stat-card-header">
                 <span class="stat-title">${stat.name}</span>
-                <button class="view-details-btn" data-id="${stat.id}">📋</button>
-                <button class="edit-stat-btn" data-id="${stat.id}">✏️</button>
-                <button class="delete-stat-btn" data-id="${stat.id}">🗑️</button>
+                <div class="stat-action-icons">
+                    <button class="view-details-btn" data-id="${stat.id}">📋</button>
+                    <button class="edit-stat-btn" data-id="${stat.id}">✏️</button>
+                    <button class="delete-stat-btn" data-id="${stat.id}">🗑️</button>
+                </div>
             </h3>
-            <div class="stat-section-row home-team">
-                <div class="stat-buttons">
+            <div class="stat-controls-group">
+                <div class="team-buttons-column team-A-controls">
                     <button class="reset-btn" data-team="A" data-stat="${stat.id}">🔄</button>
                     <button class="minus-btn" data-team="A" data-stat="${stat.id}">-</button>
                     <button class="plus-btn" data-team="A" data-stat="${stat.id}">+</button>
                 </div>
                 <span class="stat-total-display" data-stat-total="${stat.id}">0 - 0</span>
-                <div class="stat-buttons">
+                <div class="team-buttons-column team-B-controls">
                     <button class="reset-btn" data-team="B" data-stat="${stat.id}">🔄</button>
                     <button class="minus-btn" data-team="B" data-stat="${stat.id}">-</button>
                     <button class="plus-btn" data-team="B" data-stat="${stat.id}">+</button>
@@ -349,11 +350,9 @@ function togglePossession(team) {
                 updatePossessionBar();
             }, 1000);
         } else {
-            possessionIntervalB = setInterval(() => {
-                possessionTimeB++;
-                possessionTimerBEl.textContent = formatTime(possessionTimeB);
-                updatePossessionBar();
-            }, 1000);
+            possessionTimeB++;
+            possessionTimerBEl.textContent = formatTime(possessionTimeB);
+            updatePossessionBar();
         }
         updatePossessionButtons();
     }
