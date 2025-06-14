@@ -60,7 +60,7 @@ const generalStatsContainer = document.getElementById('generalStatsContainer');
 // Reiniciar Todo
 const resetAllBtn = document.getElementById('resetAll');
 
-// Guardar y Cargar Partidos (NUEVOS SELECTORES)
+// Guardar y Cargar Partidos
 const saveMatchBtn = document.getElementById('saveMatchBtn');
 const matchesHistoryList = document.getElementById('matchesHistoryList');
 
@@ -83,8 +83,26 @@ function updateTeamLabels() {
     // Si tienes stats personalizadas, sus labels se actualizarán con la función de renderizar
 }
 
-// Cargar estadísticas personalizadas desde localStorage al inicio
-let customStats = JSON.parse(localStorage.getItem('customStats')) || [];
+// ============ MODIFICACIÓN CLAVE: ESTADÍSTICAS PREDETERMINADAS ============
+// Cargar estadísticas personalizadas desde localStorage, o usar las predeterminadas
+let customStats = JSON.parse(localStorage.getItem('customStats'));
+
+// Si no hay estadísticas guardadas o el localStorage está vacío, inicializar con estas
+if (!customStats || customStats.length === 0) {
+    customStats = [
+        { id: 'stat-shots-on-goal', name: 'Disparos a puerta', teamA: 0, teamB: 0 },
+        { id: 'stat-shots-off-goal', name: 'Disparos fuera', teamA: 0, teamB: 0 },
+        { id: 'stat-fouls', name: 'Faltas', teamA: 0, teamB: 0 },
+        { id: 'stat-yellow-cards', name: 'Tarjetas Amarillas', teamA: 0, teamB: 0 },
+        { id: 'stat-red-cards', name: 'Tarjetas Rojas', teamA: 0, teamB: 0 },
+        { id: 'stat-corners', name: 'Córners', teamA: 0, teamB: 0 },
+        { id: 'stat-offsides', name: 'Fueras de juego', teamA: 0, teamB: 0 },
+        { id: 'stat-saves', name: 'Paradas', teamA: 0, teamB: 0 }
+    ];
+    // Guardar las predeterminadas en localStorage para futuras visitas
+    localStorage.setItem('customStats', JSON.stringify(customStats));
+}
+// =========================================================================
 
 function renderCustomStats() {
     generalStatsContainer.innerHTML = ''; // Limpiar el contenedor
@@ -309,20 +327,28 @@ function updatePossessionButtons() {
 }
 
 
-// Estadísticas Personalizadas
+// Estadísticas Personalizadas: Añadir nueva estadística
 addStatBtn.addEventListener('click', () => {
     const newStatName = newStatNameInput.value.trim();
     if (newStatName) {
-        customStats.push({ id: Date.now().toString(), name: newStatName, teamA: 0, teamB: 0 }); // Añadir id y valores iniciales
-        localStorage.setItem('customStats', JSON.stringify(customStats)); // Guardar en localStorage
+        // Asegúrate de que el ID sea único y consistente
+        const newId = 'stat-' + newStatName.toLowerCase().replace(/\s+/g, '-');
+        // Prevenir duplicados por nombre
+        if (customStats.some(stat => stat.id === newId)) {
+            alert('¡Ya existe una estadística con ese nombre!');
+            return;
+        }
+
+        customStats.push({ id: newId, name: newStatName, teamA: 0, teamB: 0 });
+        localStorage.setItem('customStats', JSON.stringify(customStats));
         newStatNameInput.value = '';
-        renderCustomStats(); // Volver a renderizar para mostrar la nueva stat
+        renderCustomStats();
     }
 });
 
 // Reiniciar Todas las Estadísticas
 resetAllBtn.addEventListener('click', () => {
-    if (confirm('¿Estás seguro de que quieres reiniciar TODAS las estadísticas del partido actual?')) {
+    if (confirm('¿Estás seguro de que quieres reiniciar TODAS las estadísticas del partido actual? Esto no afectará a los partidos guardados.')) {
         // Marcador
         teamAGoalsEl.textContent = '0';
         teamBGoalsEl.textContent = '0';
@@ -335,13 +361,22 @@ resetAllBtn.addEventListener('click', () => {
         isMatchTimerRunning = false;
 
         // Posesión de Balón
-        resetPossession(); // Reutilizamos la función de reseteo de posesión
+        resetPossession();
 
         // Estadísticas Personalizadas
-        // Necesitamos reiniciar los contadores en el DOM sin eliminar las stats
+        // Reiniciar los contadores en el DOM
         generalStatsContainer.querySelectorAll('.counter').forEach(counterEl => {
             counterEl.textContent = '0';
         });
+        // IMPORTANTE: También resetear los valores internos si estás manteniendo un estado en `customStats`
+        customStats.forEach(stat => {
+            stat.teamA = 0;
+            stat.teamB = 0;
+        });
+        // No guardamos customStats en localStorage aquí para que no se resetee para futuras sesiones,
+        // a menos que quieras que las estadísticas predeterminadas vuelvan a 0 cada vez que reinicias todo.
+        // Si quieres que los valores de las stats personalizadas se resetee y se guarde ese estado:
+        // localStorage.setItem('customStats', JSON.stringify(customStats));
     }
 });
 
@@ -356,12 +391,13 @@ function collectCurrentMatchData() {
         const teamAValue = parseInt(card.querySelector(`.counter[data-team="A"]`).textContent);
         const teamBValue = parseInt(card.querySelector(`.counter[data-team="B"]`).textContent);
         const statName = card.querySelector('.stat-title').textContent;
+        // Almacenar el nombre y los valores actuales
         customStatValues[statId] = { name: statName, teamA: teamAValue, teamB: teamBValue };
     });
 
     // MODIFICADO: Solo guardamos la fecha, no la hora
     const currentDate = new Date();
-    const formattedDate = currentDate.toLocaleDateString();
+    const formattedDate = currentDate.toLocaleDateString(); // Obtiene la fecha en formato local
 
     return {
         id: Date.now(), // Un ID único para el partido
@@ -373,8 +409,9 @@ function collectCurrentMatchData() {
         matchTime: matchTimeElapsed,
         possessionA: possessionTimeA,
         possessionB: possessionTimeB,
-        customStats: customStatValues,
-        // Almacenar también la estructura de customStats por si se han añadido nuevas
+        customStats: customStatValues, // Contiene los valores actuales de las stats
+        // Almacenar también la definición de customStats (id y name)
+        // para que al cargar el partido, sepamos qué stats personalizadas se usaron
         customStatsDefinition: customStats.map(stat => ({ id: stat.id, name: stat.name }))
     };
 }
@@ -411,6 +448,7 @@ function loadMatchesHistory() {
     savedMatches.forEach(match => {
         const li = document.createElement('li');
         li.classList.add('match-history-item');
+        // Asegurarse de que `match.timestamp` ya solo contenga la fecha
         li.innerHTML = `
             <span>${match.name || `Partido ${match.teamA} vs ${match.teamB}`} (${match.timestamp})</span>
             <div class="match-history-controls">
@@ -467,16 +505,16 @@ function loadSelectedMatch(id) {
         updatePossessionBar();
         updatePossessionButtons();
 
-        // Estadísticas Personalizadas
+        // ============ RESTAURACIÓN DE ESTADÍSTICAS PERSONALIZADAS ============
         // Primero, asegurarnos de que la definición de estadísticas personalizadas está actualizada
+        // Usamos customStatsDefinition del partido guardado para cargar las stats que estaban activas en ese partido
         customStats = matchToLoad.customStatsDefinition || [];
-        localStorage.setItem('customStats', JSON.stringify(customStats));
+        localStorage.setItem('customStats', JSON.stringify(customStats)); // Guardar esta definición para la sesión actual
         renderCustomStats(); // Renderiza la estructura (con 0s iniciales)
 
         // Luego, actualizar los valores de las estadísticas cargadas
-        // Esto asume que customStatsDefinition del partido guardado es el origen de la verdad
-        // Y que los IDs de las stats coinciden.
-        setTimeout(() => { // Pequeño delay para asegurar que renderCustomStats ha terminado
+        // Un pequeño delay es útil para asegurar que renderCustomStats ha terminado de crear los elementos
+        setTimeout(() => {
             for (const statId in matchToLoad.customStats) {
                 const statData = matchToLoad.customStats[statId];
                 const teamACounter = generalStatsContainer.querySelector(`.counter[data-team="A"][data-stat="${statId}"]`);
@@ -485,6 +523,7 @@ function loadSelectedMatch(id) {
                 if (teamBCounter) teamBCounter.textContent = statData.teamB;
             }
         }, 50); // Un pequeño retraso para asegurar que los elementos se han creado
+        // ====================================================================
 
         alert(`Partido "${matchToLoad.name}" cargado con éxito!`);
     }
