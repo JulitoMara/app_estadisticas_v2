@@ -1,44 +1,54 @@
+/*
+    Estilos Globales y Contenedor Principal
+*/
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif; /* Fuente moderna */
     margin: 0;
     padding: 0;
-    background-color: #f4f7f6;
-    color: #333;
+    background-color: #eef1f5; /* Fondo más suave */
+    color: #34495e; /* Texto principal oscuro y legible */
     display: flex;
     justify-content: center;
-    align-items: flex-start; /* Alinea arriba si el contenido es corto */
+    align-items: flex-start;
     min-height: 100vh;
-    padding: 20px;
+    padding: 25px; /* Más padding para airear */
     box-sizing: border-box;
 }
 
 .main-app-container {
     background-color: #ffffff;
-    border-radius: 12px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    border-radius: 16px; /* Bordes más suaves */
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1); /* Sombra más pronunciada pero elegante */
     width: 100%;
-    max-width: 1200px; /* Límite para que no se estire demasiado en pantallas muy grandes */
-    padding: 25px;
+    max-width: 1300px; /* Un poco más de ancho para pantallas grandes */
+    padding: 30px; /* Más padding interno */
     box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: 30px; /* Espaciado entre secciones principales */
 }
 
+/*
+    Cabecera de la Aplicación
+*/
 .app-header {
     text-align: center;
-    margin-bottom: 30px;
-    border-bottom: 1px solid #eee;
-    padding-bottom: 20px;
+    margin-bottom: 25px;
+    border-bottom: 1px solid #e0e6ec; /* Línea divisoria suave */
+    padding-bottom: 25px;
 }
 
 .app-header h1 {
-    color: #007bff;
+    color: #007bff; /* Azul brillante, distintivo */
     margin-bottom: 15px;
-    font-size: 2.2em;
+    font-size: 2.5em; /* Título principal prominente */
+    font-weight: 700; /* Más negrita */
 }
 
 .config-section {
     display: flex;
     justify-content: center;
-    gap: 30px;
+    gap: 40px; /* Más espacio entre grupos de nombre */
     flex-wrap: wrap;
     margin-top: 20px;
 }
@@ -47,69 +57,132 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    min-width: 150px;
+    min-width: 180px; /* Ancho mínimo para entradas */
 }
 
 .team-name-group label {
-    font-weight: bold;
-    margin-bottom: 8px;
+    font-weight: 600; /* Semi-negrita */
+    margin-bottom: 10px;
     color: #555;
+    font-size: 1.1em;
 }
 
 .team-name-group input[type="text"] {
-    padding: 8px 12px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    font-size: 1em;
+    padding: 10px 15px;
+    border: 1px solid #c9d2da; /* Borde más sutil */
+    border-radius: 10px; /* Bordes redondeados */
+    font-size: 1.1em;
     width: 100%;
-    max-width: 200px;
+    max-width: 250px;
     text-align: center;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
+.team-name-group input[type="text"]:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+    outline: none;
+}
+
+/*
+    Dashboard Principal del Partido
+*/
 .match-dashboard {
     display: flex;
-    flex-wrap: wrap; /* Permite que las columnas se envuelvan en pantallas pequeñas */
-    gap: 25px;
+    flex-wrap: wrap;
+    gap: 30px; /* Espacio entre columnas */
     justify-content: center;
-    margin-top: 30px;
 }
 
-/* Reducir ancho de la columna izquierda y ajustar la derecha */
 .left-column {
-    flex: 0 0 20%; /* Reducido a un 20% */
-    max-width: 250px; /* Límite explícito para el ancho */
-    min-width: 200px; /* Asegura que no sea demasiado pequeña */
+    flex: 0 0 22%; /* Más espacio para la columna izquierda, pero aún compacta */
+    max-width: 280px;
+    min-width: 240px;
 }
 
 .right-column {
-    flex: 1; /* Permite que la columna crezca y ocupe el resto del espacio */
-    min-width: 650px; /* Ancho mínimo para la columna derecha para acomodar las estadísticas */
-    max-width: 900px; /* Límite para que no se estire demasiado */
+    flex: 1; /* Ocupa el espacio restante */
+    min-width: 680px; /* Ancho mínimo para estadísticas */
+    max-width: 950px;
 }
 
-
 .card {
-    background-color: #f9f9f9;
-    border: 1px solid #e0e0e0;
-    border-radius: 10px;
-    padding: 20px;
-    margin-bottom: 20px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    background-color: #fcfcfc;
+    border: 1px solid #e6ebf0;
+    border-radius: 12px;
+    padding: 25px; /* Más padding en tarjetas */
+    margin-bottom: 25px; /* Espacio entre tarjetas */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08); /* Sombra más definida */
 }
 
 .card h2 {
     color: #007bff;
     margin-top: 0;
-    margin-bottom: 15px;
-    font-size: 1.6em;
+    margin-bottom: 20px;
+    font-size: 1.8em;
     text-align: center;
+    font-weight: 600;
 }
 
-/* Score Section */
+/*
+    Estilos Comunes de Botones
+*/
+button {
+    padding: 12px 20px; /* Padding generoso para botones */
+    border: none;
+    border-radius: 10px; /* Bordes redondeados consistentes */
+    font-size: 1.05em; /* Fuente ligeramente más grande */
+    cursor: pointer;
+    transition: background-color 0.25s ease, transform 0.15s ease, box-shadow 0.25s ease;
+    white-space: nowrap;
+    font-weight: 500;
+}
+
+button:hover {
+    transform: translateY(-2px); /* Efecto 3D sutil al pasar el ratón */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Colores Específicos de Botones */
+button:not(.reset-btn):not(.minus-btn):not(.plus-btn):not(.active) { /* Default blue for play/toggle, add, etc. */
+    background-color: #007bff;
+    color: white;
+}
+button:not(.reset-btn):not(.minus-btn):not(.plus-btn):not(.active):hover {
+    background-color: #0056b3;
+}
+
+.reset-btn {
+    background-color: #6c757d; /* Gris para reiniciar */
+    color: white;
+}
+.reset-btn:hover {
+    background-color: #5a6268;
+}
+
+.minus-btn {
+    background-color: #dc3545; /* Rojo para restar */
+    color: white;
+}
+.minus-btn:hover {
+    background-color: #c82333;
+}
+
+.plus-btn {
+    background-color: #28a745; /* Verde para sumar */
+    color: white;
+}
+.plus-btn:hover {
+    background-color: #218838;
+}
+
+/*
+    Sección de Marcador
+*/
 .score-section .stat-group {
     display: flex;
     justify-content: space-around;
-    gap: 20px;
+    gap: 30px; /* Más espacio */
     flex-wrap: wrap;
 }
 
@@ -117,107 +190,67 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    background-color: #eaf5ff;
-    padding: 15px;
-    border-radius: 8px;
+    background-color: #eaf5ff; /* Fondo claro para marcador */
+    padding: 20px;
+    border-radius: 10px;
     flex: 1;
-    min-width: 120px;
+    min-width: 130px;
 }
 
-.team-score .counter {
-    font-size: 3.5em;
-    font-weight: bold;
+/* MARCADOR Y TIEMPO: Mismo tamaño y más pequeños */
+.team-score .counter,
+.match-timer-section .timer {
+    font-size: 2.8em; /* ¡CLAVE: Tamaño más pequeño y uniforme! */
+    font-weight: 700; /* Más negrita */
     color: #333;
-    margin-bottom: 5px;
+    margin-bottom: 10px;
+    display: block;
     width: 100%;
     text-align: center;
+    background-color: #eaf5ff; /* Fondo para el número */
+    padding: 10px 5px;
+    border-radius: 8px;
+    min-height: 1.5em; /* Asegura un alto mínimo */
+    line-height: 1.2; /* Ajusta la altura de la línea */
+    box-sizing: border-box;
 }
 
 .team-score .team-label {
-    font-size: 1.1em;
-    font-weight: bold;
+    font-size: 1.15em;
+    font-weight: 600;
     color: #555;
-    margin-bottom: 10px;
+    margin-bottom: 15px;
 }
 
 .team-score .controls {
     display: flex;
-    gap: 10px;
-    margin-top: 10px;
+    gap: 12px; /* Espacio entre botones de marcador */
+    margin-top: 15px;
+}
+.team-score .controls button {
+    padding: 10px 15px; /* Ajuste para estos botones */
+    font-size: 0.95em;
+    border-radius: 8px; /* Ligeramente menos redondos que los circulares */
 }
 
-.team-score .controls button,
-.match-timer-controls button,
-/* .possession-controls button, */ /* Quitamos esto de aquí para un control más específico */
-.add-custom-stat-integrated button,
-.reset-all-button {
-    padding: 10px 15px;
-    border: none;
-    border-radius: 8px;
-    font-size: 1em;
-    cursor: pointer;
-    transition: background-color 0.2s ease, transform 0.1s ease;
-    white-space: nowrap;
-}
 
-/* Common button styles */
-button {
-    background-color: #007bff;
-    color: white;
-}
-
-button:hover {
-    background-color: #0056b3;
-    transform: translateY(-1px);
-}
-
-.reset-btn {
-    background-color: #6c757d; /* Gris para reiniciar */
-}
-
-.reset-btn:hover {
-    background-color: #5a6268;
-}
-
-.minus-btn {
-    background-color: #dc3545; /* Rojo para restar */
-}
-
-.minus-btn:hover {
-    background-color: #c82333;
-}
-
-.plus-btn {
-    background-color: #28a745; /* Verde para sumar */
-}
-
-.plus-btn:hover {
-    background-color: #218838;
-}
-
-/* Match Timer Section */
+/*
+    Sección de Tiempo de Partido
+*/
 .match-timer-section {
     text-align: center;
-}
-
-.match-timer-section .timer {
-    font-size: 3em;
-    font-weight: bold;
-    color: #333;
-    display: block;
-    margin-bottom: 20px;
-    background-color: #eaf5ff;
-    padding: 10px;
-    border-radius: 8px;
 }
 
 .match-timer-controls {
     display: flex;
     justify-content: center;
-    gap: 15px;
+    gap: 20px; /* Espacio entre botones de tiempo */
+    margin-top: 20px;
 }
 
-/* Possession Section */
+/*
+    Sección de Posesión de Balón
+*/
 .possession-section {
     text-align: center;
 }
@@ -236,38 +269,40 @@ button:hover {
 
 .possession-timers-container .timer-group span {
     font-size: 1.1em;
-    font-weight: bold;
-    margin-bottom: 5px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #555;
 }
 
 .possession-timers-container .timer {
-    font-size: 1.8em;
+    font-size: 1.9em; /* Tamaño del texto del timer de posesión */
     font-weight: bold;
     color: #333;
     background-color: #eaf5ff;
-    padding: 5px 10px;
-    border-radius: 5px;
+    padding: 8px 12px;
+    border-radius: 8px;
 }
 
 .possession-bar-container {
-    width: 90%;
-    height: 30px;
-    background-color: #dc3545; /* Color por defecto para Equipo B */
-    border-radius: 5px;
-    margin: 20px auto;
+    width: 95%; /* Barra más ancha */
+    height: 35px; /* Barra más alta */
+    background-color: #dc3545; /* Equipo B */
+    border-radius: 8px;
+    margin: 25px auto;
     position: relative;
     overflow: hidden;
     display: flex;
     align-items: center;
     justify-content: space-between;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.2); /* Sutil sombra interna */
 }
 
 .possession-bar-fill {
     height: 100%;
-    background-color: #007bff; /* Color para Equipo A */
+    background-color: #007bff; /* Equipo A */
     width: 50%; /* Default */
-    border-radius: 5px;
-    transition: width 0.3s ease-in-out;
+    border-radius: 8px;
+    transition: width 0.4s ease-in-out; /* Transición más suave */
     position: absolute;
     left: 0;
 }
@@ -275,49 +310,47 @@ button:hover {
 .possession-percentage-text {
     position: absolute;
     font-weight: bold;
-    color: white; /* Color del texto sobre la barra */
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.4);
-    z-index: 1; /* Asegura que el texto esté sobre las barras */
+    color: white;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.6); /* Sombra de texto más fuerte */
+    z-index: 1;
+    font-size: 1.1em;
 }
 
 .left-percent {
-    left: 5px;
+    left: 10px; /* Más espacio del borde */
 }
 
 .right-percent {
-    right: 5px;
+    right: 10px; /* Más espacio del borde */
 }
 
-/* Ajuste de los botones de posesión para que no se desborden y tengan un tamaño coherente */
 .possession-controls {
     display: flex;
     justify-content: center;
-    gap: 10px;
-    margin-top: 15px;
-    flex-wrap: wrap; /* Permite que los botones se envuelvan si no hay espacio */
+    gap: 15px; /* Espacio entre botones */
+    margin-top: 20px;
+    flex-wrap: wrap;
 }
 
 .possession-controls button {
-    padding: 10px 15px;
-    border: none;
-    border-radius: 8px;
-    font-size: 1em;
-    cursor: pointer;
-    transition: background-color 0.2s ease, transform 0.1s ease;
-    white-space: nowrap;
-    /* Ancho adaptativo para que quepan */
-    flex: 1 1 auto; /* Permite que crezca y se encoja */
-    max-width: 140px; /* Limita el ancho máximo para evitar que se estiren demasiado */
-    box-sizing: border-box; /* Asegura que el padding no cause desbordamiento */
+    flex: 1 1 auto;
+    max-width: 160px; /* Un poco más de ancho para ser cómodos */
+    padding: 12px 18px; /* Padding consistente */
+    font-size: 1.0em;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 .possession-controls button.active {
-    background-color: #28a745; /* Verde cuando está activa la posesión */
+    background-color: #28a745;
     border: 2px solid #1a7e32;
-    transform: scale(1.05);
+    transform: scale(1.03); /* Menos escalado */
+    box-shadow: 0 4px 10px rgba(40, 167, 69, 0.4);
 }
 
-/* Custom Stats Section */
+/*
+    Sección de Estadísticas Personalizadas
+*/
 .custom-stats-management {
     display: flex;
     flex-direction: column;
@@ -326,76 +359,90 @@ button:hover {
 
 .add-custom-stat-integrated {
     display: flex;
-    gap: 10px;
+    gap: 12px; /* Más espacio */
     width: 100%;
-    max-width: 400px;
-    margin-bottom: 20px;
+    max-width: 450px; /* Más ancho para la entrada */
+    margin-bottom: 25px;
 }
 
 .add-custom-stat-integrated input {
     flex-grow: 1;
-    padding: 10px 15px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    font-size: 1em;
+    padding: 12px 18px;
+    border: 1px solid #c9d2da;
+    border-radius: 10px;
+    font-size: 1.05em;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
-/* --- ESTILOS CLAVE PARA LAS ESTADÍSTICAS PERSONALIZADAS (AJUSTE PARA COMPACTAR) --- */
+.add-custom-stat-integrated input:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+    outline: none;
+}
+.add-custom-stat-integrated button {
+    padding: 12px 25px; /* Botón de "Añadir" más grande */
+}
+
 .custom-stats-grid {
     width: 100%;
     display: grid;
-    /* 3 columnas para pantallas más grandes, 2 para tablets */
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: 15px;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Más espacio para cada tarjeta */
+    gap: 20px; /* Más espacio entre tarjetas */
     justify-content: center;
 }
 
 .stat-card {
     background-color: #eaf5ff;
     border: 1px solid #d0e8ff;
-    border-radius: 10px;
-    padding: 8px; /* Más pequeño para reducir la altura */
+    border-radius: 12px;
+    padding: 15px; /* Padding aumentado para airear */
     text-align: center;
     display: flex;
-    flex-direction: column; /* Columna principal para el contenido */
+    flex-direction: column;
     align-items: center;
     box-sizing: border-box;
-    justify-content: space-between; /* Distribuye el espacio */
-    height: 180px; /* Altura fija para uniformidad, ajustar si es necesario */
+    justify-content: space-between;
+    height: 200px; /* Altura ajustada para el nuevo contenido y espaciado */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
 }
 
 /* Título de la tarjeta centrado y botones debajo */
 .stat-card-header {
     display: flex;
-    flex-direction: column; /* Apila el título y los iconos */
-    align-items: center; /* Centra horizontalmente el título y los iconos */
+    flex-direction: column;
+    align-items: center;
     margin-top: 0;
-    margin-bottom: 8px; /* Espacio entre el header y los controles */
+    margin-bottom: 12px; /* Más espacio */
     width: 100%;
 }
 
 .stat-card-header .stat-title {
     color: #0056b3;
-    font-size: 1.1em;
-    font-weight: bold;
+    font-size: 1.2em; /* Título un poco más grande */
+    font-weight: 600;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    margin-bottom: 5px; /* Espacio entre el título y los iconos */
+    margin-bottom: 8px; /* Espacio entre título e iconos */
+    line-height: 1.3;
 }
 
-.stat-action-icons { /* Contenedor para los iconos de acción (detalles, editar, borrar) */
+.stat-action-icons {
     display: flex;
-    gap: 5px; /* Espacio entre los iconos */
-    justify-content: center; /* Centrar los iconos */
+    gap: 8px; /* Más espacio entre iconos */
+    justify-content: center;
     width: 100%;
 }
 
 .stat-action-icons button {
-    padding: 3px 6px; /* Botones de acción pequeños */
-    font-size: 0.65em;
-    border-radius: 4px;
-    margin: 0; /* Eliminar margen extra para que el gap funcione bien */
+    padding: 6px 10px; /* Botones de acción un poco más grandes */
+    font-size: 0.75em;
+    border-radius: 6px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+.stat-action-icons button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
 }
 
 .stat-action-icons .edit-stat-btn { background-color: #ffc107; color: #333; }
@@ -409,161 +456,168 @@ button:hover {
 /* Controles de estadística: Main container para los 3 elementos (botones A, 0-0, botones B) */
 .stat-controls-group {
     display: flex;
-    align-items: center; /* Alinea los elementos en el centro verticalmente */
-    justify-content: space-between; /* Empuja los grupos de botones a los lados del 0-0 */
+    align-items: center;
+    justify-content: space-between;
     width: 100%;
-    flex-grow: 1; /* Permite que este grupo ocupe el espacio restante en la tarjeta */
+    flex-grow: 1;
+    padding: 0 5px; /* Pequeño padding horizontal para asegurar espacio */
 }
 
 /* Grupos de botones verticales para cada equipo */
 .team-buttons-column {
     display: flex;
-    flex-direction: column; /* ¡CLAVE: Botones en vertical! */
-    gap: 4px; /* Espacio entre los botones apilados */
+    flex-direction: column;
+    gap: 6px; /* Más espacio entre los botones apilados */
 }
 
 .team-buttons-column button {
-    padding: 6px 10px; /* Tamaño de los botones */
-    font-size: 0.9em;
-    width: 40px; /* Ancho fijo para los botones para que se vean uniformes */
-    height: 40px; /* Altura fija para los botones */
+    padding: 8px 12px; /* Padding de botones de stat */
+    font-size: 1em; /* Tamaño de fuente más estándar */
+    width: 45px; /* Ancho fijo para los botones */
+    height: 45px; /* Altura fija para los botones */
     display: flex;
     justify-content: center;
     align-items: center;
-    border-radius: 50%; /* Redondea los botones */
+    border-radius: 50%; /* Redondos */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+.team-buttons-column button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
 }
 
 /* El resultado central (0 - 0) */
 .stat-total-display {
-    font-size: 2.8em; /* Tamaño del resultado 0 - 0 */
-    font-weight: bold;
+    font-size: 3.2em; /* Tamaño del resultado 0 - 0, prominente */
+    font-weight: 700;
     color: #333;
-    line-height: 1; /* Reduce el espacio de línea */
-    flex-shrink: 0; /* Evita que el texto se encoja */
+    line-height: 1;
+    flex-shrink: 0;
+    margin: 0 10px; /* Espacio horizontal */
 }
 
 
-/* Reset All Button */
+/*
+    Botón Reiniciar Todo
+*/
 .reset-all-button {
     display: block;
     width: fit-content;
-    margin: 30px auto 20px auto;
-    padding: 15px 30px;
-    font-size: 1.1em;
+    margin: 40px auto 25px auto; /* Más espacio */
+    padding: 18px 35px; /* Más grande y prominente */
+    font-size: 1.2em;
     background-color: #ffc107;
     color: #333;
     border: 2px solid #e0a800;
-    border-radius: 10px;
+    border-radius: 12px; /* Más redondeado */
     cursor: pointer;
-    transition: background-color 0.2s ease, transform 0.1s ease;
+    box-shadow: 0 5px 15px rgba(255, 193, 7, 0.3); /* Sombra amarilla distintiva */
 }
 
 .reset-all-button:hover {
     background-color: #e0a800;
-    transform: translateY(-2px);
+    transform: translateY(-3px); /* Mayor efecto al pasar el ratón */
+    box-shadow: 0 7px 20px rgba(255, 193, 7, 0.5);
 }
 
 .section-divider {
     border: 0;
-    height: 1px;
-    background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0));
-    margin: 40px 0;
+    height: 2px; /* Más grueso */
+    background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.15), rgba(0, 0, 0, 0));
+    margin: 50px 0; /* Más espacio */
 }
 
-/* ==================================== */
-/* ESTILOS DEL MODAL */
-/* ==================================== */
-
+/*
+    Estilos del Modal
+*/
 .modal {
-    display: none; /* Oculto por defecto */
-    position: fixed; /* Fijo en la pantalla */
-    z-index: 1000; /* Por encima de todo lo demás */
+    display: none;
+    position: fixed;
+    z-index: 1000;
     left: 0;
     top: 0;
-    width: 100%; /* Cubre toda la pantalla */
+    width: 100%;
     height: 100%;
-    overflow: auto; /* Habilita el scroll si el contenido es demasiado grande */
-    background-color: rgba(0, 0, 0, 0.7); /* Fondo semi-transparente */
-    display: flex; /* Para centrar el contenido */
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.8); /* Fondo más oscuro para el modal */
+    display: flex;
     justify-content: center;
     align-items: center;
-    padding: 20px; /* Espacio alrededor del modal */
+    padding: 20px;
     box-sizing: border-box;
 }
 
 .modal-content {
     background-color: #fefefe;
-    margin: auto; /* Centra el contenido */
-    padding: 25px;
-    border: 1px solid #888;
-    border-radius: 10px;
-    width: 90%; /* Ancho máximo del modal */
-    max-width: 600px; /* Ancho máximo absoluto */
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-    position: relative; /* Para posicionar el botón de cerrar */
-    max-height: 90vh; /* Altura máxima para permitir scroll */
-    overflow-y: auto; /* Habilita scroll para el contenido del modal */
+    margin: auto;
+    padding: 30px; /* Más padding */
+    border: 1px solid #777;
+    border-radius: 15px; /* Más redondeado */
+    width: 90%;
+    max-width: 650px; /* Ancho máximo para el modal */
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3); /* Sombra más fuerte */
+    position: relative;
+    max-height: 90vh;
+    overflow-y: auto;
 }
 
 .modal-content h2 {
     color: #007bff;
     margin-top: 0;
-    margin-bottom: 20px;
+    margin-bottom: 25px; /* Más espacio */
     text-align: center;
-    font-size: 1.8em;
+    font-size: 2em; /* Título del modal más grande */
+    font-weight: 600;
 }
 
 .close-button {
-    color: #aaa;
-    float: right; /* Alinea a la derecha */
-    font-size: 28px;
+    color: #888;
+    font-size: 32px; /* Botón de cerrar más grande */
     font-weight: bold;
     position: absolute;
-    top: 10px;
-    right: 15px;
+    top: 15px;
+    right: 20px;
     cursor: pointer;
 }
 
 .close-button:hover,
 .close-button:focus {
     color: black;
-    text-decoration: none;
-    cursor: pointer;
 }
 
 .event-list {
-    list-style: none; /* Sin viñetas */
+    list-style: none;
     padding: 0;
     margin: 0;
-    max-height: 400px; /* Altura máxima para la lista de eventos */
-    overflow-y: auto; /* Scroll si hay muchos eventos */
+    max-height: 450px; /* Altura máxima para la lista de eventos */
+    overflow-y: auto;
     border: 1px solid #eee;
-    border-radius: 8px;
+    border-radius: 10px;
     background-color: #fcfcfc;
 }
 
 .event-list li {
-    padding: 10px 15px;
-    border-bottom: 1px solid #eee;
+    padding: 12px 18px; /* Más padding */
+    border-bottom: 1px solid #e0e0e0;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    font-size: 1.1em;
+    font-size: 1.15em; /* Fuente ligeramente más grande */
 }
 
 .event-list li:last-child {
-    border-bottom: none; /* Eliminar borde inferior del último elemento */
+    border-bottom: none;
 }
 
 .event-list li span.event-time {
     font-weight: bold;
     color: #555;
-    min-width: 80px; /* Asegura espacio para la hora */
+    min-width: 90px;
 }
 
 .event-list li span.event-team {
-    font-weight: bold;
-    flex-grow: 1; /* Permite que el equipo ocupe el resto del espacio */
+    font-weight: 600;
+    flex-grow: 1;
     text-align: right;
 }
 
@@ -575,128 +629,175 @@ button:hover {
     color: #dc3545;
 }
 
-/* Media Queries para responsividad */
-@media (max-width: 992px) { /* Para tablets y pantallas medianas */
+/*
+    Media Queries para Responsividad
+*/
+@media (max-width: 1100px) { /* Ajuste para pantallas más pequeñas */
     .left-column {
-        flex: 0 0 25%; /* Ajustado */
-        max-width: 250px;
-        min-width: 200px;
+        flex: 0 0 28%;
+        max-width: 280px;
+        min-width: 250px;
     }
     .right-column {
-        min-width: 450px; /* Ajuste para que las estadísticas quepan */
+        min-width: 550px;
+    }
+    .custom-stats-grid {
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 15px;
+    }
+}
+
+@media (max-width: 992px) { /* Para tablets y pantallas medianas */
+    .left-column {
+        flex: 0 0 32%; /* Ocupa un poco más de espacio */
+        max-width: 300px;
+        min-width: 250px;
+    }
+    .right-column {
+        min-width: 400px; /* Asegura 2 columnas en el grid */
     }
     .custom-stats-grid {
         grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); /* Mantener 2 o 3 columnas, ajustando minmax */
-        gap: 10px;
+        gap: 12px;
     }
     .stat-card {
-        padding: 5px; /* Reducir aún más el padding */
-        height: 160px; /* Ajuste de altura */
-    }
-    .stat-total-display {
-        font-size: 2.2em; /* Ligeramente más pequeño */
+        padding: 12px;
+        height: 190px; /* Ajuste de altura */
     }
     .team-buttons-column button {
-        width: 35px; /* Botones más pequeños */
-        height: 35px;
-        font-size: 0.8em;
+        width: 40px; /* Botones más pequeños */
+        height: 40px;
+        font-size: 0.9em;
+    }
+    .stat-total-display {
+        font-size: 2.8em; /* Ligeramente más pequeño */
     }
     .possession-controls button {
-        max-width: 120px; /* Ajuste para botones de posesión en tablets */
+        max-width: 140px;
+        font-size: 0.95em;
+        padding: 10px 15px;
     }
 }
 
 @media (max-width: 768px) { /* Para móviles y tablets pequeñas */
+    .main-app-container {
+        padding: 20px;
+        gap: 20px;
+    }
     .match-dashboard {
         flex-direction: column; /* Apila las columnas en pantallas pequeñas */
         align-items: center;
+        gap: 25px;
     }
 
     .left-column, .right-column {
         min-width: unset;
         width: 100%;
-        max-width: 500px; /* Ajuste para móviles */
+        max-width: 500px; /* Límite de ancho para una buena lectura en móvil */
+        margin-bottom: 0; /* Ya hay gap en el dashboard */
     }
-    .left-column { /* Restablecer ancho para que ocupe 100% en móvil */
-        max-width: 100%;
-        min-width: unset;
-    }
-
-    .score-section .stat-group {
-        flex-direction: column;
-        gap: 15px;
+    .card {
+        padding: 20px;
+        margin-bottom: 0;
     }
 
-    .team-score .counter {
-        font-size: 3em;
-    }
-
+    .team-score .counter,
     .match-timer-section .timer {
-        font-size: 2.5em;
+        font-size: 2.5em; /* Ajuste para móvil */
     }
 
-    .possession-timers-container .timer {
-        font-size: 1.5em;
+    .match-timer-controls, .possession-controls {
+        flex-wrap: wrap;
+        gap: 12px;
     }
-
     .possession-controls button {
-        max-width: 140px; /* Ajuste de ancho para móviles */
+        flex: 1 1 45%; /* Dos botones por fila */
+        max-width: unset; /* Ancho flexible */
     }
 
     /* Estadísticas personalizadas */
     .custom-stats-grid {
-        grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); /* Aún más compacto para teléfonos pequeños */
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); /* Aún más compacto para teléfonos pequeños */
         gap: 10px;
     }
     .stat-card {
-        padding: 5px;
-        height: 150px; /* Ajuste de altura para móviles */
+        padding: 10px;
+        height: 180px; /* Ajuste de altura para móviles */
     }
     .stat-card-header .stat-title {
-        font-size: 0.95em;
+        font-size: 1.1em;
     }
     .stat-action-icons button {
-        padding: 2px 5px;
-        font-size: 0.6em;
+        padding: 4px 8px;
+        font-size: 0.7em;
     }
     .stat-total-display {
-        font-size: 2.4em;
+        font-size: 2.5em;
     }
     .team-buttons-column button {
-        width: 35px;
-        height: 35px;
-        font-size: 0.8em;
+        width: 38px;
+        height: 38px;
+        font-size: 0.85em;
+    }
+
+    .reset-all-button {
+        padding: 15px 30px;
+        font-size: 1.1em;
     }
 
     .modal-content {
         width: 95%;
-        padding: 20px;
+        padding: 25px;
     }
-
+    .modal-content h2 {
+        font-size: 1.8em;
+    }
+    .close-button {
+        font-size: 28px;
+    }
     .event-list li {
+        font-size: 1.05em;
+        padding: 10px 15px;
         flex-direction: column;
         align-items: flex-start;
         gap: 5px;
     }
-
     .event-list li span.event-team {
         text-align: left;
     }
 }
 
 @media (max-width: 480px) {
-    .custom-stats-grid {
-        grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); /* Para móviles muy pequeños */
-    }
-    .stat-card {
-        height: 140px; /* Altura muy reducida */
-    }
-    .stat-total-display {
+    .app-header h1 {
         font-size: 2em;
     }
+    .team-name-group input[type="text"] {
+        font-size: 1em;
+        padding: 8px 12px;
+    }
+    .card h2 {
+        font-size: 1.6em;
+    }
+    .possession-controls button {
+        flex: 1 1 100%; /* Un botón por fila en pantallas muy pequeñas */
+        max-width: unset;
+    }
+    .custom-stats-grid {
+        grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+    }
+    .stat-card {
+        height: 160px; /* Altura aún más ajustada */
+        padding: 8px;
+    }
+    .stat-card-header .stat-title {
+        font-size: 1em;
+    }
     .team-buttons-column button {
-        width: 32px;
-        height: 32px;
-        font-size: 0.75em;
+        width: 35px;
+        height: 35px;
+        font-size: 0.8em;
+    }
+    .stat-total-display {
+        font-size: 2.2em;
     }
 }
