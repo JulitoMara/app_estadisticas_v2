@@ -45,7 +45,7 @@ const togglePossessionBBtn = document.getElementById('togglePossessionB');
 const resetPossessionBtn = document.getElementById('resetPossession');
 const possessionBarA = document.getElementById('possessionBarA');
 const possessionPercentA = document.getElementById('possessionPercentA');
-const possessionPercentB = document.getElementById('possessionPercentB');
+const possessionPercentB = document = document.getElementById('possessionPercentB');
 
 let possessionIntervalA, possessionIntervalB;
 let possessionTimeA = 0;
@@ -60,9 +60,7 @@ const generalStatsContainer = document.getElementById('generalStatsContainer');
 // Reiniciar Todo
 const resetAllBtn = document.getElementById('resetAll');
 
-// Guardar y Cargar Partidos
-const saveMatchBtn = document.getElementById('saveMatchBtn');
-const matchesHistoryList = document.getElementById('matchesHistoryList');
+// Se eliminan selectores de Guardar y Cargar Partidos: saveMatchBtn, matchesHistoryList
 
 // ====== FUNCIONES GENERALES =======
 
@@ -103,7 +101,7 @@ if (!customStats || customStats.length === 0) {
     localStorage.setItem('customStats', JSON.stringify(customStats));
 }
 
-// MODIFICACIÓN: renderCustomStats para la nueva estructura compacta y vertical de botones
+// Renderiza las tarjetas de estadísticas personalizadas
 function renderCustomStats() {
     generalStatsContainer.innerHTML = ''; // Limpiar el contenedor
     customStats.forEach(stat => {
@@ -118,12 +116,15 @@ function renderCustomStats() {
                 <button class="delete-stat-btn" data-id="${stat.id}">🗑️</button>
             </h3>
             <div class="stat-controls-compact">
+                <!-- Controles Equipo A (izquierda del contador) -->
                 <div class="team-controls">
                     <button class="reset-btn" data-team="A" data-stat="${stat.id}">🔄</button>
                     <button class="minus-btn" data-team="A" data-stat="${stat.id}">-</button>
                     <button class="plus-btn" data-team="A" data-stat="${stat.id}">+</button>
                 </div>
+                <!-- Contador Central (0 - 0) -->
                 <span class="score-display" data-team-main-counter="${stat.id}">0 - 0</span>
+                <!-- Controles Equipo B (derecha del contador) -->
                 <div class="team-controls">
                     <button class="reset-btn" data-team="B" data-stat="${stat.id}">🔄</button>
                     <button class="minus-btn" data-team="B" data-stat="${stat.id}">-</button>
@@ -148,19 +149,17 @@ function updateCustomStatCounters() {
 }
 
 function addStatCardEventListeners() {
-    // Escuchar clics en el contenedor de estadísticas personalizadas
     generalStatsContainer.removeEventListener('click', handleCustomStatControls); // Evitar duplicados
     generalStatsContainer.addEventListener('click', handleCustomStatControls);
 }
 
-// handleCustomStatControls para la nueva estructura
+// Maneja los clics en los botones de estadísticas personalizadas
 function handleCustomStatControls(e) {
     const target = e.target;
     if (target.classList.contains('plus-btn') || target.classList.contains('minus-btn') || target.classList.contains('reset-btn')) {
         const team = target.dataset.team;
         const statId = target.dataset.stat;
 
-        // Encuentra la estadística en el array `customStats`
         const statToUpdate = customStats.find(s => s.id === statId);
         if (!statToUpdate) return;
 
@@ -181,7 +180,7 @@ function handleCustomStatControls(e) {
                 statToUpdate.teamB = 0;
             }
         }
-        localStorage.setItem('customStats', JSON.stringify(customStats)); // Guardar el estado
+        localStorage.setItem('customStats', JSON.stringify(customStats)); // Guardar el estado actual de las stats
         updateCustomStatCounters(); // Actualizar el DOM
     } else if (target.classList.contains('delete-stat-btn')) {
         const statIdToDelete = target.dataset.id;
@@ -197,7 +196,7 @@ function handleCustomStatControls(e) {
 
         customStats = customStats.filter(stat => stat.id !== statIdToDelete);
         localStorage.setItem('customStats', JSON.stringify(customStats));
-        renderCustomStats(); // Vuelve a renderizar toda la cuadrícula
+        renderCustomStats();
     } else if (target.classList.contains('edit-stat-btn')) {
         const statIdToEdit = target.dataset.id;
         const statToEdit = customStats.find(stat => stat.id === statIdToEdit);
@@ -206,7 +205,7 @@ function handleCustomStatControls(e) {
             if (newName && newName.trim() !== "") {
                 statToEdit.name = newName.trim();
                 localStorage.setItem('customStats', JSON.stringify(customStats));
-                renderCustomStats(); // Vuelve a renderizar toda la cuadrícula
+                renderCustomStats();
             }
         }
     }
@@ -218,8 +217,7 @@ document.addEventListener('DOMContentLoaded', () => {
     updateTeamLabels();
     renderCustomStats(); // Cargar y renderizar las estadísticas personalizadas existentes
 
-    // Cargar partidos guardados al inicio
-    loadMatchesHistory();
+    // Se elimina la llamada a loadMatchesHistory();
 
     // Registrar Service Worker
     if ('serviceWorker' in navigator) {
@@ -278,7 +276,7 @@ resetPossessionBtn.addEventListener('click', resetPossession);
 
 function togglePossession(team) {
     // AHORA: SOLO INICIAR/CAMBIAR POSESIÓN SI EL TIEMPO DE PARTIDO ESTÁ CORRIENDO
-    if (!isMatchTimerRunning && currentPossession === null) { // Si el temporizador de partido no está corriendo y no hay posesión activa
+    if (!isMatchTimerRunning && currentPossession === null) {
         alert('Para iniciar la posesión, primero debes iniciar el tiempo de partido.');
         return;
     }
@@ -369,7 +367,7 @@ addStatBtn.addEventListener('click', () => {
 
 // Reiniciar Todas las Estadísticas
 resetAllBtn.addEventListener('click', () => {
-    if (confirm('¿Estás seguro de que quieres reiniciar TODAS las estadísticas del partido actual? Esto no afectará a los partidos guardados.')) {
+    if (confirm('¿Estás seguro de que quieres reiniciar TODAS las estadísticas del partido actual?')) { // Se elimina la mención a "partidos guardados"
         // Marcador
         teamAGoalsEl.textContent = '0';
         teamBGoalsEl.textContent = '0';
@@ -382,7 +380,7 @@ resetAllBtn.addEventListener('click', () => {
         isMatchTimerRunning = false;
 
         // Posesión de Balón
-        resetPossession(); // Reutilizamos la función de reseteo de posesión
+        resetPossession();
 
         // Estadísticas Personalizadas - Reiniciar los valores en el array y en el DOM
         customStats.forEach(stat => {
@@ -395,156 +393,6 @@ resetAllBtn.addEventListener('click', () => {
 });
 
 
-// ============ NUEVAS FUNCIONES PARA GUARDAR Y CARGAR PARTIDOS ============
-
-// Función para recolectar todos los datos del partido actual
-function collectCurrentMatchData() {
-    const customStatValues = {};
-    customStats.forEach(stat => { // Iterar sobre el array customStats para obtener los valores actuales
-        customStatValues[stat.id] = { name: stat.name, teamA: stat.teamA, teamB: stat.teamB };
-    });
-
-    const currentDate = new Date();
-    const formattedDate = currentDate.toLocaleDateString();
-
-    return {
-        id: Date.now(),
-        timestamp: formattedDate,
-        teamA: teamANameInput.value,
-        teamB: teamBNameInput.value,
-        goalsA: parseInt(teamAGoalsEl.textContent),
-        goalsB: parseInt(teamBGoalsEl.textContent),
-        matchTime: matchTimeElapsed,
-        possessionA: possessionTimeA,
-        possessionB: possessionTimeB,
-        customStats: customStatValues,
-        customStatsDefinition: customStats.map(stat => ({ id: stat.id, name: stat.name }))
-    };
-}
-
-// Función para guardar el partido actual en localStorage
-function saveCurrentMatch() {
-    const matchData = collectCurrentMatchData();
-    let savedMatches = JSON.parse(localStorage.getItem('savedMatches')) || [];
-
-    const matchName = prompt("Introduce un nombre para el partido (ej: Final Copa 2024 vs EquipoX):", `${matchData.teamA} vs ${matchData.teamB} - ${matchData.timestamp}`);
-    if (matchName === null) {
-        return;
-    }
-    matchData.name = matchName || `Partido ${matchData.teamA} vs ${matchData.teamB}`;
-
-    savedMatches.push(matchData);
-    localStorage.setItem('savedMatches', JSON.stringify(savedMatches));
-    alert('Partido guardado con éxito!');
-    loadMatchesHistory(); // Actualizar la lista de partidos guardados
-}
-
-// Función para cargar los partidos desde localStorage y renderizar la lista
-function loadMatchesHistory() {
-    const savedMatches = JSON.parse(localStorage.getItem('savedMatches')) || [];
-    matchesHistoryList.innerHTML = ''; // Limpiar la lista actual
-
-    if (savedMatches.length === 0) {
-        matchesHistoryList.innerHTML = '<p>No hay partidos guardados aún.</p>';
-        return;
-    }
-
-    const ul = document.createElement('ul');
-    savedMatches.forEach(match => {
-        const li = document.createElement('li');
-        li.classList.add('match-history-item');
-        li.innerHTML = `
-            <span>${match.name || `Partido ${match.teamA} vs ${match.teamB}`} (${match.timestamp})</span>
-            <div class="match-history-controls">
-                <button class="load-match-btn" data-id="${match.id}">Cargar</button>
-                <button class="delete-match-btn" data-id="${match.id}">Eliminar</button>
-            </div>
-        `;
-        ul.appendChild(li);
-    });
-    matchesHistoryList.appendChild(ul);
-
-    // Añadir event listeners a los botones de cargar y eliminar
-    ul.addEventListener('click', (e) => {
-        const target = e.target;
-        const matchId = parseInt(target.dataset.id);
-
-        if (target.classList.contains('load-match-btn')) {
-            loadSelectedMatch(matchId);
-        } else if (target.classList.contains('delete-match-btn')) {
-            deleteMatch(matchId);
-        }
-    });
-}
-
-// loadSelectedMatch para la nueva estructura
-function loadSelectedMatch(id) {
-    const savedMatches = JSON.parse(localStorage.getItem('savedMatches')) || [];
-    const matchToLoad = savedMatches.find(match => match.id === id);
-
-    if (matchToLoad && confirm('¿Estás seguro de que quieres cargar este partido? El partido actual se perderá si no lo has guardado.')) {
-        // Marcador
-        teamANameInput.value = matchToLoad.teamA;
-        teamBNameInput.value = matchToLoad.teamB;
-        updateTeamLabels();
-
-        teamAGoalsEl.textContent = matchToLoad.goalsA;
-        teamBGoalsEl.textContent = matchToLoad.goalsB;
-
-        // Tiempo de Partido
-        clearInterval(matchTimerInterval);
-        matchTimeElapsed = matchToLoad.matchTime;
-        matchTimerEl.textContent = formatTime(matchTimeElapsed);
-        toggleMatchTimerBtn.textContent = '▶️ Iniciar';
-        isMatchTimerRunning = false;
-
-        // Posesión de Balón
-        clearInterval(possessionIntervalA);
-        clearInterval(possessionIntervalB);
-        possessionTimeA = matchToLoad.possessionA;
-        possessionTimeB = matchToLoad.possessionB;
-        currentPossession = null;
-        possessionTimerAEl.textContent = formatTime(possessionTimeA);
-        possessionTimerBEl.textContent = formatTime(possessionTimeB);
-        updatePossessionBar();
-        updatePossessionButtons();
-
-        // ============ RESTAURACIÓN DE ESTADÍSTICAS PERSONALIZADAS ============
-        // Restaurar la definición de customStats del partido guardado
-        customStats = matchToLoad.customStatsDefinition || [];
-        localStorage.setItem('customStats', JSON.stringify(customStats));
-        renderCustomStats(); // Vuelve a renderizar la estructura de las tarjetas
-
-        // Luego, actualizar los valores de las estadísticas cargadas
-        // Un pequeño delay para asegurar que el DOM se ha actualizado
-        setTimeout(() => {
-            for (const statId in matchToLoad.customStats) {
-                const statData = matchToLoad.customStats[statId];
-                const statObj = customStats.find(s => s.id === statId);
-                if (statObj) {
-                    statObj.teamA = statData.teamA;
-                    statObj.teamB = statData.teamB;
-                }
-            }
-            updateCustomStatCounters(); // Actualizar el DOM con los valores cargados
-            localStorage.setItem('customStats', JSON.stringify(customStats)); // Guardar el estado con los valores cargados
-        }, 50);
-        // ====================================================================
-
-        alert(`Partido "${matchToLoad.name}" cargado con éxito!`);
-    }
-}
-
-// Función para eliminar un partido del historial
-function deleteMatch(id) {
-    if (confirm('¿Estás seguro de que quieres eliminar este partido del historial?')) {
-        let savedMatches = JSON.parse(localStorage.getItem('savedMatches')) || [];
-        savedMatches = savedMatches.filter(match => match.id !== id);
-        localStorage.setItem('savedMatches', JSON.stringify(savedMatches));
-        alert('Partido eliminado.');
-        loadMatchesHistory(); // Actualizar la lista
-    }
-}
-
-// Event Listener para el botón de Guardar Partido
-saveMatchBtn.addEventListener('click', saveCurrentMatch);
+// Se eliminan todas las funciones y lógica relacionadas con Guardar y Cargar Partidos:
+// collectCurrentMatchData, saveCurrentMatch, loadMatchesHistory, loadSelectedMatch, deleteMatch.
+// También se elimina el Event Listener para saveMatchBtn.
