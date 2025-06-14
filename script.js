@@ -114,9 +114,7 @@ function renderCustomStats() {
         statCard.classList.add('stat-card');
         statCard.dataset.statId = stat.id;
 
-        // No necesitamos los nombres de los equipos aquí dentro de la tarjeta
-        // Ya que solo mostraremos el 0-0 y los botones verticales.
-
+        // Se reestructura el HTML para que los botones estén a los lados del resultado.
         statCard.innerHTML = `
             <h3>
                 <span class="stat-title">${stat.name}</span>
@@ -124,15 +122,13 @@ function renderCustomStats() {
                 <button class="edit-stat-btn" data-id="${stat.id}">✏️</button>
                 <button class="delete-stat-btn" data-id="${stat.id}">🗑️</button>
             </h3>
-            <div class="stat-team-controls team-A-controls">
+            <div class="stat-section-row home-team">
                 <div class="stat-buttons">
                     <button class="reset-btn" data-team="A" data-stat="${stat.id}">🔄</button>
                     <button class="minus-btn" data-team="A" data-stat="${stat.id}">-</button>
                     <button class="plus-btn" data-team="A" data-stat="${stat.id}">+</button>
                 </div>
-            </div>
-            <span class="stat-total-display" data-stat-total="${stat.id}">0 - 0</span>
-            <div class="stat-team-controls team-B-controls">
+                <span class="stat-total-display" data-stat-total="${stat.id}">0 - 0</span>
                 <div class="stat-buttons">
                     <button class="reset-btn" data-team="B" data-stat="${stat.id}">🔄</button>
                     <button class="minus-btn" data-team="B" data-stat="${stat.id}">-</button>
@@ -157,8 +153,6 @@ function updateCustomStatCounters() {
         if (mainTotalSpan) {
             mainTotalSpan.textContent = `${teamAcount} - ${teamBcount}`;
         }
-        // Los contadores individuales (teamAValueEl, teamBValueEl) ya no existen en el HTML de la tarjeta,
-        // por lo que no es necesario actualizarlos aquí.
     });
 }
 
