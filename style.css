@@ -76,8 +76,9 @@ body {
 
 .left-column, .right-column {
     flex: 1;
-    min-width: 300px; /* Asegura un ancho mínimo en pantallas pequeñas */
-    max-width: 550px; /* Limita el ancho en pantallas grandes para no estirarse demasiado */
+    /* Ajustes para un diseño más compacto */
+    min-width: 300px;
+    max-width: 550px;
 }
 
 .card {
@@ -322,58 +323,55 @@ button:hover {
     font-size: 1em;
 }
 
+/* Ajuste clave: Grilla de 4 columnas por defecto para estadísticas */
 .custom-stats-grid {
     width: 100%;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Más columnas, menor min-width */
     gap: 15px;
 }
 
+/* Ajuste clave: Hacer las tarjetas más compactas */
 .stat-card {
     background-color: #eaf5ff;
     border: 1px solid #d0e8ff;
     border-radius: 10px;
-    padding: 15px;
+    padding: 10px; /* Reducir padding */
     text-align: center;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     align-items: center;
+    box-sizing: border-box; /* Asegura que padding no aumente el tamaño total */
 }
 
 .stat-card h3 {
     margin-top: 0;
-    margin-bottom: 10px;
+    margin-bottom: 8px; /* Reducir margen */
     color: #0056b3;
-    font-size: 1.3em;
+    font-size: 1.1em; /* Reducir tamaño de fuente del título */
     display: flex;
     align-items: center;
-    justify-content: center; /* Centra el título y botones */
-    gap: 8px; /* Espacio entre elementos del h3 */
-    flex-wrap: wrap; /* Permite que los botones se envuelvan si no hay espacio */
+    justify-content: center;
+    gap: 5px; /* Reducir espacio entre elementos del h3 */
+    flex-wrap: wrap;
+    width: 100%; /* Ocupar todo el ancho para centrar elementos */
 }
 
 .stat-card h3 .stat-title {
-    flex-grow: 1; /* Permite que el título ocupe espacio */
+    flex-grow: 1;
+    text-align: center; /* Centrar el título */
 }
 
 .stat-card h3 button {
-    padding: 6px 10px;
-    font-size: 0.8em;
-    background-color: #6c757d;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.2s ease;
-}
-
-.stat-card h3 button:hover {
-    background-color: #5a6268;
+    padding: 4px 8px; /* Reducir padding de los botones de edición/borrado/detalles */
+    font-size: 0.7em; /* Reducir tamaño de fuente de los botones */
+    border-radius: 4px;
+    margin: 0 2px; /* Pequeño margen para separarlos un poco */
 }
 
 .stat-card h3 .edit-stat-btn {
-    background-color: #ffc107; /* Amarillo para editar */
+    background-color: #ffc107;
     color: #333;
 }
 .stat-card h3 .edit-stat-btn:hover {
@@ -381,48 +379,75 @@ button:hover {
 }
 
 .stat-card h3 .delete-stat-btn {
-    background-color: #dc3545; /* Rojo para eliminar */
+    background-color: #dc3545;
 }
 .stat-card h3 .delete-stat-btn:hover {
     background-color: #c82333;
 }
 
-/* Nuevo estilo para el botón de ver detalles */
 .stat-card h3 .view-details-btn {
-    background-color: #17a2b8; /* Azul cyan para detalles */
+    background-color: #17a2b8;
 }
 .stat-card h3 .view-details-btn:hover {
     background-color: #138496;
 }
 
+/* Ajuste clave: Controles de los equipos dentro de la estadística */
 .stat-controls-compact {
     display: flex;
+    flex-direction: column; /* Apila Equipo A, Total, Equipo B */
     align-items: center;
-    gap: 10px;
+    gap: 8px; /* Espacio entre los bloques */
     width: 100%;
-    margin-top: 10px;
+    margin-top: 5px; /* Reducir margen superior */
 }
+
+.stat-controls-compact .team-label-counter { /* Nuevo contenedor para Tarragona 0 y sus botones */
+    display: flex;
+    flex-direction: column; /* Nombre y contador apilados */
+    align-items: center;
+    gap: 3px; /* Espacio entre label y contador */
+    margin-bottom: 5px; /* Espacio antes de los botones */
+}
+
+.stat-controls-compact .team-name-small { /* Para Tarragona / Camp Clar */
+    font-weight: bold;
+    font-size: 0.9em; /* Más pequeño */
+    color: #555;
+    margin-bottom: 3px;
+}
+
+.stat-controls-compact .score-value-small { /* Para el 0 de cada equipo */
+    font-size: 1.8em; /* Más pequeño que el total, pero legible */
+    font-weight: bold;
+    color: #007bff;
+    line-height: 1; /* Ajustar línea para que no añada mucho espacio */
+}
+
 
 .stat-controls-compact .team-controls {
     display: flex;
-    flex-direction: column; /* Botones en columna */
-    gap: 5px;
+    gap: 5px; /* Reducir espacio entre botones */
+    margin-bottom: 5px; /* Espacio después de los botones */
 }
 
 .stat-controls-compact .team-controls button {
-    padding: 8px 12px; /* Más pequeños para compactar */
-    font-size: 0.9em;
+    padding: 6px 10px; /* Botones más pequeños */
+    font-size: 0.8em;
     border-radius: 6px;
+    white-space: nowrap; /* Evita que el texto del botón se rompa */
 }
 
 .score-display {
-    font-size: 2.2em;
+    font-size: 2.2em; /* Tamaño para el 0-0 central */
     font-weight: bold;
     color: #333;
     flex-grow: 1;
     text-align: center;
-    white-space: nowrap; /* Evita que el 0 - 0 se rompa */
+    white-space: nowrap;
+    margin: 8px 0; /* Margen para separarlo de los controles de equipo */
 }
+
 
 /* Reset All Button */
 .reset-all-button {
@@ -452,7 +477,7 @@ button:hover {
 }
 
 /* ==================================== */
-/* ESTILOS DEL MODAL (NUEVOS) */
+/* ESTILOS DEL MODAL */
 /* ==================================== */
 
 .modal {
@@ -595,8 +620,9 @@ button:hover {
         margin-bottom: 5px;
     }
 
+    /* Ajuste para móviles: Controles de estadísticas personalizadas */
     .stat-controls-compact {
-        flex-direction: column;
+        flex-direction: column; /* Apila el contador total y luego los controles de equipo */
     }
 
     .stat-controls-compact .team-controls {
@@ -622,5 +648,16 @@ button:hover {
 
     .event-list li span.event-team {
         text-align: left;
+    }
+
+    /* Ajuste para grid en pantallas más pequeñas */
+    .custom-stats-grid {
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); /* Incluso más compacto en móviles */
+    }
+}
+
+@media (max-width: 480px) {
+    .custom-stats-grid {
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); /* Aún más compacto para teléfonos pequeños */
     }
 }
