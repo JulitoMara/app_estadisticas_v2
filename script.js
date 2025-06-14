@@ -124,25 +124,23 @@ function renderCustomStats() {
                 <button class="edit-stat-btn" data-id="${stat.id}">✏️</button>
                 <button class="delete-stat-btn" data-id="${stat.id}">🗑️</button>
             </h3>
-            <div class="stat-controls-compact">
-                <div class="team-display-row">
-                    <span class="team-name-small">${teamAName}</span>
-                    <span class="score-value-small" data-team-counter="${stat.id}-A">0</span>
-                    <div class="team-buttons">
-                        <button class="reset-btn" data-team="A" data-stat="${stat.id}">🔄</button>
-                        <button class="minus-btn" data-team="A" data-stat="${stat.id}">-</button>
-                        <button class="plus-btn" data-team="A" data-stat="${stat.id}">+</button>
-                    </div>
+            <div class="stat-team-controls">
+                <span class="team-name-stat">${teamAName}</span>
+                <span class="stat-team-value" data-team-value="${stat.id}-A">0</span>
+                <div class="stat-buttons">
+                    <button class="reset-btn" data-team="A" data-stat="${stat.id}">🔄</button>
+                    <button class="minus-btn" data-team="A" data-stat="${stat.id}">-</button>
+                    <button class="plus-btn" data-team="A" data-stat="${stat.id}">+</button>
                 </div>
-                <span class="score-display">0 - 0</span>
-                <div class="team-display-row">
-                    <span class="team-name-small">${teamBName}</span>
-                    <span class="score-value-small" data-team-counter="${stat.id}-B">0</span>
-                    <div class="team-buttons">
-                        <button class="reset-btn" data-team="B" data-stat="${stat.id}">🔄</button>
-                        <button class="minus-btn" data-team="B" data-stat="${stat.id}">-</button>
-                        <button class="plus-btn" data-team="B" data-stat="${stat.id}">+</button>
-                    </div>
+            </div>
+            <span class="stat-total-display" data-stat-total="${stat.id}">0 - 0</span>
+            <div class="stat-team-controls team-B-controls">
+                <span class="team-name-stat">${teamBName}</span>
+                <span class="stat-team-value" data-team-value="${stat.id}-B">0</span>
+                <div class="stat-buttons">
+                    <button class="reset-btn" data-team="B" data-stat="${stat.id}">🔄</button>
+                    <button class="minus-btn" data-team="B" data-stat="${stat.id}">-</button>
+                    <button class="plus-btn" data-team="B" data-stat="${stat.id}">+</button>
                 </div>
             </div>
         `;
@@ -159,20 +157,20 @@ function updateCustomStatCounters() {
         const teamBcount = stat.events.filter(event => event.team === 'B').length;
         
         // Actualizar el contador general (0 - 0)
-        const mainCounterSpan = generalStatsContainer.querySelector(`.stat-card[data-stat-id="${stat.id}"] .score-display`);
-        if (mainCounterSpan) {
-            mainCounterSpan.textContent = `${teamAcount} - ${teamBcount}`;
+        const mainTotalSpan = generalStatsContainer.querySelector(`.stat-card[data-stat-id="${stat.id}"] .stat-total-display`);
+        if (mainTotalSpan) {
+            mainTotalSpan.textContent = `${teamAcount} - ${teamBcount}`;
         }
 
-        // Actualizar los contadores individuales de cada equipo (el "0" bajo cada nombre)
-        const teamAScoreEl = generalStatsContainer.querySelector(`.score-value-small[data-team-counter="${stat.id}-A"]`);
-        const teamBScoreEl = generalStatsContainer.querySelector(`.score-value-small[data-team-counter="${stat.id}-B"]`);
+        // Actualizar los contadores individuales de cada equipo (el número junto al nombre del equipo)
+        const teamAValueEl = generalStatsContainer.querySelector(`.stat-team-value[data-team-value="${stat.id}-A"]`);
+        const teamBValueEl = generalStatsContainer.querySelector(`.stat-team-value[data-team-value="${stat.id}-B"]`);
         
-        if (teamAScoreEl) {
-            teamAScoreEl.textContent = teamAcount;
+        if (teamAValueEl) {
+            teamAValueEl.textContent = teamAcount;
         }
-        if (teamBScoreEl) {
-            teamBScoreEl.textContent = teamBcount;
+        if (teamBValueEl) {
+            teamBValueEl.textContent = teamBcount;
         }
     });
 }
