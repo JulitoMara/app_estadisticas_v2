@@ -78,8 +78,12 @@ function formatTime(seconds) {
 function updateTeamLabels() {
     teamALabelGoals.textContent = teamANameInput.value || "Equipo A";
     teamBLabelGoals.textContent = teamBNameInput.value || "Equipo B";
-    document.getElementById('possessionTeamA').textContent = teamANameInput.value || "Equipo A";
-    document.getElementById('possessionTeamB').textContent = teamBNameInput.value || "Equipo B";
+    // *** ACTUALIZACIÓN IMPORTANTE: Asegurarse de que estos IDs existen en tu HTML ***
+    // (Ya los hemos añadido en el index.html de la respuesta anterior)
+    const possessionTeamAEl = document.getElementById('possessionTeamA');
+    const possessionTeamBEl = document.getElementById('possessionTeamB');
+    if (possessionTeamAEl) possessionTeamAEl.textContent = teamANameInput.value || "Equipo A";
+    if (possessionTeamBEl) possessionTeamBEl.textContent = teamBNameInput.value || "Equipo B";
     // Si tienes stats personalizadas, sus labels se actualizarán con la función de renderizar
 }
 
@@ -170,6 +174,17 @@ function handleCustomStatControls(e) {
         }
     } else if (target.classList.contains('delete-stat-btn')) {
         const statIdToDelete = target.dataset.id;
+        // Solo permitir eliminar si no es una de las stats predeterminadas
+        const defaultStatIds = [
+            'stat-shots-on-goal', 'stat-shots-off-goal', 'stat-fouls',
+            'stat-yellow-cards', 'stat-red-cards', 'stat-corners',
+            'stat-offsides', 'stat-saves'
+        ];
+        if (defaultStatIds.includes(statIdToDelete)) {
+            alert('No se pueden eliminar las estadísticas predeterminadas.');
+            return;
+        }
+
         customStats = customStats.filter(stat => stat.id !== statIdToDelete);
         localStorage.setItem('customStats', JSON.stringify(customStats));
         renderCustomStats();
@@ -291,8 +306,7 @@ function updatePossessionBar() {
         possessionBarA.style.width = '50%';
         possessionPercentA.textContent = '0%';
         possessionPercentB.textContent = '0%';
-        possessionPercentA.style.left = 'calc(25% - 20px)'; // Centrar
-        possessionPercentB.style.right = 'calc(25% - 20px)';
+        // Los porcentajes ahora se posicionan dentro de la barra por CSS
         return;
     }
 
@@ -302,18 +316,6 @@ function updatePossessionBar() {
     possessionBarA.style.width = `${percentA}%`;
     possessionPercentA.textContent = `${Math.round(percentA)}%`;
     possessionPercentB.textContent = `${Math.round(percentB)}%`;
-
-    // Posicionar los porcentajes para que no se solapen
-    if (percentA < 15) {
-        possessionPercentA.style.left = `${percentA + 2}%`; // Moverlo un poco a la derecha si es pequeño
-        possessionPercentB.style.right = '2%';
-    } else if (percentB < 15) {
-        possessionPercentA.style.left = '2%';
-        possessionPercentB.style.right = `${percentB + 2}%`; // Moverlo un poco a la izquierda si es pequeño
-    } else {
-        possessionPercentA.style.left = '2%';
-        possessionPercentB.style.right = '2%';
-    }
 }
 
 function updatePossessionButtons() {
@@ -333,16 +335,16 @@ addStatBtn.addEventListener('click', () => {
     if (newStatName) {
         // Asegúrate de que el ID sea único y consistente
         const newId = 'stat-' + newStatName.toLowerCase().replace(/\s+/g, '-');
-        // Prevenir duplicados por nombre
+        // Prevenir duplicados por nombre (usando el ID generado)
         if (customStats.some(stat => stat.id === newId)) {
-            alert('¡Ya existe una estadística con ese nombre!');
+            alert('¡Ya existe una estadística con un nombre similar!');
             return;
         }
 
         customStats.push({ id: newId, name: newStatName, teamA: 0, teamB: 0 });
-        localStorage.setItem('customStats', JSON.stringify(customStats));
+        localStorage.setItem('customStats', JSON.stringify(customStats)); // Guardar en localStorage
         newStatNameInput.value = '';
-        renderCustomStats();
+        renderCustomStats(); // Volver a renderizar para mostrar la nueva stat
     }
 });
 
@@ -361,22 +363,19 @@ resetAllBtn.addEventListener('click', () => {
         isMatchTimerRunning = false;
 
         // Posesión de Balón
-        resetPossession();
+        resetPossession(); // Reutilizamos la función de reseteo de posesión
 
         // Estadísticas Personalizadas
-        // Reiniciar los contadores en el DOM
+        // Necesitamos reiniciar los contadores en el DOM
         generalStatsContainer.querySelectorAll('.counter').forEach(counterEl => {
             counterEl.textContent = '0';
         });
         // IMPORTANTE: También resetear los valores internos si estás manteniendo un estado en `customStats`
+        // Esto solo afecta la sesión actual, no el localStorage de la definición de stats.
         customStats.forEach(stat => {
             stat.teamA = 0;
             stat.teamB = 0;
         });
-        // No guardamos customStats en localStorage aquí para que no se resetee para futuras sesiones,
-        // a menos que quieras que las estadísticas predeterminadas vuelvan a 0 cada vez que reinicias todo.
-        // Si quieres que los valores de las stats personalizadas se resetee y se guarde ese estado:
-        // localStorage.setItem('customStats', JSON.stringify(customStats));
     }
 });
 
