@@ -35,7 +35,7 @@ const toggleMatchTimerBtn = document.getElementById('toggleMatchTimer');
 const resetMatchTimerBtn = document.getElementById('resetMatchTimer');
 let matchTimerInterval;
 let matchTimeElapsed = 0;
-let isMatchTimerRunning = false;
+let isMatchTimerRunning = false; // Estado para saber si el tiempo de partido está corriendo
 
 // Posesión de Balón
 const possessionTimerAEl = document.getElementById('possessionTimerA');
@@ -84,7 +84,6 @@ function updateTeamLabels() {
     if (possessionTeamBEl) possessionTeamBEl.textContent = teamBNameInput.value || "Equipo B";
 }
 
-// ============ MODIFICACIÓN CLAVE: ESTADÍSTICAS PREDETERMINADAS ============
 // Cargar estadísticas personalizadas desde localStorage, o usar las predeterminadas
 let customStats = JSON.parse(localStorage.getItem('customStats'));
 
@@ -103,7 +102,6 @@ if (!customStats || customStats.length === 0) {
     // Guardar las predeterminadas en localStorage para futuras visitas
     localStorage.setItem('customStats', JSON.stringify(customStats));
 }
-// =========================================================================
 
 // MODIFICACIÓN: renderCustomStats para la nueva estructura compacta y vertical de botones
 function renderCustomStats() {
@@ -139,7 +137,7 @@ function renderCustomStats() {
     updateCustomStatCounters(); // Llamar para mostrar los valores iniciales/actuales
 }
 
-// NUEVA FUNCIÓN: Para actualizar solo los contadores de las stats personalizadas
+// Función para actualizar solo los contadores de las stats personalizadas
 function updateCustomStatCounters() {
     customStats.forEach(stat => {
         const scoreDisplayEl = generalStatsContainer.querySelector(`.score-display[data-team-main-counter="${stat.id}"]`);
@@ -155,7 +153,7 @@ function addStatCardEventListeners() {
     generalStatsContainer.addEventListener('click', handleCustomStatControls);
 }
 
-// MODIFICACIÓN: handleCustomStatControls para la nueva estructura
+// handleCustomStatControls para la nueva estructura
 function handleCustomStatControls(e) {
     const target = e.target;
     if (target.classList.contains('plus-btn') || target.classList.contains('minus-btn') || target.classList.contains('reset-btn')) {
@@ -249,6 +247,10 @@ toggleMatchTimerBtn.addEventListener('click', () => {
     if (isMatchTimerRunning) {
         clearInterval(matchTimerInterval);
         toggleMatchTimerBtn.textContent = '▶️ Reanudar';
+        // PAUSAR TAMBIÉN LA POSESIÓN SI EL PARTIDO ESTÁ PAUSADO
+        if (currentPossession) { // Si hay posesión activa al pausar el partido
+            togglePossession(currentPossession); // Llamar para detener la posesión
+        }
     } else {
         matchTimerInterval = setInterval(() => {
             matchTimeElapsed++;
@@ -265,6 +267,8 @@ resetMatchTimerBtn.addEventListener('click', () => {
     matchTimerEl.textContent = formatTime(matchTimeElapsed);
     toggleMatchTimerBtn.textContent = '▶️ Iniciar';
     isMatchTimerRunning = false;
+    // Detener y reiniciar la posesión si se reinicia el partido
+    resetPossession();
 });
 
 // Posesión de Balón
@@ -273,6 +277,12 @@ togglePossessionBBtn.addEventListener('click', () => togglePossession('B'));
 resetPossessionBtn.addEventListener('click', resetPossession);
 
 function togglePossession(team) {
+    // AHORA: SOLO INICIAR/CAMBIAR POSESIÓN SI EL TIEMPO DE PARTIDO ESTÁ CORRIENDO
+    if (!isMatchTimerRunning && currentPossession === null) { // Si el temporizador de partido no está corriendo y no hay posesión activa
+        alert('Para iniciar la posesión, primero debes iniciar el tiempo de partido.');
+        return;
+    }
+
     // Detener ambos intervalos primero
     clearInterval(possessionIntervalA);
     clearInterval(possessionIntervalB);
@@ -467,7 +477,7 @@ function loadMatchesHistory() {
     });
 }
 
-// MODIFICACIÓN: loadSelectedMatch para la nueva estructura
+// loadSelectedMatch para la nueva estructura
 function loadSelectedMatch(id) {
     const savedMatches = JSON.parse(localStorage.getItem('savedMatches')) || [];
     const matchToLoad = savedMatches.find(match => match.id === id);
