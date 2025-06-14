@@ -1,662 +1,339 @@
+/* Asegúrate de que los estilos básicos estén presentes, por ejemplo: */
+
 body {
     font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #f4f7f6;
+    margin: 20px;
+    background-color: #f4f4f4;
     color: #333;
-    display: flex;
-    justify-content: center;
-    align-items: flex-start; /* Alinea arriba si el contenido es corto */
-    min-height: 100vh;
-    padding: 20px;
-    box-sizing: border-box;
 }
 
-.main-app-container {
-    background-color: #ffffff;
-    border-radius: 12px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-    width: 100%;
-    max-width: 1200px;
-    padding: 25px;
-    box-sizing: border-box;
-}
-
-.app-header {
-    text-align: center;
-    margin-bottom: 30px;
-    border-bottom: 1px solid #eee;
-    padding-bottom: 20px;
-}
-
-.app-header h1 {
-    color: #007bff;
-    margin-bottom: 15px;
-    font-size: 2.2em;
-}
-
-.config-section {
-    display: flex;
-    justify-content: center;
-    gap: 30px;
-    flex-wrap: wrap;
-    margin-top: 20px;
-}
-
-.team-name-group {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    min-width: 150px;
-}
-
-.team-name-group label {
-    font-weight: bold;
-    margin-bottom: 8px;
-    color: #555;
-}
-
-.team-name-group input[type="text"] {
-    padding: 8px 12px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    font-size: 1em;
-    width: 100%;
-    max-width: 200px;
-    text-align: center;
-}
-
-.match-dashboard {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 25px;
-    justify-content: center;
-    margin-top: 30px;
-}
-
-.left-column, .right-column {
-    flex: 1;
-    min-width: 300px; /* Asegura un ancho mínimo en pantallas pequeñas */
-    max-width: 550px; /* Limita el ancho en pantallas grandes para no estirarse demasiado */
-}
-
-.card {
-    background-color: #f9f9f9;
-    border: 1px solid #e0e0e0;
+.container {
+    max-width: 900px;
+    margin: 0 auto;
+    background-color: #fff;
+    padding: 30px;
     border-radius: 10px;
-    padding: 20px;
-    margin-bottom: 20px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
-.card h2 {
-    color: #007bff;
-    margin-top: 0;
-    margin-bottom: 15px;
-    font-size: 1.6em;
+h1, h2 {
     text-align: center;
+    color: #333;
+    margin-bottom: 20px;
 }
 
-/* Score Section */
-.score-section .stat-group {
+hr {
+    border: none;
+    border-top: 1px solid #eee;
+    margin: 30px 0;
+}
+
+.team-names-manager {
     display: flex;
     justify-content: space-around;
-    gap: 20px;
+    align-items: center;
+    margin-bottom: 20px;
     flex-wrap: wrap;
 }
 
-.team-score {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    background-color: #eaf5ff;
-    padding: 15px;
-    border-radius: 8px;
-    flex: 1;
-    min-width: 120px;
-}
-
-.team-score .counter {
-    font-size: 3.5em;
+.team-names-manager label {
     font-weight: bold;
-    color: #333;
-    margin-bottom: 5px;
-    width: 100%;
-    text-align: center;
+    margin-right: 10px;
 }
 
-.team-score .team-label {
-    font-size: 1.1em;
-    font-weight: bold;
-    color: #555;
-    margin-bottom: 10px;
-}
-
-.team-score .controls {
-    display: flex;
-    gap: 10px;
-    margin-top: 10px;
-}
-
-.team-score .controls button,
-.match-timer-controls button,
-.possession-controls button,
-.add-custom-stat-integrated button,
-.reset-all-button {
-    padding: 10px 15px;
-    border: none;
-    border-radius: 8px;
+.team-names-manager input[type="text"] {
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
     font-size: 1em;
-    cursor: pointer;
-    transition: background-color 0.2s ease, transform 0.1s ease;
-    white-space: nowrap;
+    margin-bottom: 10px; /* Para pantallas pequeñas */
 }
 
-/* Common button styles */
-button {
+/* Template Manager */
+.template-manager {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.template-manager label {
+    font-weight: bold;
+}
+
+.template-manager input[type="text"],
+.template-manager select {
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1em;
+    flex-grow: 1;
+    max-width: 200px;
+}
+
+.template-manager button {
+    padding: 8px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.9em;
+    transition: background-color 0.2s ease;
     background-color: #007bff;
     color: white;
 }
 
-button:hover {
+.template-manager button:hover {
     background-color: #0056b3;
-    transform: translateY(-1px);
 }
 
-.reset-btn {
-    background-color: #6c757d; /* Gris para reiniciar */
+.template-manager button#deleteTemplateBtn {
+    background-color: #dc3545;
 }
-
-.reset-btn:hover {
-    background-color: #5a6268;
-}
-
-.minus-btn {
-    background-color: #dc3545; /* Rojo para restar */
-}
-
-.minus-btn:hover {
+.template-manager button#deleteTemplateBtn:hover {
     background-color: #c82333;
 }
 
-.plus-btn {
-    background-color: #28a745; /* Verde para sumar */
+
+/* General Stats Section */
+.stats-section {
+    margin-bottom: 30px;
 }
 
-.plus-btn:hover {
-    background-color: #218838;
+.stat-group {
+    display: flex;
+    justify-content: space-around;
+    gap: 20px;
 }
 
-/* Match Timer Section */
-.match-timer-section {
+.stat-group .team {
+    text-align: center;
+    flex-basis: 48%; /* Para que ocupen casi la mitad cada uno */
+    background-color: #e9ecef;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.team-label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: #555;
+}
+
+/* Stat Row (PARA ESTADÍSTICAS DEL PARTIDO) */
+.stat-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 15px;
+    padding: 10px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.stat-row h3 {
+    margin: 0;
+    flex-basis: 30%; /* Ajustado para dar más espacio a los contadores */
+    text-align: left;
+    font-size: 1.1em;
+    min-width: 120px; /* Asegura un ancho mínimo para el nombre de la estadística */
+}
+
+/* Contenedor para los números y controles de cada equipo dentro de la fila de estadística */
+.stat-team-container {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    flex-basis: 33%; /* Ocupa una parte equitativa de la fila */
+    justify-content: flex-end;
+}
+
+.counter {
+    font-size: 2em;
+    font-weight: bold;
+    color: #e74c3c;
+    min-width: 40px;
     text-align: center;
 }
 
-.match-timer-section .timer {
-    font-size: 3em;
-    font-weight: bold;
-    color: #333;
-    display: block;
-    margin-bottom: 20px;
-    background-color: #eaf5ff;
-    padding: 10px;
-    border-radius: 8px;
+.controls {
+    display: flex;
+    gap: 5px;
 }
 
-.match-timer-controls {
-    display: flex;
-    justify-content: center;
-    gap: 15px;
+.controls button,
+.possession-controls button {
+    padding: 8px 12px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.9em;
+    transition: background-color 0.2s ease;
 }
+
+.controls .reset-btn { background-color: #ffc107; color: #333; }
+.controls .reset-btn:hover { background-color: #e0a800; }
+.controls .minus-btn { background-color: #dc3545; color: white; }
+.controls .minus-btn:hover { background-color: #c82333; }
+.controls .plus-btn { background-color: #28a745; color: white; }
+.controls .plus-btn:hover { background-color: #218838; }
+
+
+/* Custom Stats Management (Add New Only) */
+.add-custom-stat {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+#newStatName {
+    flex-grow: 1;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 1em;
+}
+
+#addStatBtn {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.9em;
+    transition: background-color 0.2s ease;
+}
+
+#addStatBtn:hover {
+    background-color: #0056b3;
+}
+
 
 /* Possession Section */
 .possession-section {
     text-align: center;
+    margin-bottom: 30px;
 }
 
-.possession-timers-container {
+.possession-section h3 {
+    margin-bottom: 10px;
+}
+
+.timers {
     display: flex;
     justify-content: space-around;
-    margin-bottom: 15px;
+    gap: 20px;
+    margin-bottom: 20px;
 }
 
-.possession-timers-container .timer-group {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+.timer-group {
+    background-color: #e9ecef;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    flex-basis: 48%;
 }
 
-.possession-timers-container .timer-group span {
-    font-size: 1.1em;
+.timer {
+    font-size: 2.5em;
     font-weight: bold;
+    color: #007bff;
+    display: block;
     margin-bottom: 5px;
 }
 
-.possession-timers-container .timer {
-    font-size: 1.8em;
+.percentage {
+    font-size: 1.2em;
     font-weight: bold;
-    color: #333;
-    background-color: #eaf5ff;
-    padding: 5px 10px;
-    border-radius: 5px;
-}
-
-.possession-bar-container {
-    width: 90%;
-    height: 30px;
-    background-color: #dc3545; /* Color por defecto para Equipo B */
-    border-radius: 5px;
-    margin: 20px auto;
-    position: relative;
-    overflow: hidden;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-
-.possession-bar-fill {
-    height: 100%;
-    background-color: #007bff; /* Color para Equipo A */
-    width: 50%; /* Default */
-    border-radius: 5px;
-    transition: width 0.3s ease-in-out;
-    position: absolute;
-    left: 0;
-}
-
-.possession-percentage-text {
-    position: absolute;
-    font-weight: bold;
-    color: white; /* Color del texto sobre la barra */
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.4);
-    z-index: 1; /* Asegura que el texto esté sobre las barras */
-}
-
-.left-percent {
-    left: 5px;
-}
-
-.right-percent {
-    right: 5px;
+    color: #555;
 }
 
 .possession-controls {
     display: flex;
     justify-content: center;
     gap: 10px;
-    margin-top: 15px;
+    flex-wrap: wrap;
 }
 
 .possession-controls button {
-    flex: 1;
-    max-width: 150px;
-    background-color: #007bff;
+    background-color: #6c757d;
+    color: white;
+}
+
+.possession-controls button:hover {
+    background-color: #5a6268;
 }
 
 .possession-controls button.active {
-    background-color: #28a745; /* Verde cuando está activa la posesión */
-    border: 2px solid #1a7e32;
-    transform: scale(1.05);
+    background-color: #007bff;
+    color: white;
+    box-shadow: 0 0 8px rgba(0, 123, 255, 0.5);
 }
-
-/* Custom Stats Section */
-.custom-stats-management {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.add-custom-stat-integrated {
-    display: flex;
-    gap: 10px;
-    width: 100%;
-    max-width: 400px;
-    margin-bottom: 20px;
-}
-
-.add-custom-stat-integrated input {
-    flex-grow: 1;
-    padding: 10px 15px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    font-size: 1em;
-}
-
-/* Ajuste clave: Grilla de 4 columnas por defecto para estadísticas */
-.custom-stats-grid {
-    width: 100%;
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Más columnas, menor min-width */
-    gap: 15px;
-}
-
-/* Ajuste clave: Hacer las tarjetas más compactas */
-.stat-card {
-    background-color: #eaf5ff;
-    border: 1px solid #d0e8ff;
-    border-radius: 10px;
-    padding: 10px; /* Reducir padding */
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    align-items: center;
-    box-sizing: border-box; /* Asegura que padding no aumente el tamaño total */
-}
-
-.stat-card h3 {
-    margin-top: 0;
-    margin-bottom: 8px; /* Reducir margen */
-    color: #0056b3;
-    font-size: 1.1em; /* Reducir tamaño de fuente del título */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 5px; /* Reducir espacio entre elementos del h3 */
-    flex-wrap: wrap;
-    width: 100%; /* Ocupar todo el ancho para centrar elementos */
-}
-
-.stat-card h3 .stat-title {
-    flex-grow: 1;
-    text-align: center; /* Centrar el título */
-}
-
-.stat-card h3 button {
-    padding: 4px 8px; /* Reducir padding de los botones de edición/borrado/detalles */
-    font-size: 0.7em; /* Reducir tamaño de fuente de los botones */
-    border-radius: 4px;
-    margin: 0 2px; /* Pequeño margen para separarlos un poco */
-}
-
-.stat-card h3 .edit-stat-btn {
-    background-color: #ffc107;
-    color: #333;
-}
-.stat-card h3 .edit-stat-btn:hover {
-    background-color: #e0a800;
-}
-
-.stat-card h3 .delete-stat-btn {
-    background-color: #dc3545;
-}
-.stat-card h3 .delete-stat-btn:hover {
-    background-color: #c82333;
-}
-
-.stat-card h3 .view-details-btn {
-    background-color: #17a2b8;
-}
-.stat-card h3 .view-details-btn:hover {
-    background-color: #138496;
-}
-
-/* MODIFICACIONES CLAVE: Para la estructura interna de la tarjeta */
-.stat-controls-compact {
-    display: flex;
-    flex-direction: column; /* Alinea los elementos verticalmente: Equipo A, 0-0, Equipo B */
-    align-items: center;
-    gap: 5px; /* Espacio entre los bloques */
-    width: 100%;
-}
-
-.stat-controls-compact .team-display-row { /* Contenedor para el nombre, contador y botones de cada equipo */
-    display: flex;
-    flex-direction: column; /* Apila el nombre y el número */
-    align-items: center;
-    margin-bottom: 5px; /* Espacio entre el bloque del equipo y el siguiente elemento */
-    width: 100%; /* Ocupa el 100% para centrar */
-}
-
-.stat-controls-compact .team-name-small { /* Para Tarragona / Camp Clar */
-    font-weight: bold;
-    font-size: 0.9em; /* Más pequeño */
-    color: #555;
-    margin-bottom: 2px; /* Espacio antes del contador */
-}
-
-.stat-controls-compact .score-value-small { /* Para el 0 de cada equipo */
-    font-size: 2em; /* Tamaño visible */
-    font-weight: bold;
-    color: #007bff;
-    line-height: 1; /* Ajustar línea para que no añada mucho espacio */
-    margin-bottom: 5px; /* Espacio antes de los botones */
-}
-
-.stat-controls-compact .team-buttons { /* Contenedor para los botones 🔄 - + */
-    display: flex;
-    gap: 5px; /* Reducir espacio entre botones */
-    justify-content: center; /* Centrar los botones */
-}
-
-.stat-controls-compact .team-buttons button {
-    padding: 6px 10px; /* Botones más pequeños */
-    font-size: 0.8em;
-    border-radius: 6px;
-    white-space: nowrap; /* Evita que el texto del botón se rompa */
-}
-
-.score-display {
-    font-size: 2.2em; /* Tamaño para el 0-0 central */
-    font-weight: bold;
-    color: #333;
-    margin: 8px 0; /* Margen para separarlo de los controles de equipo */
-}
-
 
 /* Reset All Button */
-.reset-all-button {
+#resetAll {
     display: block;
     width: fit-content;
-    margin: 30px auto 20px auto;
-    padding: 15px 30px;
+    margin: 20px auto;
+    padding: 12px 25px;
+    background-color: #6c757d;
+    color: white;
+    border: none;
+    border-radius: 5px;
     font-size: 1.1em;
-    background-color: #ffc107;
-    color: #333;
-    border: 2px solid #e0a800;
-    border-radius: 10px;
     cursor: pointer;
-    transition: background-color 0.2s ease, transform 0.1s ease;
+    transition: background-color 0.2s ease;
 }
 
-.reset-all-button:hover {
-    background-color: #e0a800;
-    transform: translateY(-2px);
+#resetAll:hover {
+    background-color: #5a6268;
 }
 
-.section-divider {
-    border: 0;
-    height: 1px;
-    background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0));
-    margin: 40px 0;
-}
-
-/* ==================================== */
-/* ESTILOS DEL MODAL */
-/* ==================================== */
-
-.modal {
-    display: none; /* Oculto por defecto */
-    position: fixed; /* Fijo en la pantalla */
-    z-index: 1000; /* Por encima de todo lo demás */
-    left: 0;
-    top: 0;
-    width: 100%; /* Cubre toda la pantalla */
-    height: 100%;
-    overflow: auto; /* Habilita el scroll si el contenido es demasiado grande */
-    background-color: rgba(0, 0, 0, 0.7); /* Fondo semi-transparente */
-    display: flex; /* Para centrar el contenido */
-    justify-content: center;
-    align-items: center;
-    padding: 20px; /* Espacio alrededor del modal */
-    box-sizing: border-box;
-}
-
-.modal-content {
-    background-color: #fefefe;
-    margin: auto; /* Centra el contenido */
-    padding: 25px;
-    border: 1px solid #888;
-    border-radius: 10px;
-    width: 90%; /* Ancho máximo del modal */
-    max-width: 600px; /* Ancho máximo absoluto */
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-    position: relative; /* Para posicionar el botón de cerrar */
-    max-height: 90vh; /* Altura máxima para permitir scroll */
-    overflow-y: auto; /* Habilita scroll para el contenido del modal */
-}
-
-.modal-content h2 {
-    color: #007bff;
-    margin-top: 0;
-    margin-bottom: 20px;
-    text-align: center;
-    font-size: 1.8em;
-}
-
-.close-button {
-    color: #aaa;
-    float: right; /* Alinea a la derecha */
-    font-size: 28px;
-    font-weight: bold;
-    position: absolute;
-    top: 10px;
-    right: 15px;
-    cursor: pointer;
-}
-
-.close-button:hover,
-.close-button:focus {
-    color: black;
-    text-decoration: none;
-    cursor: pointer;
-}
-
-.event-list {
-    list-style: none; /* Sin viñetas */
-    padding: 0;
-    margin: 0;
-    max-height: 400px; /* Altura máxima para la lista de eventos */
-    overflow-y: auto; /* Scroll si hay muchos eventos */
-    border: 1px solid #eee;
-    border-radius: 8px;
-    background-color: #fcfcfc;
-}
-
-.event-list li {
-    padding: 10px 15px;
-    border-bottom: 1px solid #eee;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 1.1em;
-}
-
-.event-list li:last-child {
-    border-bottom: none; /* Eliminar borde inferior del último elemento */
-}
-
-.event-list li span.event-time {
-    font-weight: bold;
-    color: #555;
-    min-width: 80px; /* Asegura espacio para la hora */
-}
-
-.event-list li span.event-team {
-    font-weight: bold;
-    flex-grow: 1; /* Permite que el equipo ocupe el resto del espacio */
-    text-align: right;
-}
-
-.event-list li.team-A {
-    color: #007bff;
-}
-
-.event-list li.team-B {
-    color: #dc3545;
-}
-
-/* Media Queries para responsividad */
+/* Media Queries for Responsiveness */
 @media (max-width: 768px) {
-    .match-dashboard {
+    .team-names-manager,
+    .template-manager,
+    .stat-group,
+    .possession-controls {
         flex-direction: column;
         align-items: center;
     }
 
-    .left-column, .right-column {
-        min-width: unset;
+    .team-names-manager input[type="text"],
+    .template-manager input[type="text"],
+    .template-manager select {
         width: 100%;
-        max-width: 500px; /* Ajuste para móviles */
+        max-width: none;
     }
 
-    .score-section .stat-group {
-        flex-direction: column;
-        gap: 15px;
-    }
-
-    .team-score .counter {
-        font-size: 3em;
-    }
-
-    .match-timer-section .timer {
-        font-size: 2.5em;
-    }
-
-    .possession-timers-container .timer {
-        font-size: 1.5em;
-    }
-
-    .stat-card h3 {
-        flex-direction: column; /* Botones de edición/borrado se apilan */
-        gap: 5px;
-    }
-
-    .stat-card h3 .stat-title {
-        margin-bottom: 5px;
-    }
-
-    /* Ajuste para móviles: Controles de estadísticas personalizadas */
-    .stat-controls-compact {
-        flex-direction: column;
-    }
-
-    .stat-controls-compact .team-display-row {
-        flex-direction: column; /* Asegura que el nombre y contador se apilen */
-    }
-
-    .stat-controls-compact .team-buttons {
-        flex-direction: row; /* Asegura que los botones esten en fila */
-        justify-content: center;
-        gap: 8px;
-    }
-
-    .score-display {
-        margin: 10px 0;
-    }
-
-    .modal-content {
-        width: 95%;
-        padding: 20px;
-    }
-
-    .event-list li {
+    .stat-row {
         flex-direction: column;
         align-items: flex-start;
-        gap: 5px;
     }
 
-    .event-list li span.event-team {
-        text-align: left;
+    .stat-row h3 {
+        width: 100%;
+        text-align: center;
+        margin-bottom: 10px;
     }
 
-    /* Ajuste para grid en pantallas más pequeñas */
-    .custom-stats-grid {
-        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); /* Incluso más compacto en móviles */
+    .stat-team-container {
+        width: 100%;
+        justify-content: center;
+        margin-bottom: 10px;
     }
-}
 
-@media (max-width: 480px) {
-    .custom-stats-grid {
-        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); /* Aún más compacto para teléfonos pequeños */
+    .timers {
+        flex-direction: column;
+    }
+
+    .timer-group {
+        width: 100%;
     }
 }
