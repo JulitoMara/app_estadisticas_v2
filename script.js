@@ -45,7 +45,7 @@ const togglePossessionBBtn = document.getElementById('togglePossessionB');
 const resetPossessionBtn = document.getElementById('resetPossession');
 const possessionBarA = document.getElementById('possessionBarA');
 const possessionPercentA = document.getElementById('possessionPercentA');
-const possessionPercentB = document.getElementById('possessionPercentB');
+const possessionPercentB = document = document.getElementById('possessionPercentB');
 
 let possessionIntervalA, possessionIntervalB;
 let possessionTimeA = 0;
@@ -59,6 +59,13 @@ const generalStatsContainer = document.getElementById('generalStatsContainer');
 
 // Reiniciar Todo
 const resetAllBtn = document.getElementById('resetAll');
+
+// SELECTORES DEL MODAL
+const statDetailsModal = document.getElementById('statDetailsModal');
+const modalStatTitle = document.getElementById('modalStatTitle');
+const modalEventList = document.getElementById('modalEventList');
+const closeButton = document.querySelector('.modal .close-button');
+
 
 // ====== FUNCIONES GENERALES =======
 
@@ -80,8 +87,6 @@ function updateTeamLabels() {
     if (possessionTeamBEl) possessionTeamBEl.textContent = teamBNameInput.value || "Equipo B";
 }
 
-// MODIFICACIÓN CLAVE: Nueva estructura para customStats
-// Ahora cada estadística tendrá un array 'events' que almacenará { timestamp, team }
 let customStats = JSON.parse(localStorage.getItem('customStats'));
 
 if (!customStats || customStats.length === 0) {
@@ -97,11 +102,9 @@ if (!customStats || customStats.length === 0) {
     ];
     localStorage.setItem('customStats', JSON.stringify(customStats));
 }
-// FIN MODIFICACIÓN CLAVE
 
-// Renderiza las tarjetas de estadísticas personalizadas
 function renderCustomStats() {
-    generalStatsContainer.innerHTML = ''; // Limpiar el contenedor
+    generalStatsContainer.innerHTML = '';
     customStats.forEach(stat => {
         const statCard = document.createElement('div');
         statCard.classList.add('stat-card');
@@ -110,6 +113,7 @@ function renderCustomStats() {
         statCard.innerHTML = `
             <h3>
                 <span class="stat-title">${stat.name}</span>
+                <button class="view-details-btn" data-id="${stat.id}">📋</button>
                 <button class="edit-stat-btn" data-id="${stat.id}">✏️</button>
                 <button class="delete-stat-btn" data-id="${stat.id}">🗑️</button>
             </h3>
@@ -130,10 +134,9 @@ function renderCustomStats() {
         generalStatsContainer.appendChild(statCard);
     });
     addStatCardEventListeners();
-    updateCustomStatCounters(); // Llamar para mostrar los valores iniciales/actuales
+    updateCustomStatCounters();
 }
 
-// MODIFICACIÓN: Actualizar contadores ahora cuenta los eventos en el array 'events'
 function updateCustomStatCounters() {
     customStats.forEach(stat => {
         const scoreDisplayEl = generalStatsContainer.querySelector(`.score-display[data-team-main-counter="${stat.id}"]`);
@@ -144,14 +147,12 @@ function updateCustomStatCounters() {
         }
     });
 }
-// FIN MODIFICACIÓN
 
 function addStatCardEventListeners() {
     generalStatsContainer.removeEventListener('click', handleCustomStatControls);
     generalStatsContainer.addEventListener('click', handleCustomStatControls);
 }
 
-// MODIFICACIÓN CLAVE: handleCustomStatControls para gestionar el array 'events'
 function handleCustomStatControls(e) {
     const target = e.target;
     const isControlBtn = target.classList.contains('plus-btn') || target.classList.contains('minus-btn') || target.classList.contains('reset-btn');
@@ -164,19 +165,16 @@ function handleCustomStatControls(e) {
         if (!statToUpdate) return;
 
         if (target.classList.contains('plus-btn')) {
-            // Añadir un nuevo evento con el timestamp actual del partido
             statToUpdate.events.push({
                 timestamp: matchTimeElapsed,
                 team: team
             });
         } else if (target.classList.contains('minus-btn')) {
-            // Eliminar el último evento de ese equipo
             const indexToRemove = statToUpdate.events.findIndex(event => event.team === team);
             if (indexToRemove !== -1) {
                 statToUpdate.events.splice(indexToRemove, 1);
             }
         } else if (target.classList.contains('reset-btn')) {
-            // Eliminar todos los eventos de ese equipo
             statToUpdate.events = statToUpdate.events.filter(event => event.team !== team);
         }
         localStorage.setItem('customStats', JSON.stringify(customStats));
@@ -207,17 +205,62 @@ function handleCustomStatControls(e) {
                 renderCustomStats();
             }
         }
+    } else if (target.classList.contains('view-details-btn')) {
+        const statId = target.dataset.id;
+        showStatDetailsModal(statId);
     }
 }
-// FIN MODIFICACIÓN CLAVE
+
+
+// ====== FUNCIONES DEL MODAL =======
+
+function showStatDetailsModal(statId) {
+    const stat = customStats.find(s => s.id === statId);
+    if (!stat) return;
+
+    modalStatTitle.textContent = `Detalles de ${stat.name}`;
+    modalEventList.innerHTML = ''; // Limpiar lista anterior
+
+    if (stat.events.length === 0) {
+        const li = document.createElement('li');
+        li.textContent = 'No hay eventos registrados para esta estadística.';
+        modalEventList.appendChild(li);
+    } else {
+        // Ordenar los eventos por timestamp de forma ascendente
+        const sortedEvents = [...stat.events].sort((a, b) => a.timestamp - b.timestamp);
+
+        sortedEvents.forEach(event => {
+            const li = document.createElement('li');
+            li.classList.add(`team-${event.team}`); // Para aplicar estilos de color por equipo
+            li.innerHTML = `
+                <span class="event-time">${formatTime(event.timestamp)}</span>
+                <span class="event-team">${event.team === 'A' ? (teamANameInput.value || 'Equipo A') : (teamBNameInput.value || 'Equipo B')}</span>
+            `;
+            modalEventList.appendChild(li);
+        });
+    }
+
+    statDetailsModal.style.display = 'flex'; // Mostrar el modal
+}
+
+// Cerrar el modal al hacer clic en la X
+closeButton.addEventListener('click', () => {
+    statDetailsModal.style.display = 'none';
+});
+
+// Cerrar el modal al hacer clic fuera del contenido del modal
+window.addEventListener('click', (event) => {
+    if (event.target === statDetailsModal) {
+        statDetailsModal.style.display = 'none';
+    }
+});
 
 
 // ====== INICIALIZACIÓN =======
 document.addEventListener('DOMContentLoaded', () => {
     updateTeamLabels();
-    renderCustomStats(); // Cargar y renderizar las estadísticas personalizadas existentes
+    renderCustomStats();
 
-    // Registrar Service Worker
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
             navigator.serviceWorker.register('/service-worker.js')
@@ -340,7 +383,6 @@ function updatePossessionButtons() {
     }
 }
 
-
 // Estadísticas Personalizadas: Añadir nueva estadística
 addStatBtn.addEventListener('click', () => {
     const newStatName = newStatNameInput.value.trim();
@@ -351,38 +393,31 @@ addStatBtn.addEventListener('click', () => {
             return;
         }
 
-        // MODIFICACIÓN: Al añadir una nueva estadística, su array 'events' está vacío
         customStats.push({ id: newId, name: newStatName, events: [] });
         localStorage.setItem('customStats', JSON.stringify(customStats));
         newStatNameInput.value = '';
         renderCustomStats();
     }
 });
-// FIN MODIFICACIÓN
 
 // Reiniciar Todas las Estadísticas
 resetAllBtn.addEventListener('click', () => {
     if (confirm('¿Estás seguro de que quieres reiniciar TODAS las estadísticas del partido actual?')) {
-        // Marcador
         teamAGoalsEl.textContent = '0';
         teamBGoalsEl.textContent = '0';
 
-        // Tiempo de Partido
         clearInterval(matchTimerInterval);
         matchTimeElapsed = 0;
         matchTimerEl.textContent = formatTime(matchTimeElapsed);
         toggleMatchTimerBtn.textContent = '▶️ Iniciar';
         isMatchTimerRunning = false;
 
-        // Posesión de Balón
         resetPossession();
 
-        // MODIFICACIÓN: Estadísticas Personalizadas - Reiniciar los arrays 'events'
         customStats.forEach(stat => {
-            stat.events = []; // Vaciar el array de eventos
+            stat.events = [];
         });
         localStorage.setItem('customStats', JSON.stringify(customStats));
-        updateCustomStatCounters(); // Actualizar el DOM con los 0s
+        updateCustomStatCounters();
     }
 });
-// FIN MODIFICACIÓN
