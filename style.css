@@ -350,7 +350,7 @@ button:active {
 .custom-stats-grid {
     display: grid;
     /* Ajuste para 3 o 4 columnas en pantallas grandes, 2 en medianas, 1 en pequeñas */
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Ancho mínimo ajustado */
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); /* Ancho mínimo ajustado para el nuevo diseño */
     gap: var(--spacing-sm); /* Espacio más compacto entre tarjetas de estadísticas */
 }
 
@@ -362,7 +362,6 @@ button:active {
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
     display: flex;
     flex-direction: column;
-    /* justify-content: space-between;  Para distribuir el contenido si es necesario */
 }
 
 /* Título y botones de editar/eliminar */
@@ -373,12 +372,12 @@ button:active {
     margin-bottom: var(--spacing-sm);
     flex-wrap: nowrap;
     line-height: 1.2;
-    padding-bottom: var(--spacing-xs); /* Pequeño padding debajo del título */
-    border-bottom: 1px solid var(--border-color); /* Separador visual */
+    padding-bottom: var(--spacing-xs);
+    border-bottom: 1px solid var(--border-color);
 }
 
 .stat-card .stat-title {
-    font-size: 0.95rem; /* Nombre de estadística ligeramente más pequeño */
+    font-size: 0.95rem;
     font-weight: bold;
     flex-grow: 1;
     margin-right: var(--spacing-xs);
@@ -400,39 +399,43 @@ button:active {
 .stat-card h3 .edit-stat-btn { background-color: var(--edit-color); }
 .stat-card h3 .delete-stat-btn { background-color: var(--negative-color); }
 
-/* Controles de estadísticas dentro de la tarjeta (nuevo diseño compacto) */
-.stat-card .team-stat-compact {
+/* Controles de estadísticas dentro de la tarjeta (NUEVO DISEÑO: Botones verticales) */
+.stat-card .stat-controls-compact {
     display: flex;
-    align-items: center;
-    justify-content: space-between; /* Espacia los elementos */
-    gap: var(--spacing-xs); /* Espacio entre los grupos de controles y el resultado */
-    margin-top: var(--spacing-sm); /* Margen para separarlo del título */
+    align-items: center; /* Alinea los elementos verticalmente */
+    justify-content: space-between; /* Espacia los grupos de botones y el contador */
+    margin-top: var(--spacing-sm);
+    flex-grow: 1; /* Permite que el contenedor de controles ocupe el espacio restante */
 }
 
-.stat-card .team-stat-compact .controls {
-    display: flex; /* Para los botones de + y - */
-    gap: 2px; /* Espacio mínimo entre los botones */
-    margin: 0; /* Eliminar márgenes por defecto */
+.stat-card .stat-controls-compact .team-controls {
+    display: flex;
+    flex-direction: column; /* Apila los botones verticalmente */
+    gap: 3px; /* Espacio entre botones apilados */
+    margin: 0;
+    align-items: center; /* Centra los botones verticalmente si el espacio lo permite */
 }
 
-.stat-card .team-stat-compact .controls button {
-    width: 30px; /* Botones más pequeños para las stats */
-    height: 30px;
-    font-size: 0.9rem;
+.stat-card .stat-controls-compact .team-controls button {
+    width: 38px; /* Ancho de los botones apilados */
+    height: 38px; /* Alto de los botones apilados */
+    font-size: 1rem;
     border-radius: 4px; /* Ligeramente cuadrados */
     padding: 0;
 }
+/* Colores específicos para los botones apilados */
+.stat-card .stat-controls-compact .team-controls .plus-btn { background-color: var(--positive-color); }
+.stat-card .stat-controls-compact .team-controls .minus-btn { background-color: var(--negative-color); }
+.stat-card .stat-controls-compact .team-controls .reset-btn { background-color: var(--reset-color); color: var(--text-dark); }
 
-.stat-card .team-stat-compact .score-display {
-    font-size: 1.2rem; /* Tamaño para el número de la estadística */
+
+.stat-card .stat-controls-compact .score-display {
+    font-size: 1.5rem; /* Tamaño para el número de la estadística */
     font-weight: bold;
     color: var(--primary-color);
     text-align: center;
-    min-width: 40px; /* Asegura espacio para números de dos dígitos */
-}
-/* Ocultamos los spans de "Equipo A" y "Equipo B" debajo de cada contador en las stats compactas */
-.stat-card .team-stat-compact .team-label-hidden {
-    display: none;
+    flex-shrink: 0; /* No permite que el score-display se encoja */
+    width: 70px; /* Ancho fijo para el contador "0 - 0" */
 }
 
 
@@ -515,7 +518,21 @@ button:active {
         width: 100%;
     }
     .custom-stats-grid {
-        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); /* Un poco más de espacio si solo hay 2 columnas */
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Ajuste para medianas */
+    }
+    .controls button { /* Marcador */
+        width: 38px;
+        height: 38px;
+        font-size: 1rem;
+    }
+    .stat-card .stat-controls-compact .team-controls button {
+        width: 35px; /* Un poco más pequeños */
+        height: 35px;
+        font-size: 0.9rem;
+    }
+    .stat-card .stat-controls-compact .score-display {
+        font-size: 1.3rem;
+        width: 60px; /* Reducir ancho */
     }
 }
 
@@ -526,25 +543,21 @@ button:active {
     h1 { font-size: 2rem; }
     h2 { font-size: 1.4rem; }
     .custom-stats-grid {
-        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); /* 2 o 3 columnas */
-    }
-    .controls button {
-        width: 38px;
-        height: 38px;
-        font-size: 1rem;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); /* 2 o 3 columnas */
     }
     .stat-card h3 button {
         width: 23px;
         height: 23px;
         font-size: 0.7rem;
     }
-    .stat-card .team-stat-compact .controls button {
-        width: 28px; /* Todavía más pequeños en stats */
-        height: 28px;
+    .stat-card .stat-controls-compact .team-controls button {
+        width: 32px; /* Todavía más pequeños en stats */
+        height: 32px;
         font-size: 0.8rem;
     }
-    .stat-card .team-stat-compact .score-display {
-        font-size: 1.1rem;
+    .stat-card .stat-controls-compact .score-display {
+        font-size: 1.2rem;
+        width: 55px; /* Reducir ancho */
     }
 }
 
@@ -557,7 +570,7 @@ button:active {
     .custom-stats-grid {
         grid-template-columns: 1fr; /* Una sola columna para móviles pequeños */
     }
-    .controls button {
+    .controls button { /* Marcador */
         width: 35px;
         height: 35px;
         font-size: 0.9rem;
@@ -567,13 +580,14 @@ button:active {
         height: 20px;
         font-size: 0.65rem;
     }
-    .stat-card .team-stat-compact .controls button {
-        width: 25px;
-        height: 25px;
+    .stat-card .stat-controls-compact .team-controls button {
+        width: 28px;
+        height: 28px;
         font-size: 0.75rem;
     }
-    .stat-card .team-stat-compact .score-display {
-        font-size: 1rem;
+    .stat-card .stat-controls-compact .score-display {
+        font-size: 1.1rem;
+        width: 50px; /* Reducir ancho */
     }
     .match-history-item {
         flex-direction: column;
