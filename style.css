@@ -76,9 +76,8 @@ body {
 
 .left-column, .right-column {
     flex: 1;
-    /* Ajustes para un diseño más compacto */
-    min-width: 300px;
-    max-width: 550px;
+    min-width: 300px; /* Asegura un ancho mínimo en pantallas pequeñas */
+    max-width: 550px; /* Limita el ancho en pantallas grandes para no estirarse demasiado */
 }
 
 .card {
@@ -392,46 +391,45 @@ button:hover {
     background-color: #138496;
 }
 
-/* Ajuste clave: Controles de los equipos dentro de la estadística */
+/* MODIFICACIONES CLAVE: Para la estructura interna de la tarjeta */
 .stat-controls-compact {
     display: flex;
-    flex-direction: column; /* Apila Equipo A, Total, Equipo B */
+    flex-direction: column; /* Alinea los elementos verticalmente: Equipo A, 0-0, Equipo B */
     align-items: center;
-    gap: 8px; /* Espacio entre los bloques */
+    gap: 5px; /* Espacio entre los bloques */
     width: 100%;
-    margin-top: 5px; /* Reducir margen superior */
 }
 
-.stat-controls-compact .team-label-counter { /* Nuevo contenedor para Tarragona 0 y sus botones */
+.stat-controls-compact .team-display-row { /* Contenedor para el nombre, contador y botones de cada equipo */
     display: flex;
-    flex-direction: column; /* Nombre y contador apilados */
+    flex-direction: column; /* Apila el nombre y el número */
     align-items: center;
-    gap: 3px; /* Espacio entre label y contador */
-    margin-bottom: 5px; /* Espacio antes de los botones */
+    margin-bottom: 5px; /* Espacio entre el bloque del equipo y el siguiente elemento */
+    width: 100%; /* Ocupa el 100% para centrar */
 }
 
 .stat-controls-compact .team-name-small { /* Para Tarragona / Camp Clar */
     font-weight: bold;
     font-size: 0.9em; /* Más pequeño */
     color: #555;
-    margin-bottom: 3px;
+    margin-bottom: 2px; /* Espacio antes del contador */
 }
 
 .stat-controls-compact .score-value-small { /* Para el 0 de cada equipo */
-    font-size: 1.8em; /* Más pequeño que el total, pero legible */
+    font-size: 2em; /* Tamaño visible */
     font-weight: bold;
     color: #007bff;
     line-height: 1; /* Ajustar línea para que no añada mucho espacio */
+    margin-bottom: 5px; /* Espacio antes de los botones */
 }
 
-
-.stat-controls-compact .team-controls {
+.stat-controls-compact .team-buttons { /* Contenedor para los botones 🔄 - + */
     display: flex;
     gap: 5px; /* Reducir espacio entre botones */
-    margin-bottom: 5px; /* Espacio después de los botones */
+    justify-content: center; /* Centrar los botones */
 }
 
-.stat-controls-compact .team-controls button {
+.stat-controls-compact .team-buttons button {
     padding: 6px 10px; /* Botones más pequeños */
     font-size: 0.8em;
     border-radius: 6px;
@@ -442,9 +440,6 @@ button:hover {
     font-size: 2.2em; /* Tamaño para el 0-0 central */
     font-weight: bold;
     color: #333;
-    flex-grow: 1;
-    text-align: center;
-    white-space: nowrap;
     margin: 8px 0; /* Margen para separarlo de los controles de equipo */
 }
 
@@ -622,11 +617,15 @@ button:hover {
 
     /* Ajuste para móviles: Controles de estadísticas personalizadas */
     .stat-controls-compact {
-        flex-direction: column; /* Apila el contador total y luego los controles de equipo */
+        flex-direction: column;
     }
 
-    .stat-controls-compact .team-controls {
-        flex-direction: row; /* Botones + - 🔄 se ponen en fila */
+    .stat-controls-compact .team-display-row {
+        flex-direction: column; /* Asegura que el nombre y contador se apilen */
+    }
+
+    .stat-controls-compact .team-buttons {
+        flex-direction: row; /* Asegura que los botones esten en fila */
         justify-content: center;
         gap: 8px;
     }
