@@ -1,0 +1,645 @@
+/* Importación de Google Fonts: Inter (si no se hace vía Codepen settings) */
+/* @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap'); */
+
+/* Colores y Variables para una estética profesional */
+:root {
+    --primary-color: #007bff; /* Azul corporativo */
+    --accent-color: #1a73e8; /* Un azul más oscuro para acentos */
+    --secondary-color: #6c757d; /* Gris suave */
+    --success-color: #28a745; /* Verde de confirmación */
+    --danger-color: #dc3545; /* Rojo de error/eliminación */
+    --warning-color: #ffc107; /* Amarillo de advertencia */
+    --info-color: #17a2b8; /* Azul claro para información */
+
+    --light-bg: #f8f9fa; /* Fondo muy claro */
+    --medium-bg: #e9ecef; /* Fondo ligeramente oscuro para contraste */
+    --dark-text: #212529; /* Texto principal oscuro */
+    --light-text: #495057; /* Texto secundario más claro */
+
+    --border-color: #dee2e6; /* Borde suave */
+    --card-bg: #ffffff; /* Fondo de tarjetas */
+    --shadow-light: 0 2px 5px rgba(0, 0, 0, 0.05); /* Sombra ligera */
+    --shadow-medium: 0 4px 12px rgba(0, 0, 0, 0.1); /* Sombra más notable */
+    --shadow-heavy: 0 8px 20px rgba(0, 0, 0, 0.15); /* Sombra pesada para elementos principales */
+
+    /* Nuevos colores para posesión */
+    --possession-active-bg: #e0f7fa; /* Fondo suave para posesión activa */
+    --possession-active-border: #00bcd4; /* Borde para posesión activa */
+    --possession-active-text: #00796b; /* Texto para posesión activa */
+
+    /* COLORES ESPECÍFICOS PARA LA BARRA DE POSESIÓN */
+    --team-a-color: var(--primary-color); /* Azul para Equipo A */
+    --team-b-color: #dc3545; /* Rojo para Equipo B (o el que prefieras) */
+    --bar-bg-color: #ced4da; /* Fondo gris claro para la barra */
+}
+
+/* Estilos generales */
+body {
+    font-family: 'Inter', sans-serif;
+    margin: 0;
+    padding: 20px;
+    background-color: var(--light-bg);
+    color: var(--dark-text);
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+    box-sizing: border-box;
+}
+
+.main-app-container {
+    max-width: 1280px;
+    width: 95%;
+    background-color: var(--card-bg);
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: var(--shadow-heavy);
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+h1 {
+    text-align: center;
+    color: var(--dark-text);
+    font-size: 2.5em;
+    margin-bottom: 0;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+}
+
+h2 {
+    text-align: center;
+    color: var(--primary-color);
+    font-size: 1.8em;
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-weight: 600;
+}
+
+.section-divider {
+    border: none;
+    border-top: 1px solid var(--border-color);
+    margin: 0;
+}
+
+section {
+    padding: 0;
+}
+
+/* Gestores de Nombres de Equipo */
+.config-section {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+}
+
+.team-names-manager {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    align-items: center;
+    padding: 18px;
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    background-color: var(--medium-bg);
+    box-shadow: var(--shadow-light);
+    flex: 1;
+    min-width: 280px;
+}
+
+.team-name-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    justify-content: center;
+}
+
+.team-names-manager label {
+    font-weight: 600;
+    color: var(--light-text);
+    flex-shrink: 0;
+    font-size: 0.95em;
+}
+
+input[type="text"],
+select {
+    padding: 9px 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 7px;
+    font-size: 0.9em;
+    flex-grow: 1;
+    max-width: 180px;
+    color: var(--dark-text);
+    background-color: var(--card-bg);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+input[type="text"]:focus,
+select:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.15);
+    outline: none;
+}
+
+/* Estilos de botones generales */
+button {
+    padding: 9px 16px;
+    border: none;
+    border-radius: 7px;
+    cursor: pointer;
+    font-size: 0.9em;
+    font-weight: 600;
+    transition: background-color 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease;
+    background-color: var(--primary-color);
+    color: white;
+    box-shadow: var(--shadow-light);
+}
+
+button:hover {
+    background-color: var(--accent-color);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Contenedores de "cards" */
+.card {
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: var(--shadow-medium);
+    text-align: center;
+}
+
+/* --- ESTILOS PARA EL TEMPORIZADOR PRINCIPAL (Match Timer) --- */
+.match-timer-section {
+    padding: 12px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.match-timer-section .large-timer {
+    font-size: 2em;
+    font-weight: 800;
+    color: var(--dark-text);
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.1);
+    letter-spacing: -1px;
+}
+
+.match-timer-controls {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.match-timer-controls .play-pause-btn {
+    background-color: var(--success-color);
+}
+.match-timer-controls .play-pause-btn:hover {
+    background-color: #218838;
+}
+.match-timer-controls .play-pause-btn.active {
+    background-color: var(--danger-color);
+}
+.match-timer-controls .play-pause-btn.active:hover {
+    background-color: #c82333;
+}
+/* FIN ESTILOS TEMPORIZADOR PRINCIPAL */
+
+
+/* --- LAYOUT PRINCIPAL CON CSS GRID (PARA 2 COLUMNAS) --- */
+.match-dashboard {
+    display: grid;
+    grid-template-columns: 1fr; /* Default a una columna para móviles */
+    gap: 20px; /* Espacio entre las columnas */
+}
+
+/* Media Query para pantallas grandes: 2 columnas */
+@media (min-width: 768px) {
+    .match-dashboard {
+        /* ANTES: grid-template-columns: 320px 1fr; */
+        /* CAMBIO: La primera columna sigue siendo fija, la segunda (estadísticas) es flexible */
+        grid-template-columns: 320px 3fr; /* O 1fr, dependiendo de cómo quieras la proporción. '3fr' dará más espacio a la derecha */
+    }
+
+    .left-column {
+        display: flex;
+        flex-direction: column;
+        gap: 15px; /* Espacio entre Marcador, Tiempo Partido, Posesión */
+    }
+
+    .right-column {
+        /* max-height: calc(100vh - 200px); */ /* Esto podría estar limitando el alto innecesariamente, lo comento si no es crítico */
+        overflow-y: auto;
+        padding-right: 10px; /* Mantener un poco de padding para el scrollbar */
+        /* Asegurar que la columna derecha ocupe el ancho disponible */
+        width: 100%; /* Asegura que ocupe todo el espacio de su celda de grid */
+    }
+
+    /* Ajuste para el contenedor principal, si el máximo de 1280px está limitando demasiado */
+    .main-app-container {
+        /* max-width: 1280px; */ /* Si tienes una pantalla más grande que 1280px y quieres aprovecharla, comenta o aumenta este valor */
+    }
+}
+
+/* Marcador */
+.score-section {
+    padding: 12px;
+}
+
+.score-section .stat-group {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    gap: 10px;
+    margin-top: 5px;
+}
+
+.team-score {
+    padding: 8px;
+    flex: 1;
+    min-width: 120px;
+}
+
+.team-label {
+    font-size: 0.85em;
+    margin-bottom: 3px;
+}
+
+.counter.large-counter {
+    font-size: 2em;
+    font-weight: 700;
+    line-height: 1;
+    margin-bottom: 3px;
+}
+
+.controls.compact-controls {
+    gap: 4px;
+    margin-top: 5px;
+}
+
+.controls.compact-controls button {
+    padding: 5px 8px;
+    font-size: 0.7em;
+    border-radius: 3px;
+}
+.controls .reset-btn { background-color: var(--warning-color); color: var(--dark-text); }
+.controls .reset-btn:hover { background-color: #e0a800; }
+.controls .minus-btn { background-color: var(--danger-color); color: white; }
+.controls .minus-btn:hover { background-color: #c82333; }
+.controls .plus-btn { background-color: var(--success-color); color: white; }
+.controls .plus-btn:hover { background-color: #218838; }
+
+
+/* Posesión de Balón - AJUSTES PARA DISPOSICIÓN HORIZONTAL! */
+.possession-section {
+    padding: 15px;
+}
+
+.possession-timers-container {
+    display: flex;
+    justify-content: space-around;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.possession-section .timer-group {
+    flex: 1;
+    min-width: 120px;
+    padding: 10px;
+    border-radius: 8px;
+    background-color: var(--medium-bg);
+    box-shadow: var(--shadow-light);
+    border: 2px solid transparent;
+    transition: all 0.3s ease;
+    text-align: center;
+}
+
+.possession-section .timer-group h3 {
+    font-size: 1em;
+    margin-bottom: 5px;
+    color: var(--dark-text);
+}
+
+.possession-section .timer {
+    font-size: 1.6em;
+    font-weight: 700;
+    color: var(--info-color);
+    display: block;
+    margin-bottom: 0;
+}
+
+/* Efecto de posesión activa */
+.possession-section .timer-group.active {
+    background-color: var(--possession-active-bg);
+    border-color: var(--possession-active-border);
+    box-shadow: 0 0 15px rgba(0, 188, 212, 0.2);
+}
+
+.possession-section .timer-group.active .timer {
+    color: var(--possession-active-text);
+}
+
+/* --- ESTILOS PARA LA BARRA DE POSESIÓN --- */
+.possession-bar-container {
+    width: 100%;
+    height: 30px;
+    background-color: var(--bar-bg-color);
+    border-radius: 15px;
+    margin-top: 15px;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    align-items: center;
+    box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.possession-bar-fill {
+    height: 100%;
+    width: 0%;
+    background-color: var(--team-a-color);
+    transition: width 0.5s ease-out;
+    border-radius: 15px 0 0 15px;
+}
+
+.possession-percentage-text {
+    position: absolute;
+    color: white;
+    font-weight: 700;
+    font-size: 1em;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.4);
+    z-index: 1;
+    pointer-events: none;
+}
+
+#possessionPercentA {
+    left: 10px;
+}
+
+#possessionPercentB {
+    right: 10px;
+}
+
+.possession-percentage-text.hidden-zero {
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+
+.possession-controls {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 15px;
+}
+
+.possession-controls button {
+    padding: 8px 14px;
+    min-width: 110px;
+    font-size: 0.9em;
+    background-color: var(--secondary-color);
+}
+.possession-controls button:hover {
+    background-color: #5a6268;
+}
+.possession-controls button.active {
+    background-color: var(--primary-color);
+    color: white;
+    box-shadow: 0 0 10px rgba(0, 123, 255, 0.5);
+}
+
+
+/* Añadir Estadística Integrada (dentro de Estadísticas Personalizadas) */
+.add-custom-stat-integrated {
+    gap: 8px;
+    margin-bottom: 15px;
+    padding: 12px;
+    display: flex; /* Añadido para que el input y botón estén en línea */
+    align-items: center;
+    justify-content: center;
+}
+
+#newStatName {
+    padding: 8px 10px;
+    font-size: 0.9em;
+    flex-grow: 1; /* Permite que ocupe el espacio disponible */
+    max-width: 250px; /* Límite para que no sea demasiado largo */
+}
+
+#addStatBtn {
+    padding: 8px 14px;
+    font-size: 0.85em;
+    flex-shrink: 0;
+}
+
+/* Grid de Estadísticas Personalizadas - ¡AJUSTES PARA MÁS COLUMNAS! */
+.custom-stats-grid {
+    /* ANTES: grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); */
+    /* CAMBIO: Mínimo de 180px, permite más columnas. 'auto-fit' para llenar el espacio. */
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 12px;
+    padding: 0;
+    /* Eliminar cualquier max-width o margin: auto que pudiera estar centrándolo */
+    width: 100%; /* Asegura que ocupe el 100% del ancho de su contenedor */
+}
+
+.stat-row {
+    background-color: var(--medium-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 10px;
+    box-shadow: var(--shadow-light);
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+    text-align: center;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.stat-row:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-medium);
+}
+
+.stat-row .stat-name {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    font-weight: 600;
+    font-size: 0.9em;
+    margin-bottom: 5px;
+    color: var(--dark-text);
+}
+
+.stat-row .stat-name input[type="text"] {
+    background-color: transparent;
+    border: none;
+    text-align: center;
+    font-size: 0.85em;
+    font-weight: 600;
+    padding: 2px 0;
+    color: var(--dark-text);
+    flex-grow: 1;
+    max-width: unset;
+}
+.stat-row .stat-name input[type="text"]:not(:disabled) {
+    border: 1px solid var(--primary-color);
+    background-color: var(--card-bg);
+    padding: 2px 5px;
+    border-radius: 4px;
+}
+
+.stat-row .stat-name .name-actions {
+    display: flex;
+    gap: 4px;
+    flex-shrink: 0;
+}
+
+.stat-row .stat-name .name-actions button {
+    padding: 4px 7px;
+    font-size: 0.6em;
+    border-radius: 4px;
+}
+
+.stat-team-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+    background-color: var(--light-bg);
+    padding: 7px;
+    border-radius: 5px;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.06);
+}
+.stat-team-container:first-of-type {
+    margin-bottom: 6px;
+}
+
+.stat-team-container .counter {
+    font-size: 1.5em;
+    font-weight: 700;
+    color: var(--info-color);
+    min-width: 28px;
+}
+
+.stat-team-container .controls button {
+    padding: 4px 7px;
+    font-size: 0.7em;
+}
+
+/* Botón Reiniciar Todo */
+#resetAll {
+    margin: 20px auto;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 1em;
+}
+
+#resetAll:hover {
+    transform: translateY(-2px);
+}
+
+
+/* Media Queries para Responsividad */
+@media (max-width: 767px) { /* Tablet portrait y móviles */
+    .main-app-container {
+        padding: 15px;
+        gap: 15px;
+    }
+    h1 { font-size: 2em; }
+    h2 { font-size: 1.5em; }
+
+    .team-names-manager, .card {
+        padding: 15px;
+    }
+    input[type="text"], select, button {
+        font-size: 0.85em;
+        padding: 7px 10px;
+    }
+
+    .match-dashboard {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+    .left-column, .right-column {
+        display: block;
+        max-height: unset;
+        overflow-y: unset;
+        padding-right: 0;
+        gap: unset;
+    }
+
+    .score-section .counter.large-counter { font-size: 2em; }
+    /* Ajustes para posesión en móvil */
+    .possession-timers-container {
+        flex-direction: column;
+        gap: 10px;
+    }
+    .possession-section .timer { font-size: 1.8em; }
+    /* Ajuste para los porcentajes en la barra en móvil */
+    .possession-percentage-text { font-size: 0.9em; }
+
+    .possession-controls { flex-direction: column; align-items: center; }
+    .possession-controls button { max-width: 100%; min-width: unset; width: 100%; }
+
+    /* Ajuste para el temporizador principal en móviles */
+    .match-timer-section .large-timer { font-size: 2em; }
+
+    .custom-stats-grid {
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+        gap: 8px;
+    }
+    .stat-row { padding: 8px; gap: 6px; }
+    .stat-row .stat-name { font-size: 0.85em; }
+    .stat-row .stat-name input[type="text"] { font-size: 0.8em; }
+    .stat-team-container .counter { font-size: 1.4em; }
+    .stat-team-container .controls button { padding: 4px 7px; font-size: 0.7em; }
+
+    /* Asegurar que la barra de añadir estadística se vea bien */
+    .add-custom-stat-integrated {
+        flex-direction: column; /* Apila el input y el botón en pantallas pequeñas */
+        align-items: stretch;
+    }
+    #newStatName { max-width: 100%; } /* Ocupa todo el ancho disponible */
+
+
+    #resetAll {
+        padding: 10px 20px;
+        font-size: 1em;
+    }
+}
+
+@media (max-width: 480px) {
+    body { padding: 10px; }
+    .main-app-container { padding: 10px; gap: 10px; }
+    h1 { font-size: 1.6em; }
+    h2 { font-size: 1.2em; }
+    .score-section .counter.large-counter { font-size: 1.8em; }
+    .possession-section .timer { font-size: 1.6em; }
+    /* Ajuste para los porcentajes en la barra en móvil muy pequeño */
+    .possession-percentage-text { font-size: 0.8em; }
+
+    /* Ajuste para el temporizador principal en móviles pequeños */
+    .match-timer-section .large-timer { font-size: 1.8em; }
+
+    .custom-stats-grid {
+        grid-template-columns: 1fr;
+        gap: 6px;
+    }
+    .stat-row { padding: 6px; gap: 4px; }
+    .stat-row .stat-name { font-size: 0.8em; }
+    .stat-row .stat-name input[type="text"] { font-size: 0.75em; }
+    .stat-team-container .counter { font-size: 1.2em; }
+    .stat-team-container .controls button { padding: 3px 6px; font-size: 0.65em; }
+}
