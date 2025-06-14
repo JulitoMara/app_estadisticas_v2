@@ -23,12 +23,10 @@
                     <label for="teamBName">Equipo B:</label>
                     <input type="text" id="teamBName" value="Camp Clar" placeholder="Nombre Equipo B">
                 </div>
-                <!-- Se elimina el botón de Guardar Partido -->
             </div>
         </header>
 
         <main class="match-dashboard">
-            <!-- Sección Izquierda: Marcador, Tiempo, Posesión -->
             <section class="left-column">
                 <div class="score-section card">
                     <h2>Marcador</h2>
@@ -88,7 +86,6 @@
                 </div>
             </section>
 
-            <!-- Sección Derecha: Estadísticas Personalizadas -->
             <section class="right-column">
                 <div class="custom-stats-management card">
                     <h2>Estadísticas Personalizadas</h2>
@@ -97,18 +94,24 @@
                         <button id="addStatBtn">Añadir</button>
                     </div>
                     <div id="generalStatsContainer" class="custom-stats-grid">
-                        <!-- Las estadísticas personalizadas se cargarán aquí dinámicamente mediante JS -->
-                    </div>
+                        </div>
                 </div>
             </section>
         </main>
 
         <hr class="section-divider">
 
-        <!-- Se elimina toda la sección de Historial de Partidos -->
         <button id="resetAll" class="reset-all-button">Reiniciar Todas las Estadísticas del Partido Actual</button>
     </div>
 
+    <div id="statDetailsModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <h2 id="modalStatTitle">Detalles de la Estadística</h2>
+            <ul id="modalEventList" class="event-list">
+                </ul>
+        </div>
+    </div>
     <script src="script.js"></script>
 </body>
 </html>
