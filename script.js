@@ -45,7 +45,7 @@ const togglePossessionBBtn = document.getElementById('togglePossessionB');
 const resetPossessionBtn = document.getElementById('resetPossession');
 const possessionBarA = document.getElementById('possessionBarA');
 const possessionPercentA = document.getElementById('possessionPercentA');
-const possessionPercentB = document = document.getElementById('possessionPercentB');
+const possessionPercentB = document.getElementById('possessionPercentB');
 
 let possessionIntervalA, possessionIntervalB;
 let possessionTimeA = 0;
@@ -103,13 +103,15 @@ if (!customStats || customStats.length === 0) {
     localStorage.setItem('customStats', JSON.stringify(customStats));
 }
 
+// MODIFICACIÓN CLAVE: renderCustomStats para el diseño compacto
 function renderCustomStats() {
-    generalStatsContainer.innerHTML = '';
+    generalStatsContainer.innerHTML = ''; // Limpiar el contenedor
     customStats.forEach(stat => {
         const statCard = document.createElement('div');
         statCard.classList.add('stat-card');
         statCard.dataset.statId = stat.id;
 
+        // Nuevo HTML para la tarjeta de estadística compacta
         statCard.innerHTML = `
             <h3>
                 <span class="stat-title">${stat.name}</span>
@@ -118,16 +120,24 @@ function renderCustomStats() {
                 <button class="delete-stat-btn" data-id="${stat.id}">🗑️</button>
             </h3>
             <div class="stat-controls-compact">
-                <div class="team-controls">
-                    <button class="reset-btn" data-team="A" data-stat="${stat.id}">🔄</button>
-                    <button class="minus-btn" data-team="A" data-stat="${stat.id}">-</button>
-                    <button class="plus-btn" data-team="A" data-stat="${stat.id}">+</button>
+                <div class="team-label-counter">
+                    <span class="team-name-small">${teamANameInput.value || 'Equipo A'}</span>
+                    <span class="score-value-small" data-team-counter="${stat.id}-A">0</span>
+                    <div class="team-controls">
+                        <button class="reset-btn" data-team="A" data-stat="${stat.id}">🔄</button>
+                        <button class="minus-btn" data-team="A" data-stat="${stat.id}">-</button>
+                        <button class="plus-btn" data-team="A" data-stat="${stat.id}">+</button>
+                    </div>
                 </div>
-                <span class="score-display" data-team-main-counter="${stat.id}">0 - 0</span>
-                <div class="team-controls">
-                    <button class="reset-btn" data-team="B" data-stat="${stat.id}">🔄</button>
-                    <button class="minus-btn" data-team="B" data-stat="${stat.id}">-</button>
-                    <button class="plus-btn" data-team="B" data-stat="${stat.id}">+</button>
+                <span class="score-display">0 - 0</span>
+                <div class="team-label-counter">
+                    <span class="team-name-small">${teamBNameInput.value || 'Equipo B'}</span>
+                    <span class="score-value-small" data-team-counter="${stat.id}-B">0</span>
+                    <div class="team-controls">
+                        <button class="reset-btn" data-team="B" data-stat="${stat.id}">🔄</button>
+                        <button class="minus-btn" data-team="B" data-stat="${stat.id}">-</button>
+                        <button class="plus-btn" data-team="B" data-stat="${stat.id}">+</button>
+                    </div>
                 </div>
             </div>
         `;
@@ -136,14 +146,30 @@ function renderCustomStats() {
     addStatCardEventListeners();
     updateCustomStatCounters();
 }
+// FIN MODIFICACIÓN
 
 function updateCustomStatCounters() {
     customStats.forEach(stat => {
         const scoreDisplayEl = generalStatsContainer.querySelector(`.score-display[data-team-main-counter="${stat.id}"]`);
-        if (scoreDisplayEl) {
-            const teamAcount = stat.events.filter(event => event.team === 'A').length;
-            const teamBcount = stat.events.filter(event => event.team === 'B').length;
-            scoreDisplayEl.textContent = `${teamAcount} - ${teamBcount}`;
+        // Actualizar el contador general (0 - 0)
+        const teamAcount = stat.events.filter(event => event.team === 'A').length;
+        const teamBcount = stat.events.filter(event => event.team === 'B').length;
+        
+        // El span con data-team-main-counter es el que tiene el "0 - 0"
+        const mainCounterSpan = generalStatsContainer.querySelector(`.stat-card[data-stat-id="${stat.id}"] .score-display`);
+        if (mainCounterSpan) {
+            mainCounterSpan.textContent = `${teamAcount} - ${teamBcount}`;
+        }
+
+        // Actualizar los contadores individuales de cada equipo (el "0" bajo cada nombre)
+        const teamAScoreEl = generalStatsContainer.querySelector(`.score-value-small[data-team-counter="${stat.id}-A"]`);
+        const teamBScoreEl = generalStatsContainer.querySelector(`.score-value-small[data-team-counter="${stat.id}-B"]`);
+        
+        if (teamAScoreEl) {
+            teamAScoreEl.textContent = teamAcount;
+        }
+        if (teamBScoreEl) {
+            teamBScoreEl.textContent = teamBcount;
         }
     });
 }
@@ -170,15 +196,21 @@ function handleCustomStatControls(e) {
                 team: team
             });
         } else if (target.classList.contains('minus-btn')) {
-            const indexToRemove = statToUpdate.events.findIndex(event => event.team === team);
-            if (indexToRemove !== -1) {
-                statToUpdate.events.splice(indexToRemove, 1);
+            // Eliminar el último evento de ese equipo para esa estadística
+            const eventsForTeam = statToUpdate.events.filter(event => event.team === team);
+            if (eventsForTeam.length > 0) {
+                const lastEventTime = Math.max(...eventsForTeam.map(event => event.timestamp));
+                const indexToRemove = statToUpdate.events.findIndex(event => event.team === team && event.timestamp === lastEventTime);
+                if (indexToRemove !== -1) {
+                    statToUpdate.events.splice(indexToRemove, 1);
+                }
             }
         } else if (target.classList.contains('reset-btn')) {
+            // Eliminar todos los eventos de ese equipo para esa estadística
             statToUpdate.events = statToUpdate.events.filter(event => event.team !== team);
         }
         localStorage.setItem('customStats', JSON.stringify(customStats));
-        updateCustomStatCounters();
+        updateCustomStatCounters(); // Esto recalculará y actualizará ambos contadores
     } else if (target.classList.contains('delete-stat-btn')) {
         const statIdToDelete = target.dataset.id;
         const defaultStatIds = [
