@@ -78,13 +78,10 @@ function formatTime(seconds) {
 function updateTeamLabels() {
     teamALabelGoals.textContent = teamANameInput.value || "Equipo A";
     teamBLabelGoals.textContent = teamBNameInput.value || "Equipo B";
-    // *** ACTUALIZACIÓN IMPORTANTE: Asegurarse de que estos IDs existen en tu HTML ***
-    // (Ya los hemos añadido en el index.html de la respuesta anterior)
     const possessionTeamAEl = document.getElementById('possessionTeamA');
     const possessionTeamBEl = document.getElementById('possessionTeamB');
     if (possessionTeamAEl) possessionTeamAEl.textContent = teamANameInput.value || "Equipo A";
     if (possessionTeamBEl) possessionTeamBEl.textContent = teamBNameInput.value || "Equipo B";
-    // Si tienes stats personalizadas, sus labels se actualizarán con la función de renderizar
 }
 
 // ============ MODIFICACIÓN CLAVE: ESTADÍSTICAS PREDETERMINADAS ============
@@ -108,6 +105,7 @@ if (!customStats || customStats.length === 0) {
 }
 // =========================================================================
 
+// MODIFICACIÓN: renderCustomStats para la nueva estructura compacta y vertical de botones
 function renderCustomStats() {
     generalStatsContainer.innerHTML = ''; // Limpiar el contenedor
     customStats.forEach(stat => {
@@ -121,31 +119,34 @@ function renderCustomStats() {
                 <button class="edit-stat-btn" data-id="${stat.id}">✏️</button>
                 <button class="delete-stat-btn" data-id="${stat.id}">🗑️</button>
             </h3>
-            <div class="stat-group">
-                <div class="team-stat">
-                    <span class="counter" data-team="A" data-stat="${stat.id}">0</span>
-                    <span>${teamANameInput.value || "Equipo A"}</span>
-                    <div class="controls compact-controls">
-                        <button class="reset-btn" data-team="A" data-stat="${stat.id}">🔄</button>
-                        <button class="minus-btn" data-team="A" data-stat="${stat.id}">-</button>
-                        <button class="plus-btn" data-team="A" data-stat="${stat.id}">+</button>
-                    </div>
+            <div class="stat-controls-compact">
+                <div class="team-controls">
+                    <button class="reset-btn" data-team="A" data-stat="${stat.id}">🔄</button>
+                    <button class="minus-btn" data-team="A" data-stat="${stat.id}">-</button>
+                    <button class="plus-btn" data-team="A" data-stat="${stat.id}">+</button>
                 </div>
-                <div class="team-stat">
-                    <span class="counter" data-team="B" data-stat="${stat.id}">0</span>
-                    <span>${teamBNameInput.value || "Equipo B"}</span>
-                    <div class="controls compact-controls">
-                        <button class="reset-btn" data-team="B" data-stat="${stat.id}">🔄</button>
-                        <button class="minus-btn" data-team="B" data-stat="${stat.id}">-</button>
-                        <button class="plus-btn" data-team="B" data-stat="${stat.id}">+</button>
-                    </div>
+                <span class="score-display" data-team-main-counter="${stat.id}">0 - 0</span>
+                <div class="team-controls">
+                    <button class="reset-btn" data-team="B" data-stat="${stat.id}">🔄</button>
+                    <button class="minus-btn" data-team="B" data-stat="${stat.id}">-</button>
+                    <button class="plus-btn" data-team="B" data-stat="${stat.id}">+</button>
                 </div>
             </div>
         `;
         generalStatsContainer.appendChild(statCard);
     });
-    // Volver a vincular los eventos si es necesario
-    addStatCardEventListeners();
+    addStatCardEventListeners(); // Volver a vincular los eventos
+    updateCustomStatCounters(); // Llamar para mostrar los valores iniciales/actuales
+}
+
+// NUEVA FUNCIÓN: Para actualizar solo los contadores de las stats personalizadas
+function updateCustomStatCounters() {
+    customStats.forEach(stat => {
+        const scoreDisplayEl = generalStatsContainer.querySelector(`.score-display[data-team-main-counter="${stat.id}"]`);
+        if (scoreDisplayEl) {
+            scoreDisplayEl.textContent = `${stat.teamA} - ${stat.teamB}`;
+        }
+    });
 }
 
 function addStatCardEventListeners() {
@@ -154,27 +155,38 @@ function addStatCardEventListeners() {
     generalStatsContainer.addEventListener('click', handleCustomStatControls);
 }
 
+// MODIFICACIÓN: handleCustomStatControls para la nueva estructura
 function handleCustomStatControls(e) {
     const target = e.target;
     if (target.classList.contains('plus-btn') || target.classList.contains('minus-btn') || target.classList.contains('reset-btn')) {
         const team = target.dataset.team;
         const statId = target.dataset.stat;
-        const counterEl = generalStatsContainer.querySelector(`.counter[data-team="${team}"][data-stat="${statId}"]`);
 
-        if (counterEl) {
-            let currentValue = parseInt(counterEl.textContent);
+        // Encuentra la estadística en el array `customStats`
+        const statToUpdate = customStats.find(s => s.id === statId);
+        if (!statToUpdate) return;
+
+        if (team === 'A') {
             if (target.classList.contains('plus-btn')) {
-                currentValue++;
+                statToUpdate.teamA++;
             } else if (target.classList.contains('minus-btn')) {
-                currentValue = Math.max(0, currentValue - 1);
+                statToUpdate.teamA = Math.max(0, statToUpdate.teamA - 1);
             } else if (target.classList.contains('reset-btn')) {
-                currentValue = 0;
+                statToUpdate.teamA = 0;
             }
-            counterEl.textContent = currentValue;
+        } else if (team === 'B') {
+            if (target.classList.contains('plus-btn')) {
+                statToUpdate.teamB++;
+            } else if (target.classList.contains('minus-btn')) {
+                statToUpdate.teamB = Math.max(0, statToUpdate.teamB - 1);
+            } else if (target.classList.contains('reset-btn')) {
+                statToUpdate.teamB = 0;
+            }
         }
+        localStorage.setItem('customStats', JSON.stringify(customStats)); // Guardar el estado
+        updateCustomStatCounters(); // Actualizar el DOM
     } else if (target.classList.contains('delete-stat-btn')) {
         const statIdToDelete = target.dataset.id;
-        // Solo permitir eliminar si no es una de las stats predeterminadas
         const defaultStatIds = [
             'stat-shots-on-goal', 'stat-shots-off-goal', 'stat-fouls',
             'stat-yellow-cards', 'stat-red-cards', 'stat-corners',
@@ -187,7 +199,7 @@ function handleCustomStatControls(e) {
 
         customStats = customStats.filter(stat => stat.id !== statIdToDelete);
         localStorage.setItem('customStats', JSON.stringify(customStats));
-        renderCustomStats();
+        renderCustomStats(); // Vuelve a renderizar toda la cuadrícula
     } else if (target.classList.contains('edit-stat-btn')) {
         const statIdToEdit = target.dataset.id;
         const statToEdit = customStats.find(stat => stat.id === statIdToEdit);
@@ -196,7 +208,7 @@ function handleCustomStatControls(e) {
             if (newName && newName.trim() !== "") {
                 statToEdit.name = newName.trim();
                 localStorage.setItem('customStats', JSON.stringify(customStats));
-                renderCustomStats();
+                renderCustomStats(); // Vuelve a renderizar toda la cuadrícula
             }
         }
     }
@@ -306,7 +318,6 @@ function updatePossessionBar() {
         possessionBarA.style.width = '50%';
         possessionPercentA.textContent = '0%';
         possessionPercentB.textContent = '0%';
-        // Los porcentajes ahora se posicionan dentro de la barra por CSS
         return;
     }
 
@@ -333,9 +344,7 @@ function updatePossessionButtons() {
 addStatBtn.addEventListener('click', () => {
     const newStatName = newStatNameInput.value.trim();
     if (newStatName) {
-        // Asegúrate de que el ID sea único y consistente
         const newId = 'stat-' + newStatName.toLowerCase().replace(/\s+/g, '-');
-        // Prevenir duplicados por nombre (usando el ID generado)
         if (customStats.some(stat => stat.id === newId)) {
             alert('¡Ya existe una estadística con un nombre similar!');
             return;
@@ -365,17 +374,13 @@ resetAllBtn.addEventListener('click', () => {
         // Posesión de Balón
         resetPossession(); // Reutilizamos la función de reseteo de posesión
 
-        // Estadísticas Personalizadas
-        // Necesitamos reiniciar los contadores en el DOM
-        generalStatsContainer.querySelectorAll('.counter').forEach(counterEl => {
-            counterEl.textContent = '0';
-        });
-        // IMPORTANTE: También resetear los valores internos si estás manteniendo un estado en `customStats`
-        // Esto solo afecta la sesión actual, no el localStorage de la definición de stats.
+        // Estadísticas Personalizadas - Reiniciar los valores en el array y en el DOM
         customStats.forEach(stat => {
             stat.teamA = 0;
             stat.teamB = 0;
         });
+        localStorage.setItem('customStats', JSON.stringify(customStats)); // Guardar el estado reiniciado
+        updateCustomStatCounters(); // Actualizar el DOM con los 0s
     }
 });
 
@@ -385,22 +390,16 @@ resetAllBtn.addEventListener('click', () => {
 // Función para recolectar todos los datos del partido actual
 function collectCurrentMatchData() {
     const customStatValues = {};
-    generalStatsContainer.querySelectorAll('.stat-card').forEach(card => {
-        const statId = card.dataset.statId;
-        const teamAValue = parseInt(card.querySelector(`.counter[data-team="A"]`).textContent);
-        const teamBValue = parseInt(card.querySelector(`.counter[data-team="B"]`).textContent);
-        const statName = card.querySelector('.stat-title').textContent;
-        // Almacenar el nombre y los valores actuales
-        customStatValues[statId] = { name: statName, teamA: teamAValue, teamB: teamBValue };
+    customStats.forEach(stat => { // Iterar sobre el array customStats para obtener los valores actuales
+        customStatValues[stat.id] = { name: stat.name, teamA: stat.teamA, teamB: stat.teamB };
     });
 
-    // MODIFICADO: Solo guardamos la fecha, no la hora
     const currentDate = new Date();
-    const formattedDate = currentDate.toLocaleDateString(); // Obtiene la fecha en formato local
+    const formattedDate = currentDate.toLocaleDateString();
 
     return {
-        id: Date.now(), // Un ID único para el partido
-        timestamp: formattedDate, // MODIFICADO: Solo la fecha
+        id: Date.now(),
+        timestamp: formattedDate,
         teamA: teamANameInput.value,
         teamB: teamBNameInput.value,
         goalsA: parseInt(teamAGoalsEl.textContent),
@@ -408,9 +407,7 @@ function collectCurrentMatchData() {
         matchTime: matchTimeElapsed,
         possessionA: possessionTimeA,
         possessionB: possessionTimeB,
-        customStats: customStatValues, // Contiene los valores actuales de las stats
-        // Almacenar también la definición de customStats (id y name)
-        // para que al cargar el partido, sepamos qué stats personalizadas se usaron
+        customStats: customStatValues,
         customStatsDefinition: customStats.map(stat => ({ id: stat.id, name: stat.name }))
     };
 }
@@ -420,9 +417,8 @@ function saveCurrentMatch() {
     const matchData = collectCurrentMatchData();
     let savedMatches = JSON.parse(localStorage.getItem('savedMatches')) || [];
 
-    // Opcional: Pedir un nombre para el partido
     const matchName = prompt("Introduce un nombre para el partido (ej: Final Copa 2024 vs EquipoX):", `${matchData.teamA} vs ${matchData.teamB} - ${matchData.timestamp}`);
-    if (matchName === null) { // Si el usuario cancela
+    if (matchName === null) {
         return;
     }
     matchData.name = matchName || `Partido ${matchData.teamA} vs ${matchData.teamB}`;
@@ -447,7 +443,6 @@ function loadMatchesHistory() {
     savedMatches.forEach(match => {
         const li = document.createElement('li');
         li.classList.add('match-history-item');
-        // Asegurarse de que `match.timestamp` ya solo contenga la fecha
         li.innerHTML = `
             <span>${match.name || `Partido ${match.teamA} vs ${match.teamB}`} (${match.timestamp})</span>
             <div class="match-history-controls">
@@ -472,7 +467,7 @@ function loadMatchesHistory() {
     });
 }
 
-// Función para cargar un partido específico en la interfaz
+// MODIFICACIÓN: loadSelectedMatch para la nueva estructura
 function loadSelectedMatch(id) {
     const savedMatches = JSON.parse(localStorage.getItem('savedMatches')) || [];
     const matchToLoad = savedMatches.find(match => match.id === id);
@@ -481,16 +476,16 @@ function loadSelectedMatch(id) {
         // Marcador
         teamANameInput.value = matchToLoad.teamA;
         teamBNameInput.value = matchToLoad.teamB;
-        updateTeamLabels(); // Para actualizar los nombres en el DOM
+        updateTeamLabels();
 
         teamAGoalsEl.textContent = matchToLoad.goalsA;
         teamBGoalsEl.textContent = matchToLoad.goalsB;
 
         // Tiempo de Partido
-        clearInterval(matchTimerInterval); // Asegurarse de detener el timer actual
+        clearInterval(matchTimerInterval);
         matchTimeElapsed = matchToLoad.matchTime;
         matchTimerEl.textContent = formatTime(matchTimeElapsed);
-        toggleMatchTimerBtn.textContent = '▶️ Iniciar'; // Asume que el partido cargado está pausado
+        toggleMatchTimerBtn.textContent = '▶️ Iniciar';
         isMatchTimerRunning = false;
 
         // Posesión de Balón
@@ -498,30 +493,32 @@ function loadSelectedMatch(id) {
         clearInterval(possessionIntervalB);
         possessionTimeA = matchToLoad.possessionA;
         possessionTimeB = matchToLoad.possessionB;
-        currentPossession = null; // Reiniciar posesión activa
+        currentPossession = null;
         possessionTimerAEl.textContent = formatTime(possessionTimeA);
         possessionTimerBEl.textContent = formatTime(possessionTimeB);
         updatePossessionBar();
         updatePossessionButtons();
 
         // ============ RESTAURACIÓN DE ESTADÍSTICAS PERSONALIZADAS ============
-        // Primero, asegurarnos de que la definición de estadísticas personalizadas está actualizada
-        // Usamos customStatsDefinition del partido guardado para cargar las stats que estaban activas en ese partido
+        // Restaurar la definición de customStats del partido guardado
         customStats = matchToLoad.customStatsDefinition || [];
-        localStorage.setItem('customStats', JSON.stringify(customStats)); // Guardar esta definición para la sesión actual
-        renderCustomStats(); // Renderiza la estructura (con 0s iniciales)
+        localStorage.setItem('customStats', JSON.stringify(customStats));
+        renderCustomStats(); // Vuelve a renderizar la estructura de las tarjetas
 
         // Luego, actualizar los valores de las estadísticas cargadas
-        // Un pequeño delay es útil para asegurar que renderCustomStats ha terminado de crear los elementos
+        // Un pequeño delay para asegurar que el DOM se ha actualizado
         setTimeout(() => {
             for (const statId in matchToLoad.customStats) {
                 const statData = matchToLoad.customStats[statId];
-                const teamACounter = generalStatsContainer.querySelector(`.counter[data-team="A"][data-stat="${statId}"]`);
-                const teamBCounter = generalStatsContainer.querySelector(`.counter[data-team="B"][data-stat="${statId}"]`);
-                if (teamACounter) teamACounter.textContent = statData.teamA;
-                if (teamBCounter) teamBCounter.textContent = statData.teamB;
+                const statObj = customStats.find(s => s.id === statId);
+                if (statObj) {
+                    statObj.teamA = statData.teamA;
+                    statObj.teamB = statData.teamB;
+                }
             }
-        }, 50); // Un pequeño retraso para asegurar que los elementos se han creado
+            updateCustomStatCounters(); // Actualizar el DOM con los valores cargados
+            localStorage.setItem('customStats', JSON.stringify(customStats)); // Guardar el estado con los valores cargados
+        }, 50);
         // ====================================================================
 
         alert(`Partido "${matchToLoad.name}" cargado con éxito!`);
@@ -541,5 +538,3 @@ function deleteMatch(id) {
 
 // Event Listener para el botón de Guardar Partido
 saveMatchBtn.addEventListener('click', saveCurrentMatch);
-
-// NOTA: El registro del Service Worker ya está en DOMContentLoaded
