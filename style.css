@@ -74,11 +74,19 @@ body {
     margin-top: 30px;
 }
 
-.left-column, .right-column {
-    flex: 1; /* Permite que las columnas crezcan y ocupen el espacio disponible */
-    min-width: 300px; /* Ancho mínimo para cada columna antes de envolver */
-    max-width: 550px; /* Limita el ancho de cada columna en pantallas grandes */
+/* Reducir ancho de la columna izquierda y ajustar la derecha */
+.left-column {
+    flex: 0 0 25%; /* No crece, no se encoge, 25% del contenedor padre */
+    max-width: 300px; /* Límite explícito para el ancho */
+    min-width: 280px; /* Asegura que no sea demasiado pequeña */
 }
+
+.right-column {
+    flex: 1; /* Permite que la columna crezca y ocupe el resto del espacio */
+    min-width: 600px; /* Ancho mínimo para la columna derecha para acomodar las 2 filas de estadísticas */
+    max-width: 850px; /* Límite para que no se estire demasiado */
+}
+
 
 .card {
     background-color: #f9f9f9;
@@ -322,127 +330,109 @@ button:hover {
     font-size: 1em;
 }
 
-/* --- ESTILOS CLAVE PARA LAS ESTADÍSTICAS PERSONALIZADAS --- */
+/* --- ESTILOS CLAVE PARA LAS ESTADÍSTICAS PERSONALIZADAS (AJUSTE PARA COMPACTAR) --- */
 .custom-stats-grid {
     width: 100%;
     display: grid;
-    /* Ajustado para 2 o 3 columnas, haciéndolas más compactas */
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); /* Más compacto */
+    /* 2 columnas para el tamaño de tablet, 3 para desktop grandes */
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 15px;
-    justify-content: center; /* Centrar las tarjetas en la grilla */
+    justify-content: center;
 }
 
 .stat-card {
     background-color: #eaf5ff;
     border: 1px solid #d0e8ff;
     border-radius: 10px;
-    padding: 12px; /* Padding más compacto */
+    padding: 8px; /* ¡Más pequeño para reducir la altura! */
     text-align: center;
     display: flex;
     flex-direction: column;
     align-items: center;
-    box-sizing: border-box; /* Asegura que padding no aumente el tamaño total */
+    box-sizing: border-box;
+    /* height: 160px; /* Altura fija para probar, ajustar si es necesario */ */
+    justify-content: space-between; /* Distribuye el espacio entre los elementos */
 }
 
 .stat-card h3 {
     margin-top: 0;
-    margin-bottom: 10px; /* Espacio debajo del título */
+    margin-bottom: 5px; /* Más pequeño */
     color: #0056b3;
-    font-size: 1.1em; /* Tamaño de fuente para el título de la estadística */
+    font-size: 1.0em; /* Más pequeño para el título */
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 5px; /* Espacio entre el título y los botones de control */
-    flex-wrap: wrap; /* Permite que los botones se envuelvan si el título es largo */
+    gap: 5px;
+    flex-wrap: wrap;
     width: 100%;
+    line-height: 1.2; /* Reduce el espacio de línea del título */
 }
 
 .stat-card h3 .stat-title {
-    flex-grow: 1; /* Hace que el título ocupe el espacio restante */
-    text-align: center; /* Centra el título dentro del espacio disponible */
+    flex-grow: 1;
+    text-align: center;
     font-weight: bold;
-    white-space: nowrap; /* Evita que el título se rompa en varias líneas */
-    overflow: hidden; /* Oculta cualquier texto que se desborde */
-    text-overflow: ellipsis; /* Añade puntos suspensivos si el texto se desborda */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .stat-card h3 button {
-    padding: 4px 8px; /* Botones de acción más pequeños */
-    font-size: 0.7em;
+    padding: 3px 6px; /* Botones de acción aún más pequeños */
+    font-size: 0.65em;
     border-radius: 4px;
-    margin: 0 2px;
+    margin: 0 1px; /* Margen muy pequeño */
 }
 
-.stat-card h3 .edit-stat-btn {
-    background-color: #ffc107;
-    color: #333;
-}
-.stat-card h3 .edit-stat-btn:hover {
-    background-color: #e0a800;
-}
+.stat-card h3 .edit-stat-btn { background-color: #ffc107; color: #333; }
+.stat-card h3 .edit-stat-btn:hover { background-color: #e0a800; }
+.stat-card h3 .delete-stat-btn { background-color: #dc3545; }
+.stat-card h3 .delete-stat-btn:hover { background-color: #c82333; }
+.stat-card h3 .view-details-btn { background-color: #17a2b8; }
+.stat-card h3 .view-details-btn:hover { background-color: #138496; }
 
-.stat-card h3 .delete-stat-btn {
-    background-color: #dc3545;
-}
-.stat-card h3 .delete-stat-btn:hover {
-    background-color: #c82333;
-}
-
-.stat-card h3 .view-details-btn {
-    background-color: #17a2b8;
-}
-.stat-card h3 .view-details-btn:hover {
-    background-color: #138496;
-}
-
-/* Controles de cada equipo dentro de la tarjeta */
+/* Controles de cada equipo dentro de la tarjeta (vertical) */
 .stat-team-controls {
     display: flex;
-    align-items: center; /* Alinea los elementos en el centro verticalmente */
-    gap: 8px; /* Espacio entre el nombre del equipo, contador y botones */
-    margin-bottom: 5px; /* Espacio entre este bloque y el siguiente */
-    width: 100%;
-    justify-content: center; /* Centrar el contenido de esta fila */
-    flex-wrap: wrap; /* Permite que los botones se envuelvan si la pantalla es muy pequeña */
+    flex-direction: column; /* ¡CLAVE: Botones en vertical! */
+    align-items: center;
+    gap: 4px; /* Espacio entre los botones */
+    margin: 2px 0; /* Espacio reducido entre los bloques de control */
+    width: auto; /* Ajusta el ancho automáticamente */
 }
 
-.stat-team-controls.team-B-controls { /* Margen para el bloque del equipo B */
-    margin-top: 5px; /* Espacio entre el resultado central y el equipo B */
-}
-
-
+/* Ocultar el nombre del equipo en la tarjeta de estadística personalizada */
 .stat-team-controls .team-name-stat {
-    font-weight: bold;
-    font-size: 0.9em;
-    color: #555;
-    white-space: nowrap; /* Evita que el nombre del equipo se rompa */
+    display: none; /* Oculta el nombre del equipo */
 }
 
 .stat-team-controls .stat-team-value {
-    font-size: 2em; /* Tamaño del número de cada equipo */
-    font-weight: bold;
-    color: #007bff;
-    min-width: 30px; /* Asegura un ancho mínimo para el número */
-    text-align: center;
+    display: none; /* Oculta el contador individual del equipo */
 }
 
 .stat-team-controls .stat-buttons {
     display: flex;
-    gap: 5px; /* Espacio entre los botones de control */
+    flex-direction: column; /* ¡Botones apilados! */
+    gap: 4px; /* Espacio entre los botones verticales */
 }
 
 .stat-team-controls .stat-buttons button {
-    padding: 6px 10px; /* Botones de control más pequeños */
-    font-size: 0.8em;
-    border-radius: 6px;
-    white-space: nowrap;
+    padding: 6px 10px; /* Botones de control */
+    font-size: 0.9em;
+    width: 40px; /* Ancho fijo para los botones para que se vean uniformes */
+    height: 40px; /* Altura fija para los botones */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%; /* Redondea los botones */
 }
 
 .stat-total-display {
-    font-size: 2.2em; /* Tamaño del resultado 0 - 0 */
+    font-size: 2.8em; /* Tamaño del resultado 0 - 0, ligeramente más grande */
     font-weight: bold;
     color: #333;
-    margin: 5px 0; /* Margen para separarlo de los controles de los equipos */
+    margin: 8px 0; /* Margen para separarlo de los controles */
+    line-height: 1; /* Reduce el espacio de línea */
 }
 
 
@@ -579,7 +569,33 @@ button:hover {
 }
 
 /* Media Queries para responsividad */
-@media (max-width: 768px) {
+@media (max-width: 992px) { /* Para tablets y pantallas medianas */
+    .left-column {
+        flex: 0 0 30%; /* Ocupa un poco más si el ancho total es menor */
+        max-width: 280px;
+        min-width: 250px;
+    }
+    .right-column {
+        min-width: 450px; /* Ajuste para que las estadísticas quepan */
+    }
+    .custom-stats-grid {
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); /* Mantener 2 columnas, ajustando minmax */
+        gap: 10px;
+    }
+    .stat-card {
+        padding: 6px; /* Reducir aún más el padding */
+    }
+    .stat-total-display {
+        font-size: 2.5em; /* Ligeramente más pequeño */
+    }
+    .stat-team-controls .stat-buttons button {
+        width: 35px; /* Botones más pequeños */
+        height: 35px;
+        font-size: 0.8em;
+    }
+}
+
+@media (max-width: 768px) { /* Para móviles y tablets pequeñas */
     .match-dashboard {
         flex-direction: column; /* Apila las columnas en pantallas pequeñas */
         align-items: center;
@@ -589,6 +605,10 @@ button:hover {
         min-width: unset;
         width: 100%;
         max-width: 500px; /* Ajuste para móviles */
+    }
+    .left-column { /* Restablecer ancho para que ocupe 100% en móvil */
+        max-width: 100%;
+        min-width: unset;
     }
 
     .score-section .stat-group {
@@ -609,25 +629,28 @@ button:hover {
     }
 
     .stat-card h3 {
-        flex-direction: column; /* Botones de edición/borrado se apilan */
+        flex-direction: row; /* Botones de edición/borrado vuelven a ser horizontal en el título */
         gap: 5px;
     }
-
     .stat-card h3 .stat-title {
-        margin-bottom: 5px;
+        margin-bottom: 0; /* Eliminar margen si los botones están al lado */
     }
 
-    /* Asegurar que los botones de estadística personalizada sigan horizontales en móviles */
     .stat-team-controls {
-        flex-wrap: wrap;
-        justify-content: center;
+        flex-direction: column; /* Los botones de control de stat siguen verticales */
     }
     .stat-team-controls .stat-buttons {
-        justify-content: center;
+        flex-direction: column; /* Los botones siguen apilados */
+    }
+    .stat-team-controls .stat-buttons button {
+        width: 38px; /* Ajuste de tamaño para botones en móvil */
+        height: 38px;
+        font-size: 0.85em;
     }
 
     .stat-total-display {
         margin: 10px 0;
+        font-size: 2.8em;
     }
 
     .modal-content {
@@ -647,12 +670,23 @@ button:hover {
 
     /* Ajuste para grid en pantallas más pequeñas */
     .custom-stats-grid {
-        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); /* Más compacto para móviles */
+        grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); /* Aún más compacto para teléfonos pequeños */
     }
 }
 
 @media (max-width: 480px) {
     .custom-stats-grid {
-        grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); /* Aún más compacto para teléfonos muy pequeños */
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); /* Para móviles muy pequeños */
+    }
+    .stat-card {
+        padding: 5px;
+    }
+    .stat-total-display {
+        font-size: 2.4em;
+    }
+    .stat-team-controls .stat-buttons button {
+        width: 35px;
+        height: 35px;
+        font-size: 0.8em;
     }
 }
