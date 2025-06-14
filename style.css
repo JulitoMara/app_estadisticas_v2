@@ -76,15 +76,15 @@ body {
 
 /* Reducir ancho de la columna izquierda y ajustar la derecha */
 .left-column {
-    flex: 0 0 25%; /* No crece, no se encoge, 25% del contenedor padre */
-    max-width: 280px; /* Límite explícito para el ancho */
-    min-width: 220px; /* Asegura que no sea demasiado pequeña, ajustado un poco más */
+    flex: 0 0 20%; /* Reducido a un 20% */
+    max-width: 250px; /* Límite explícito para el ancho */
+    min-width: 200px; /* Asegura que no sea demasiado pequeña */
 }
 
 .right-column {
     flex: 1; /* Permite que la columna crezca y ocupe el resto del espacio */
-    min-width: 580px; /* Ancho mínimo para la columna derecha para acomodar las 2 filas de estadísticas */
-    max-width: 850px; /* Límite para que no se estire demasiado */
+    min-width: 650px; /* Ancho mínimo para la columna derecha para acomodar las estadísticas */
+    max-width: 900px; /* Límite para que no se estire demasiado */
 }
 
 
@@ -148,6 +148,7 @@ body {
 
 .team-score .controls button,
 .match-timer-controls button,
+/* .possession-controls button, */ /* Quitamos esto de aquí para un control más específico */
 .add-custom-stat-integrated button,
 .reset-all-button {
     padding: 10px 15px;
@@ -287,7 +288,7 @@ button:hover {
     right: 5px;
 }
 
-/* Ajuste de los botones de posesión para que no se desborden */
+/* Ajuste de los botones de posesión para que no se desborden y tengan un tamaño coherente */
 .possession-controls {
     display: flex;
     justify-content: center;
@@ -297,11 +298,17 @@ button:hover {
 }
 
 .possession-controls button {
-    flex: 1 1 auto; /* Permite que los botones crezcan o se encojan automáticamente */
-    max-width: 160px; /* Límite para que no se estiren demasiado */
-    background-color: #007bff;
-    padding: 10px 15px; /* Asegura un padding mínimo */
-    box-sizing: border-box; /* Incluye padding y borde en el ancho total */
+    padding: 10px 15px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+    white-space: nowrap;
+    /* Ancho adaptativo para que quepan */
+    flex: 1 1 auto; /* Permite que crezca y se encoja */
+    max-width: 140px; /* Limita el ancho máximo para evitar que se estiren demasiado */
+    box-sizing: border-box; /* Asegura que el padding no cause desbordamiento */
 }
 
 .possession-controls button.active {
@@ -337,8 +344,8 @@ button:hover {
 .custom-stats-grid {
     width: 100%;
     display: grid;
-    /* 2 o 3 columnas, ajustando minmax */
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    /* 3 columnas para pantallas más grandes, 2 para tablets */
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
     gap: 15px;
     justify-content: center;
 }
@@ -347,90 +354,92 @@ button:hover {
     background-color: #eaf5ff;
     border: 1px solid #d0e8ff;
     border-radius: 10px;
-    padding: 8px; /* ¡Más pequeño para reducir la altura! */
+    padding: 8px; /* Más pequeño para reducir la altura */
     text-align: center;
     display: flex;
-    flex-direction: column; /* Sigue siendo columna principal */
+    flex-direction: column; /* Columna principal para el contenido */
     align-items: center;
     box-sizing: border-box;
-    justify-content: space-between; /* Distribuye el espacio entre los elementos */
+    justify-content: space-between; /* Distribuye el espacio */
+    height: 180px; /* Altura fija para uniformidad, ajustar si es necesario */
 }
 
-.stat-card h3 {
-    margin-top: 0;
-    margin-bottom: 5px; /* Más pequeño */
-    color: #0056b3;
-    font-size: 1.0em; /* Más pequeño para el título */
+/* Título de la tarjeta centrado y botones debajo */
+.stat-card-header {
     display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 5px;
-    flex-wrap: wrap;
+    flex-direction: column; /* Apila el título y los iconos */
+    align-items: center; /* Centra horizontalmente el título y los iconos */
+    margin-top: 0;
+    margin-bottom: 8px; /* Espacio entre el header y los controles */
     width: 100%;
-    line-height: 1.2; /* Reduce el espacio de línea del título */
 }
 
-.stat-card h3 .stat-title {
-    flex-grow: 1;
-    text-align: center;
+.stat-card-header .stat-title {
+    color: #0056b3;
+    font-size: 1.1em;
     font-weight: bold;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    margin-bottom: 5px; /* Espacio entre el título y los iconos */
 }
 
-.stat-card h3 button {
-    padding: 3px 6px; /* Botones de acción aún más pequeños */
+.stat-action-icons { /* Contenedor para los iconos de acción (detalles, editar, borrar) */
+    display: flex;
+    gap: 5px; /* Espacio entre los iconos */
+    justify-content: center; /* Centrar los iconos */
+    width: 100%;
+}
+
+.stat-action-icons button {
+    padding: 3px 6px; /* Botones de acción pequeños */
     font-size: 0.65em;
     border-radius: 4px;
-    margin: 0 1px; /* Margen muy pequeño */
+    margin: 0; /* Eliminar margen extra para que el gap funcione bien */
 }
 
-.stat-card h3 .edit-stat-btn { background-color: #ffc107; color: #333; }
-.stat-card h3 .edit-stat-btn:hover { background-color: #e0a800; }
-.stat-card h3 .delete-stat-btn { background-color: #dc3545; }
-.stat-card h3 .delete-stat-btn:hover { background-color: #c82333; }
-.stat-card h3 .view-details-btn { background-color: #17a2b8; }
-.stat-card h3 .view-details-btn:hover { background-color: #138496; }
+.stat-action-icons .edit-stat-btn { background-color: #ffc107; color: #333; }
+.stat-action-icons .edit-stat-btn:hover { background-color: #e0a800; }
+.stat-action-icons .delete-stat-btn { background-color: #dc3545; }
+.stat-action-icons .delete-stat-btn:hover { background-color: #c82333; }
+.stat-action-icons .view-details-btn { background-color: #17a2b8; }
+.stat-action-icons .view-details-btn:hover { background-color: #138496; }
 
-/* Controles de cada equipo dentro de la tarjeta (HORIZONTAL A LOS LADOS DEL RESULTADO) */
-.stat-section-row {
+
+/* Controles de estadística: Main container para los 3 elementos (botones A, 0-0, botones B) */
+.stat-controls-group {
     display: flex;
+    align-items: center; /* Alinea los elementos en el centro verticalmente */
+    justify-content: space-between; /* Empuja los grupos de botones a los lados del 0-0 */
     width: 100%;
-    align-items: center; /* Alinea verticalmente */
-    justify-content: space-between; /* Empuja los elementos a los extremos */
-    margin: 4px 0; /* Espacio vertical entre las filas de control */
+    flex-grow: 1; /* Permite que este grupo ocupe el espacio restante en la tarjeta */
 }
 
-.stat-section-row.visitor-team {
-    /* No se necesita margen extra si ya está justificado */
+/* Grupos de botones verticales para cada equipo */
+.team-buttons-column {
+    display: flex;
+    flex-direction: column; /* ¡CLAVE: Botones en vertical! */
+    gap: 4px; /* Espacio entre los botones apilados */
 }
 
-
-.stat-buttons {
-    display: flex; /* Botones horizontales */
-    gap: 4px; /* Espacio entre los botones */
-}
-
-.stat-buttons button {
+.team-buttons-column button {
     padding: 6px 10px; /* Tamaño de los botones */
     font-size: 0.9em;
-    width: 40px; /* Ancho fijo para botones */
-    height: 40px; /* Altura fija para botones */
+    width: 40px; /* Ancho fijo para los botones para que se vean uniformes */
+    height: 40px; /* Altura fija para los botones */
     display: flex;
     justify-content: center;
     align-items: center;
-    border-radius: 50%; /* Botones redondos */
+    border-radius: 50%; /* Redondea los botones */
 }
 
+/* El resultado central (0 - 0) */
 .stat-total-display {
-    font-size: 2.8em; /* Tamaño del resultado 0 - 0, ligeramente más grande */
+    font-size: 2.8em; /* Tamaño del resultado 0 - 0 */
     font-weight: bold;
     color: #333;
-    margin: 0; /* Eliminar margen vertical, ya que `stat-section-row` maneja el espacio */
     line-height: 1; /* Reduce el espacio de línea */
-    flex-grow: 1; /* Permite que ocupe el centro */
-    text-align: center; /* Centra el texto */
+    flex-shrink: 0; /* Evita que el texto se encoja */
 }
 
 
@@ -569,27 +578,31 @@ button:hover {
 /* Media Queries para responsividad */
 @media (max-width: 992px) { /* Para tablets y pantallas medianas */
     .left-column {
-        flex: 0 0 30%; /* Ocupa un poco más si el ancho total es menor */
-        max-width: 280px;
-        min-width: 250px;
+        flex: 0 0 25%; /* Ajustado */
+        max-width: 250px;
+        min-width: 200px;
     }
     .right-column {
         min-width: 450px; /* Ajuste para que las estadísticas quepan */
     }
     .custom-stats-grid {
-        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); /* Mantener 2 columnas, ajustando minmax */
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); /* Mantener 2 o 3 columnas, ajustando minmax */
         gap: 10px;
     }
     .stat-card {
-        padding: 6px; /* Reducir aún más el padding */
+        padding: 5px; /* Reducir aún más el padding */
+        height: 160px; /* Ajuste de altura */
     }
     .stat-total-display {
-        font-size: 2.5em; /* Ligeramente más pequeño */
+        font-size: 2.2em; /* Ligeramente más pequeño */
     }
-    .stat-buttons button {
+    .team-buttons-column button {
         width: 35px; /* Botones más pequeños */
         height: 35px;
         font-size: 0.8em;
+    }
+    .possession-controls button {
+        max-width: 120px; /* Ajuste para botones de posesión en tablets */
     }
 }
 
@@ -626,32 +639,33 @@ button:hover {
         font-size: 1.5em;
     }
 
-    .stat-card h3 {
-        flex-direction: row; /* Botones de edición/borrado vuelven a ser horizontal en el título */
-        gap: 5px;
-    }
-    .stat-card h3 .stat-title {
-        margin-bottom: 0; /* Eliminar margen si los botones están al lado */
+    .possession-controls button {
+        max-width: 140px; /* Ajuste de ancho para móviles */
     }
 
-    /* Los botones de control de stat vuelven a estar horizontales */
-    .stat-section-row {
-        flex-direction: row;
-        justify-content: space-between;
+    /* Estadísticas personalizadas */
+    .custom-stats-grid {
+        grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); /* Aún más compacto para teléfonos pequeños */
+        gap: 10px;
     }
-    .stat-buttons {
-        flex-direction: row; /* Asegura que los botones estén en fila */
+    .stat-card {
+        padding: 5px;
+        height: 150px; /* Ajuste de altura para móviles */
     }
-
-    .stat-buttons button {
-        width: 38px; /* Ajuste de tamaño para botones en móvil */
-        height: 38px;
-        font-size: 0.85em;
+    .stat-card-header .stat-title {
+        font-size: 0.95em;
     }
-
+    .stat-action-icons button {
+        padding: 2px 5px;
+        font-size: 0.6em;
+    }
     .stat-total-display {
-        margin: 10px 0;
-        font-size: 2.8em;
+        font-size: 2.4em;
+    }
+    .team-buttons-column button {
+        width: 35px;
+        height: 35px;
+        font-size: 0.8em;
     }
 
     .modal-content {
@@ -668,26 +682,21 @@ button:hover {
     .event-list li span.event-team {
         text-align: left;
     }
-
-    /* Ajuste para grid en pantallas más pequeñas */
-    .custom-stats-grid {
-        grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); /* Aún más compacto para teléfonos pequeños */
-    }
 }
 
 @media (max-width: 480px) {
     .custom-stats-grid {
-        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); /* Para móviles muy pequeños */
+        grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); /* Para móviles muy pequeños */
     }
     .stat-card {
-        padding: 5px;
+        height: 140px; /* Altura muy reducida */
     }
     .stat-total-display {
-        font-size: 2.4em;
+        font-size: 2em;
     }
-    .stat-buttons button {
-        width: 35px;
-        height: 35px;
-        font-size: 0.8em;
+    .team-buttons-column button {
+        width: 32px;
+        height: 32px;
+        font-size: 0.75em;
     }
 }
