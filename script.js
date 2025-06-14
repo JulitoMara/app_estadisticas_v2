@@ -114,8 +114,8 @@ function renderCustomStats() {
         statCard.classList.add('stat-card');
         statCard.dataset.statId = stat.id;
 
-        const teamAName = teamANameInput.value || 'Equipo A';
-        const teamBName = teamBNameInput.value || 'Equipo B';
+        // No necesitamos los nombres de los equipos aquí dentro de la tarjeta
+        // Ya que solo mostraremos el 0-0 y los botones verticales.
 
         statCard.innerHTML = `
             <h3>
@@ -124,9 +124,7 @@ function renderCustomStats() {
                 <button class="edit-stat-btn" data-id="${stat.id}">✏️</button>
                 <button class="delete-stat-btn" data-id="${stat.id}">🗑️</button>
             </h3>
-            <div class="stat-team-controls">
-                <span class="team-name-stat">${teamAName}</span>
-                <span class="stat-team-value" data-team-value="${stat.id}-A">0</span>
+            <div class="stat-team-controls team-A-controls">
                 <div class="stat-buttons">
                     <button class="reset-btn" data-team="A" data-stat="${stat.id}">🔄</button>
                     <button class="minus-btn" data-team="A" data-stat="${stat.id}">-</button>
@@ -135,8 +133,6 @@ function renderCustomStats() {
             </div>
             <span class="stat-total-display" data-stat-total="${stat.id}">0 - 0</span>
             <div class="stat-team-controls team-B-controls">
-                <span class="team-name-stat">${teamBName}</span>
-                <span class="stat-team-value" data-team-value="${stat.id}-B">0</span>
                 <div class="stat-buttons">
                     <button class="reset-btn" data-team="B" data-stat="${stat.id}">🔄</button>
                     <button class="minus-btn" data-team="B" data-stat="${stat.id}">-</button>
@@ -161,17 +157,8 @@ function updateCustomStatCounters() {
         if (mainTotalSpan) {
             mainTotalSpan.textContent = `${teamAcount} - ${teamBcount}`;
         }
-
-        // Actualizar los contadores individuales de cada equipo (el número junto al nombre del equipo)
-        const teamAValueEl = generalStatsContainer.querySelector(`.stat-team-value[data-team-value="${stat.id}-A"]`);
-        const teamBValueEl = generalStatsContainer.querySelector(`.stat-team-value[data-team-value="${stat.id}-B"]`);
-        
-        if (teamAValueEl) {
-            teamAValueEl.textContent = teamAcount;
-        }
-        if (teamBValueEl) {
-            teamBValueEl.textContent = teamBcount;
-        }
+        // Los contadores individuales (teamAValueEl, teamBValueEl) ya no existen en el HTML de la tarjeta,
+        // por lo que no es necesario actualizarlos aquí.
     });
 }
 
@@ -212,7 +199,7 @@ function handleCustomStatControls(e) {
             statToUpdate.events = statToUpdate.events.filter(event => event.team !== team);
         }
         localStorage.setItem('customStats', JSON.stringify(customStats));
-        updateCustomStatCounters(); // Esto recalculará y actualizará ambos contadores
+        updateCustomStatCounters(); // Esto recalculará y actualizará el contador total (0-0)
     } else if (target.classList.contains('delete-stat-btn')) {
         const statIdToDelete = target.dataset.id;
         const defaultStatIds = [
