@@ -13,39 +13,41 @@
     --reset-color: #ffc107; /* Amarillo para reiniciar */
     --edit-color: #17a2b8; /* Azul-cian para editar */
 
-    --spacing-xs: 0.5rem;
-    --spacing-sm: 1rem;
-    --spacing-md: 1.5rem;
-    --spacing-lg: 2rem;
-    --spacing-xl: 3rem;
+    --spacing-xs: 0.5rem;   /* 8px */
+    --spacing-sm: 0.75rem;  /* 12px */
+    --spacing-md: 1rem;     /* 16px */
+    --spacing-lg: 1.5rem;   /* 24px */
+    --spacing-xl: 2rem;     /* 32px */
+    --spacing-xxl: 3rem;    /* 48px */
 
     --border-radius: 8px;
-    --font-size-base: 1rem;
-    --font-size-large: 2.5rem; /* Para contadores grandes */
-    --font-size-small: 0.875rem; /* Para etiquetas pequeñas */
+    --font-size-base: 0.9rem; /* Ligeramente más pequeño para compactar */
+    --font-size-large: 2rem; /* Para contadores grandes, un poco más pequeño */
+    --font-size-small: 0.75rem; /* Para etiquetas pequeñas, un poco más pequeño */
 }
 
 /* Estilos Generales y Reseteo */
 body {
     font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
     margin: 0;
-    padding: 0;
+    padding: var(--spacing-md); /* Menos padding en el body */
     background-color: var(--background-light);
     color: var(--text-dark);
     line-height: 1.6;
     display: flex;
     justify-content: center;
-    padding: var(--spacing-lg);
-    box-sizing: border-box; /* Incluir padding en el ancho total */
+    box-sizing: border-box;
+    min-height: 100vh; /* Para que ocupe al menos toda la altura de la vista */
+    align-items: flex-start; /* Alinea el contenido al inicio verticalmente */
 }
 
 .main-app-container {
-    max-width: 1200px; /* Ajusta según el tamaño que consideres óptimo */
+    max-width: 1200px; /* Ancho máximo */
     width: 100%;
     background-color: var(--background-card);
     border-radius: var(--border-radius);
     box-shadow: 0 4px 15px var(--shadow-light);
-    padding: var(--spacing-lg) var(--spacing-xl);
+    padding: var(--spacing-lg); /* Menos padding general */
     box-sizing: border-box;
 }
 
@@ -53,20 +55,20 @@ h1 {
     text-align: center;
     color: var(--primary-color);
     margin-bottom: var(--spacing-lg);
-    font-size: 2.5rem;
+    font-size: 2.2rem; /* Un poco más pequeño */
     font-weight: 700;
 }
 
 h2 {
     color: var(--primary-color);
-    font-size: 1.8rem;
+    font-size: 1.6rem; /* Un poco más pequeño */
     margin-top: 0;
     margin-bottom: var(--spacing-md);
-    text-align: center; /* Centrar títulos de sección */
+    text-align: center;
 }
 
 h3 {
-    font-size: 1.2rem;
+    font-size: 1.1rem; /* Un poco más pequeño */
     color: var(--text-dark);
     margin-bottom: var(--spacing-xs);
 }
@@ -75,12 +77,12 @@ h3 {
     border: 0;
     height: 1px;
     background-color: var(--border-color);
-    margin: var(--spacing-xl) 0;
+    margin: var(--spacing-xl) 0; /* Menos margen vertical */
 }
 
 /* --- Controles de Formulario --- */
 input[type="text"] {
-    width: 100%; /* Ocupa todo el espacio disponible */
+    width: 100%;
     padding: var(--spacing-sm);
     border: 1px solid var(--border-color);
     border-radius: var(--border-radius);
@@ -97,11 +99,11 @@ button {
     cursor: pointer;
     font-size: var(--font-size-base);
     transition: background-color 0.2s ease, transform 0.1s ease;
-    white-space: nowrap; /* Evita que el texto del botón se rompa */
+    white-space: nowrap;
 }
 
 button:hover {
-    background-color: darken(var(--primary-color), 10%); /* Un poco más oscuro al pasar el ratón */
+    background-color: #0056b3; /* Color más oscuro para hover */
     transform: translateY(-1px);
 }
 
@@ -109,24 +111,25 @@ button:active {
     transform: translateY(0);
 }
 
-/* --- Layout de Columnas --- */
+/* --- Layout de Columnas Principal (match-dashboard) --- */
 .match-dashboard {
     display: grid;
-    grid-template-columns: 1fr 2fr; /* Columna izquierda más pequeña, derecha más grande */
+    /* En pantallas grandes: 1/3 para la izquierda, 2/3 para la derecha */
+    grid-template-columns: 1fr 2fr;
     gap: var(--spacing-lg); /* Espacio entre columnas */
 }
 
-/* En pantallas pequeñas, apila las columnas */
+/* En pantallas medianas y pequeñas, apila las columnas */
 @media (max-width: 992px) {
     .match-dashboard {
-        grid-template-columns: 1fr;
+        grid-template-columns: 1fr; /* Una sola columna */
     }
 }
 
 .left-column, .right-column {
     display: flex;
     flex-direction: column;
-    gap: var(--spacing-lg); /* Espacio entre secciones dentro de las columnas */
+    gap: var(--spacing-md); /* Espacio entre secciones dentro de las columnas, reducido */
 }
 
 /* --- Estilos de Tarjeta (Card) --- */
@@ -138,48 +141,36 @@ button:active {
     box-shadow: 0 2px 8px var(--shadow-light);
 }
 
-/* --- Sección de Nombres de Equipos --- */
-.config-section {
-    margin-bottom: var(--spacing-lg);
+/* --- Sección de Nombres de Equipos y Guardar Partido (Header) --- */
+.app-header .config-section {
     display: flex;
-    flex-direction: column; /* Apilados por defecto */
-    gap: var(--spacing-md);
-    align-items: flex-start; /* Alineación para etiquetas */
+    flex-wrap: wrap; /* Permite que los elementos se envuelvan */
+    justify-content: space-between;
+    align-items: flex-end; /* Alinea los inputs y el botón al final */
+    gap: var(--spacing-md); /* Espacio entre los grupos de input y el botón */
+    margin-bottom: var(--spacing-lg);
+    padding: var(--spacing-md); /* Padding para la tarjeta de configuración */
 }
 
-.team-names-manager {
-    display: flex; /* Para poner los inputs lado a lado */
-    flex-wrap: wrap; /* Envolver en pantallas pequeñas */
-    gap: var(--spacing-md);
-    width: 100%;
-    justify-content: center; /* Centrar los inputs */
-}
-
-.team-name-group {
+.app-header .team-name-group {
     flex: 1; /* Para que cada input ocupe el espacio disponible */
-    min-width: 250px; /* Ancho mínimo para que no se aprieten demasiado */
+    min-width: 180px; /* Ancho mínimo para que no se aprieten demasiado */
 }
 
-.team-name-group label {
-    display: block;
-    margin-bottom: var(--spacing-xs);
-    font-weight: bold;
-    color: var(--text-dark);
+.app-header .action-buttons {
+    flex-shrink: 0; /* No permite que el botón se encoja */
+    margin-top: 0; /* Elimina el margen superior que tenía */
 }
 
-.action-buttons {
-    width: 100%;
-    text-align: center;
-    margin-top: var(--spacing-md);
-}
 
-/* --- Contadores y Controles Generales --- */
+/* --- Contadores y Controles Generales (para todas las secciones) --- */
 .counter {
     font-size: var(--font-size-large);
     font-weight: bold;
     color: var(--primary-color);
     display: block;
     text-align: center;
+    margin-bottom: var(--spacing-xs); /* Menos espacio bajo el número */
 }
 
 .team-label {
@@ -187,21 +178,21 @@ button:active {
     color: var(--text-light);
     display: block;
     text-align: center;
-    margin-top: 5px;
+    margin-bottom: var(--spacing-sm); /* Espacio bajo la etiqueta */
 }
 
 .controls {
     display: flex;
     justify-content: center;
     gap: var(--spacing-xs);
-    margin-top: var(--spacing-sm);
+    margin-top: 0; /* Eliminar margen superior, ya que team-label tiene uno */
 }
 
 .controls button {
-    padding: 0.6rem 0.8rem; /* Ajuste para que los botones sean un poco más grandes */
-    font-size: 1.2rem; /* Iconos un poco más grandes */
-    width: 45px; /* Ancho fijo para mantener la forma */
-    height: 45px; /* Altura fija */
+    padding: 0; /* Padding interno manejado por width/height */
+    width: 40px; /* Tamaño fijo para los botones de control, un poco más pequeños */
+    height: 40px;
+    font-size: 1.1rem; /* Tamaño del icono */
     display: flex;
     align-items: center;
     justify-content: center;
@@ -211,15 +202,15 @@ button:active {
 /* Colores específicos para los botones de control */
 .controls .plus-btn { background-color: var(--positive-color); }
 .controls .minus-btn { background-color: var(--negative-color); }
-.controls .reset-btn { background-color: var(--reset-color); color: var(--text-dark); } /* Texto oscuro para reset */
+.controls .reset-btn { background-color: var(--reset-color); color: var(--text-dark); }
 
 /* --- Sección Marcador --- */
 .score-section .stat-group {
     display: flex;
     justify-content: space-around;
-    align-items: center;
-    margin-bottom: var(--spacing-md);
-    gap: var(--spacing-md);
+    align-items: flex-start; /* Alinea al inicio para que los controles no empujen */
+    margin-bottom: 0; /* Eliminar margen inferior */
+    gap: var(--spacing-sm); /* Espacio más compacto entre equipos */
 }
 
 .team-score {
@@ -246,8 +237,8 @@ button:active {
 }
 
 .match-timer-controls button {
-    flex: 1; /* Para que los botones ocupen el espacio equitativamente */
-    max-width: 150px;
+    flex: 1;
+    max-width: 120px; /* Un poco más estrechos */
     padding: var(--spacing-sm) var(--spacing-md);
     font-size: var(--font-size-base);
 }
@@ -255,10 +246,14 @@ button:active {
 /* --- Posesión de Balón --- */
 .possession-section .timer-group {
     text-align: center;
-    margin-bottom: var(--spacing-sm);
+    position: relative; /* Para posicionar el porcentaje */
+    padding: var(--spacing-xs) 0; /* Pequeño padding vertical */
 }
 
-.possession-section h3 {
+.possession-section .timer-group span:first-child { /* Nombre del equipo en posesión */
+    font-size: var(--font-size-base);
+    font-weight: bold;
+    display: block;
     margin-bottom: var(--spacing-xs);
 }
 
@@ -270,51 +265,55 @@ button:active {
 }
 
 .possession-timers-container .timer {
-    font-size: 1.5rem; /* Menos grande que el tiempo de partido */
+    font-size: 1.3rem; /* Más pequeño que el tiempo de partido */
     color: var(--primary-color);
 }
 
 .possession-bar-container {
     width: 100%;
-    height: 25px;
+    height: 20px; /* Barra más delgada */
     background-color: var(--border-color);
     border-radius: var(--border-radius);
     overflow: hidden;
     position: relative;
     margin-bottom: var(--spacing-md);
-    display: flex; /* Para alinear los porcentajes */
+    display: flex;
     align-items: center;
 }
 
 .possession-bar-fill {
     height: 100%;
     background-color: var(--primary-color);
-    width: 50%; /* Valor inicial */
+    width: 50%;
     transition: width 0.3s ease;
 }
 
+/* Posicionamiento de los porcentajes DENTRO de la barra */
 .possession-percentage-text {
     position: absolute;
-    color: white; /* Texto blanco sobre la barra */
+    color: white;
     font-weight: bold;
-    font-size: var(--font-size-small);
+    font-size: var(--font-size-small); /* Pequeño y legible */
     text-shadow: 1px 1px 2px rgba(0,0,0,0.4);
+    pointer-events: none; /* Permite clickar a través del texto */
+    top: 50%;
+    transform: translateY(-50%);
 }
-#possessionPercentA { left: 5px; }
-#possessionPercentB { right: 5px; }
+#possessionPercentA { left: 5px; } /* Mueve a la izquierda de la barra */
+#possessionPercentB { right: 5px; } /* Mueve a la derecha de la barra */
 
 
 .possession-controls {
     display: flex;
-    flex-wrap: wrap; /* Permite que los botones se envuelvan */
+    flex-wrap: wrap;
     justify-content: center;
-    gap: var(--spacing-xs); /* Espacio más pequeño para botones compactos */
+    gap: var(--spacing-xs); /* Espacio más pequeño */
 }
 
 .possession-controls button {
-    flex-grow: 1; /* Permite que los botones crezcan */
-    padding: 0.8rem 1rem;
-    font-size: var(--font-size-small);
+    flex-grow: 1;
+    padding: 0.7rem 0.9rem; /* Un poco menos de padding */
+    font-size: var(--font-size-base);
 }
 
 .possession-controls button.active {
@@ -330,11 +329,8 @@ button:active {
     color: var(--text-dark);
 }
 
-/* --- Estadísticas Personalizadas (Management Section) --- */
-.custom-stats-management {
-    /* No hay estilos adicionales aquí ya que 'card' ya los maneja */
-}
 
+/* --- Estadísticas Personalizadas (Management Section) --- */
 .add-custom-stat-integrated {
     display: flex;
     gap: var(--spacing-xs);
@@ -343,24 +339,26 @@ button:active {
 
 .add-custom-stat-integrated input {
     flex-grow: 1;
+    padding: var(--spacing-sm);
 }
 
 .add-custom-stat-integrated button {
     padding: var(--spacing-sm) var(--spacing-md);
+    font-size: var(--font-size-base);
 }
-
 
 .custom-stats-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* 2 columnas o más, adaptativo */
-    gap: var(--spacing-md);
+    /* Ajuste para 3 columnas en pantallas grandes, 2 en medianas, 1 en pequeñas */
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); /* Más compacto */
+    gap: var(--spacing-md); /* Menos espacio entre tarjetas de estadísticas */
 }
 
 .stat-card {
-    background-color: var(--background-light); /* Un fondo ligeramente diferente para las tarjetas internas */
+    background-color: var(--background-light);
     border: 1px solid var(--border-color);
     border-radius: var(--border-radius);
-    padding: var(--spacing-md);
+    padding: var(--spacing-sm); /* Menos padding interno */
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
     display: flex;
     flex-direction: column;
@@ -371,24 +369,28 @@ button:active {
     justify-content: space-between;
     align-items: center;
     margin-bottom: var(--spacing-sm);
-    flex-wrap: wrap; /* Permitir que los botones se envuelvan si el nombre es largo */
+    flex-wrap: nowrap; /* Evita que el título se envuelva, priorizando los botones */
+    line-height: 1.2; /* Ajuste para títulos largos */
 }
 
 .stat-card .stat-title {
-    font-size: 1.1rem; /* Tamaño adecuado para el nombre de la estadística */
+    font-size: 1rem; /* Nombre de estadística un poco más pequeño */
     font-weight: bold;
     flex-grow: 1;
-    margin-right: var(--spacing-xs); /* Espacio entre el título y los botones */
-    word-break: break-word; /* Para que el texto largo se rompa */
+    margin-right: var(--spacing-xs);
+    word-break: break-word;
+    overflow: hidden; /* Oculta el exceso de texto si no cabe */
+    text-overflow: ellipsis; /* Añade puntos suspensivos si el texto es muy largo */
+    white-space: normal; /* Permite saltos de línea normales si el espacio lo permite */
 }
 
 .stat-card h3 button {
-    padding: 0.4rem 0.6rem; /* Botones más pequeños para editar/eliminar */
-    font-size: 0.9rem; /* Iconos más pequeños */
-    width: 30px; /* Ancho fijo para mantener la forma */
-    height: 30px; /* Altura fija */
-    border-radius: 5px; /* Cuadrados o ligeramente redondeados */
-    margin-left: 5px; /* Espacio entre los botones de control */
+    padding: 0; /* Padding interno manejado por width/height */
+    width: 25px; /* Botones de editar/eliminar más pequeños */
+    height: 25px;
+    font-size: 0.8rem; /* Iconos más pequeños */
+    border-radius: 4px; /* Ligeramente menos redondeados */
+    margin-left: 3px; /* Menos espacio entre los botones */
 }
 
 .stat-card h3 .edit-stat-btn { background-color: var(--edit-color); }
@@ -397,8 +399,8 @@ button:active {
 
 .stat-card .stat-group {
     display: flex;
-    flex-direction: column; /* Apila las estadísticas de los equipos */
-    gap: var(--spacing-sm);
+    flex-direction: column;
+    gap: var(--spacing-xs); /* Más compacto entre equipos en la stat card */
 }
 
 .stat-card .team-stat {
@@ -407,41 +409,50 @@ button:active {
     align-items: center;
     border: 1px solid var(--border-color);
     border-radius: var(--border-radius);
-    padding: var(--spacing-sm);
-    background-color: #f0f0f0; /* Fondo ligeramente gris para cada equipo dentro de la tarjeta de estadística */
+    padding: var(--spacing-sm); /* Menos padding interno */
+    background-color: #f0f0f0;
 }
 
 .stat-card .team-stat .counter {
-    font-size: 1.8rem; /* Tamaño de los contadores de las stats individuales */
+    font-size: 1.5rem; /* Contadores de stats individuales más pequeños */
     margin-bottom: var(--spacing-xs);
 }
 
-.stat-card .team-stat span:last-of-type { /* El nombre del equipo debajo del contador */
+.stat-card .team-stat span:last-of-type {
     font-size: var(--font-size-small);
     color: var(--text-light);
 }
 
+.stat-card .team-stat .controls {
+    margin-top: var(--spacing-xs); /* Espacio reducido */
+}
+.stat-card .team-stat .controls button {
+    width: 35px; /* Iconos de control en stat card ligeramente más pequeños */
+    height: 35px;
+    font-size: 1rem;
+}
+
+
 /* Botón Reiniciar Todas las Estadísticas */
-#resetAll {
+.reset-all-button { /* Usando la nueva clase específica */
     display: block;
     width: fit-content;
-    margin: var(--spacing-lg) auto;
+    margin: var(--spacing-xl) auto var(--spacing-lg) auto; /* Ajuste de margen */
     background-color: var(--negative-color);
-    font-size: 1.1rem;
-    padding: var(--spacing-sm) var(--spacing-md);
+    font-size: 1.0rem; /* Un poco más pequeño */
+    padding: var(--spacing-sm) var(--spacing-lg); /* Padding ajustado */
 }
-#resetAll:hover {
-    background-color: darken(var(--negative-color), 10%);
+.reset-all-button:hover {
+    background-color: #c82333; /* Color más oscuro para hover */
 }
 
 /* --- Historial de Partidos --- */
 .history-section {
-    margin-top: var(--spacing-xl);
+    margin-top: var(--spacing-xxl); /* Margen superior considerable para separarlo */
 }
 
 .history-section h2 {
-    text-align: center;
-    margin-bottom: var(--spacing-lg);
+    margin-bottom: var(--spacing-md);
 }
 
 #matchesHistoryList {
@@ -463,6 +474,7 @@ button:active {
     align-items: center;
     padding: var(--spacing-sm) 0;
     border-bottom: 1px solid var(--border-color);
+    font-size: var(--font-size-base); /* Tamaño base para el texto del historial */
 }
 
 .match-history-item:last-child {
@@ -471,7 +483,6 @@ button:active {
 
 .match-history-item span {
     flex-grow: 1;
-    font-size: var(--font-size-base);
     color: var(--text-dark);
 }
 
@@ -481,7 +492,7 @@ button:active {
 }
 
 .match-history-controls button {
-    padding: 0.6rem 1rem;
+    padding: 0.5rem 0.8rem; /* Botones más pequeños en el historial */
     font-size: var(--font-size-small);
 }
 
@@ -489,31 +500,42 @@ button:active {
 .match-history-controls .delete-match-btn { background-color: var(--negative-color); }
 
 /* Media Queries para responsividad */
+@media (max-width: 992px) { /* Pasa a una sola columna principal */
+    .match-dashboard {
+        grid-template-columns: 1fr;
+    }
+    .app-header .config-section {
+        flex-direction: column; /* Apila inputs y botón */
+        align-items: center;
+    }
+    .app-header .action-buttons {
+        width: 100%; /* El botón ocupa todo el ancho */
+    }
+}
+
 @media (max-width: 768px) {
     .main-app-container {
         padding: var(--spacing-md);
     }
     h1 { font-size: 2rem; }
-    h2 { font-size: 1.5rem; }
-    .config-section, .team-names-manager {
-        flex-direction: column;
-    }
-    .team-name-group {
-        min-width: unset;
-        width: 100%;
-    }
-    .possession-controls button {
-        width: 100%; /* Botones de posesión apilados */
+    h2 { font-size: 1.4rem; }
+    .custom-stats-grid {
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); /* 2 o 3 columnas */
     }
     .controls button {
-        width: 40px; /* Un poco más pequeños en móviles */
-        height: 40px;
-        font-size: 1.1rem;
+        width: 38px;
+        height: 38px;
+        font-size: 1rem;
     }
     .stat-card h3 button {
-        width: 28px;
-        height: 28px;
-        font-size: 0.8rem;
+        width: 23px;
+        height: 23px;
+        font-size: 0.7rem;
+    }
+    .stat-card .team-stat .controls button {
+        width: 32px;
+        height: 32px;
+        font-size: 0.9rem;
     }
 }
 
@@ -522,16 +544,24 @@ button:active {
         padding: var(--spacing-sm);
     }
     h1 { font-size: 1.8rem; }
-    h2 { font-size: 1.3rem; }
+    h2 { font-size: 1.2rem; }
+    .custom-stats-grid {
+        grid-template-columns: 1fr; /* Una sola columna para móviles pequeños */
+    }
     .controls button {
         width: 35px;
         height: 35px;
-        font-size: 1rem;
+        font-size: 0.9rem;
     }
     .stat-card h3 button {
-        width: 25px;
-        height: 25px;
-        font-size: 0.75rem;
+        width: 20px;
+        height: 20px;
+        font-size: 0.65rem;
+    }
+    .stat-card .team-stat .controls button {
+        width: 30px;
+        height: 30px;
+        font-size: 0.8rem;
     }
     .match-history-item {
         flex-direction: column;
@@ -540,6 +570,6 @@ button:active {
     }
     .match-history-controls {
         width: 100%;
-        justify-content: flex-end; /* Alinea los botones a la derecha */
+        justify-content: flex-end;
     }
 }
