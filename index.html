@@ -5,53 +5,48 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Estadísticas de Partido</title>
     <link rel="stylesheet" href="style.css">
-
-    <link rel="manifest" href="/manifest.json">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Estadísticas">
-    <link rel="apple-touch-icon" href="/icon-192x192.png">
-    </head>
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="icon-192x192.png">
+    <meta name="theme-color" content="#007bff">
+    <meta name="description" content="Aplicación para gestionar estadísticas de un partido de fútbol, incluyendo marcador, tiempo y posesión.">
+</head>
 <body>
     <div class="main-app-container">
-        <h1>Estadísticas de Partido</h1>
-
-        <section class="config-section">
-            <div class="team-names-manager">
+        <header class="app-header">
+            <h1>Estadísticas de Partido</h1>
+            <div class="config-section card">
                 <div class="team-name-group">
                     <label for="teamAName">Equipo A:</label>
-                    <input type="text" id="teamAName" value="Tarragona">
+                    <input type="text" id="teamAName" value="Tarragona" placeholder="Nombre Equipo A">
                 </div>
                 <div class="team-name-group">
                     <label for="teamBName">Equipo B:</label>
-                    <input type="text" id="teamBName" value="Camp Clar">
+                    <input type="text" id="teamBName" value="Camp Clar" placeholder="Nombre Equipo B">
+                </div>
+                <div class="action-buttons">
+                    <button id="saveMatchBtn">Guardar Partido</button>
                 </div>
             </div>
-            <div class="action-buttons">
-                <button id="saveMatchBtn">💾 Guardar Partido</button>
-            </div>
-        </section>
+        </header>
 
-        <hr class="section-divider">
-
-        <div class="match-dashboard">
-            <div class="left-column">
+        <main class="match-dashboard">
+            <section class="left-column">
                 <div class="score-section card">
                     <h2>Marcador</h2>
                     <div class="stat-group">
                         <div class="team-score">
-                            <span id="teamAGoals" class="counter large-counter">0</span>
-                            <span id="teamALabelGoals" class="team-label">Tarragona</span>
-                            <div class="controls compact-controls">
+                            <span id="teamAGoals" class="counter">0</span>
+                            <span id="teamALabelGoals" class="team-label">Equipo A</span>
+                            <div class="controls">
                                 <button class="reset-btn" data-target="teamAGoals">🔄</button>
                                 <button class="minus-btn" data-target="teamAGoals">-</button>
                                 <button class="plus-btn" data-target="teamAGoals">+</button>
                             </div>
                         </div>
                         <div class="team-score">
-                            <span id="teamBGoals" class="counter large-counter">0</span>
-                            <span id="teamBLabelGoals" class="team-label">Camp Clar</span>
-                            <div class="controls compact-controls">
+                            <span id="teamBGoals" class="counter">0</span>
+                            <span id="teamBLabelGoals" class="team-label">Equipo B</span>
+                            <div class="controls">
                                 <button class="reset-btn" data-target="teamBGoals">🔄</button>
                                 <button class="minus-btn" data-target="teamBGoals">-</button>
                                 <button class="plus-btn" data-target="teamBGoals">+</button>
@@ -60,45 +55,42 @@
                     </div>
                 </div>
 
-                <section class="match-timer-section card">
+                <div class="match-timer-section card">
                     <h2>Tiempo de Partido</h2>
-                    <span id="matchTimer" class="timer large-timer">00:00:00</span>
-                    <div class="match-timer-controls compact-controls">
-                        <button id="toggleMatchTimer" class="play-pause-btn">▶️ Iniciar</button>
-                        <button id="resetMatchTimer" class="reset-btn">🔄 Reiniciar</button>
+                    <span id="matchTimer" class="timer">00:00:00</span>
+                    <div class="match-timer-controls">
+                        <button id="toggleMatchTimer">▶️ Iniciar</button>
+                        <button id="resetMatchTimer">🔄 Reiniciar</button>
                     </div>
-                </section>
+                </div>
 
                 <div class="possession-section card">
                     <h2>Posesión de Balón</h2>
                     <div class="possession-timers-container">
                         <div class="timer-group">
-                            <h3 id="possessionTeamA">Tarragona</h3>
+                            <span id="possessionTeamA">Equipo A</span>
                             <span id="possessionTimerA" class="timer">00:00:00</span>
+                            <span id="possessionPercentA" class="possession-percentage-text">0%</span>
                         </div>
                         <div class="timer-group">
-                            <h3 id="possessionTeamB">Camp Clar</h3>
+                            <span id="possessionTeamB">Equipo B</span>
                             <span id="possessionTimerB" class="timer">00:00:00</span>
+                            <span id="possessionPercentB" class="possession-percentage-text">0%</span>
                         </div>
                     </div>
-
                     <div class="possession-bar-container">
-                        <div class="possession-bar-fill" id="possessionBarA"></div>
-                        <div class="possession-percentage-text" id="possessionPercentA">0%</div>
-                        <div class="possession-percentage-text" id="possessionPercentB">0%</div>
+                        <div id="possessionBarA" class="possession-bar-fill"></div>
                     </div>
-
-                    <div class="possession-controls compact-controls">
-                        <button id="togglePossessionA">Tarragona Posesión</button>
-                        <button id="togglePossessionB">Camp Clar Posesión</button>
-                        <button id="resetPossession">Reiniciar</button>
+                    <div class="possession-controls">
+                        <button id="togglePossessionA">Posesión A</button>
+                        <button id="togglePossessionB">Posesión B</button>
+                        <button id="resetPossession" class="reset-btn">🔄 Reiniciar</button>
                     </div>
                 </div>
+            </section>
 
-            </div>
-
-            <div class="right-column">
-                <section class="custom-stats-management card">
+            <section class="right-column">
+                <div class="custom-stats-management card">
                     <h2>Estadísticas Personalizadas</h2>
                     <div class="add-custom-stat-integrated">
                         <input type="text" id="newStatName" placeholder="Nueva estadística (ej: Faltas)">
@@ -106,24 +98,20 @@
                     </div>
                     <div id="generalStatsContainer" class="custom-stats-grid">
                         </div>
-                </section>
-            </div>
-        </div>
+                </div>
+            </section>
+        </main>
 
         <hr class="section-divider">
 
-        <button id="resetAll">Reiniciar Todas las Estadísticas</button>
-
-        <hr class="section-divider">
         <section class="history-section">
             <h2>Historial de Partidos</h2>
-            <div id="matchesHistoryList">
-                <p>No hay partidos guardados aún.</p>
+            <div id="matchesHistoryList" class="card">
                 </div>
+            <button id="resetAll" class="reset-all-button">Reiniciar Todas las Estadísticas del Partido Actual</button>
         </section>
-
     </div>
 
     <script src="script.js"></script>
-    </body>
+</body>
 </html>
