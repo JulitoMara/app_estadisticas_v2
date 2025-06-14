@@ -77,13 +77,13 @@ body {
 /* Reducir ancho de la columna izquierda y ajustar la derecha */
 .left-column {
     flex: 0 0 25%; /* No crece, no se encoge, 25% del contenedor padre */
-    max-width: 300px; /* Límite explícito para el ancho */
-    min-width: 280px; /* Asegura que no sea demasiado pequeña */
+    max-width: 280px; /* Límite explícito para el ancho */
+    min-width: 220px; /* Asegura que no sea demasiado pequeña, ajustado un poco más */
 }
 
 .right-column {
     flex: 1; /* Permite que la columna crezca y ocupe el resto del espacio */
-    min-width: 600px; /* Ancho mínimo para la columna derecha para acomodar las 2 filas de estadísticas */
+    min-width: 580px; /* Ancho mínimo para la columna derecha para acomodar las 2 filas de estadísticas */
     max-width: 850px; /* Límite para que no se estire demasiado */
 }
 
@@ -148,7 +148,6 @@ body {
 
 .team-score .controls button,
 .match-timer-controls button,
-.possession-controls button,
 .add-custom-stat-integrated button,
 .reset-all-button {
     padding: 10px 15px;
@@ -288,17 +287,21 @@ button:hover {
     right: 5px;
 }
 
+/* Ajuste de los botones de posesión para que no se desborden */
 .possession-controls {
     display: flex;
     justify-content: center;
     gap: 10px;
     margin-top: 15px;
+    flex-wrap: wrap; /* Permite que los botones se envuelvan si no hay espacio */
 }
 
 .possession-controls button {
-    flex: 1;
-    max-width: 150px;
+    flex: 1 1 auto; /* Permite que los botones crezcan o se encojan automáticamente */
+    max-width: 160px; /* Límite para que no se estiren demasiado */
     background-color: #007bff;
+    padding: 10px 15px; /* Asegura un padding mínimo */
+    box-sizing: border-box; /* Incluye padding y borde en el ancho total */
 }
 
 .possession-controls button.active {
@@ -334,7 +337,7 @@ button:hover {
 .custom-stats-grid {
     width: 100%;
     display: grid;
-    /* 2 columnas para el tamaño de tablet, 3 para desktop grandes */
+    /* 2 o 3 columnas, ajustando minmax */
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 15px;
     justify-content: center;
@@ -347,10 +350,9 @@ button:hover {
     padding: 8px; /* ¡Más pequeño para reducir la altura! */
     text-align: center;
     display: flex;
-    flex-direction: column;
+    flex-direction: column; /* Sigue siendo columna principal */
     align-items: center;
     box-sizing: border-box;
-    /* height: 160px; /* Altura fija para probar, ajustar si es necesario */ */
     justify-content: space-between; /* Distribuye el espacio entre los elementos */
 }
 
@@ -391,48 +393,44 @@ button:hover {
 .stat-card h3 .view-details-btn { background-color: #17a2b8; }
 .stat-card h3 .view-details-btn:hover { background-color: #138496; }
 
-/* Controles de cada equipo dentro de la tarjeta (vertical) */
-.stat-team-controls {
+/* Controles de cada equipo dentro de la tarjeta (HORIZONTAL A LOS LADOS DEL RESULTADO) */
+.stat-section-row {
     display: flex;
-    flex-direction: column; /* ¡CLAVE: Botones en vertical! */
-    align-items: center;
+    width: 100%;
+    align-items: center; /* Alinea verticalmente */
+    justify-content: space-between; /* Empuja los elementos a los extremos */
+    margin: 4px 0; /* Espacio vertical entre las filas de control */
+}
+
+.stat-section-row.visitor-team {
+    /* No se necesita margen extra si ya está justificado */
+}
+
+
+.stat-buttons {
+    display: flex; /* Botones horizontales */
     gap: 4px; /* Espacio entre los botones */
-    margin: 2px 0; /* Espacio reducido entre los bloques de control */
-    width: auto; /* Ajusta el ancho automáticamente */
 }
 
-/* Ocultar el nombre del equipo en la tarjeta de estadística personalizada */
-.stat-team-controls .team-name-stat {
-    display: none; /* Oculta el nombre del equipo */
-}
-
-.stat-team-controls .stat-team-value {
-    display: none; /* Oculta el contador individual del equipo */
-}
-
-.stat-team-controls .stat-buttons {
-    display: flex;
-    flex-direction: column; /* ¡Botones apilados! */
-    gap: 4px; /* Espacio entre los botones verticales */
-}
-
-.stat-team-controls .stat-buttons button {
-    padding: 6px 10px; /* Botones de control */
+.stat-buttons button {
+    padding: 6px 10px; /* Tamaño de los botones */
     font-size: 0.9em;
-    width: 40px; /* Ancho fijo para los botones para que se vean uniformes */
-    height: 40px; /* Altura fija para los botones */
+    width: 40px; /* Ancho fijo para botones */
+    height: 40px; /* Altura fija para botones */
     display: flex;
     justify-content: center;
     align-items: center;
-    border-radius: 50%; /* Redondea los botones */
+    border-radius: 50%; /* Botones redondos */
 }
 
 .stat-total-display {
     font-size: 2.8em; /* Tamaño del resultado 0 - 0, ligeramente más grande */
     font-weight: bold;
     color: #333;
-    margin: 8px 0; /* Margen para separarlo de los controles */
+    margin: 0; /* Eliminar margen vertical, ya que `stat-section-row` maneja el espacio */
     line-height: 1; /* Reduce el espacio de línea */
+    flex-grow: 1; /* Permite que ocupe el centro */
+    text-align: center; /* Centra el texto */
 }
 
 
@@ -588,7 +586,7 @@ button:hover {
     .stat-total-display {
         font-size: 2.5em; /* Ligeramente más pequeño */
     }
-    .stat-team-controls .stat-buttons button {
+    .stat-buttons button {
         width: 35px; /* Botones más pequeños */
         height: 35px;
         font-size: 0.8em;
@@ -636,13 +634,16 @@ button:hover {
         margin-bottom: 0; /* Eliminar margen si los botones están al lado */
     }
 
-    .stat-team-controls {
-        flex-direction: column; /* Los botones de control de stat siguen verticales */
+    /* Los botones de control de stat vuelven a estar horizontales */
+    .stat-section-row {
+        flex-direction: row;
+        justify-content: space-between;
     }
-    .stat-team-controls .stat-buttons {
-        flex-direction: column; /* Los botones siguen apilados */
+    .stat-buttons {
+        flex-direction: row; /* Asegura que los botones estén en fila */
     }
-    .stat-team-controls .stat-buttons button {
+
+    .stat-buttons button {
         width: 38px; /* Ajuste de tamaño para botones en móvil */
         height: 38px;
         font-size: 0.85em;
@@ -684,7 +685,7 @@ button:hover {
     .stat-total-display {
         font-size: 2.4em;
     }
-    .stat-team-controls .stat-buttons button {
+    .stat-buttons button {
         width: 35px;
         height: 35px;
         font-size: 0.8em;
