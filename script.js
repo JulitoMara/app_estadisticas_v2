@@ -359,9 +359,13 @@ function collectCurrentMatchData() {
         customStatValues[statId] = { name: statName, teamA: teamAValue, teamB: teamBValue };
     });
 
+    // MODIFICADO: Solo guardamos la fecha, no la hora
+    const currentDate = new Date();
+    const formattedDate = currentDate.toLocaleDateString();
+
     return {
         id: Date.now(), // Un ID único para el partido
-        timestamp: new Date().toLocaleString(), // Fecha y hora del guardado
+        timestamp: formattedDate, // MODIFICADO: Solo la fecha
         teamA: teamANameInput.value,
         teamB: teamBNameInput.value,
         goalsA: parseInt(teamAGoalsEl.textContent),
