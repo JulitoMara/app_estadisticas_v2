@@ -85,6 +85,9 @@ function updateTeamLabels() {
     const possessionTeamBEl = document.getElementById('possessionTeamB');
     if (possessionTeamAEl) possessionTeamAEl.textContent = teamANameInput.value || "Equipo A";
     if (possessionTeamBEl) possessionTeamBEl.textContent = teamBNameInput.value || "Equipo B";
+
+    // Llamar a renderCustomStats para que actualice los nombres en las tarjetas de estadísticas
+    renderCustomStats();
 }
 
 let customStats = JSON.parse(localStorage.getItem('customStats'));
@@ -103,7 +106,7 @@ if (!customStats || customStats.length === 0) {
     localStorage.setItem('customStats', JSON.stringify(customStats));
 }
 
-// MODIFICACIÓN CLAVE: renderCustomStats para el diseño compacto
+// MODIFICACIÓN CLAVE: renderCustomStats para el diseño COMPACTO y correcto
 function renderCustomStats() {
     generalStatsContainer.innerHTML = ''; // Limpiar el contenedor
     customStats.forEach(stat => {
@@ -111,7 +114,9 @@ function renderCustomStats() {
         statCard.classList.add('stat-card');
         statCard.dataset.statId = stat.id;
 
-        // Nuevo HTML para la tarjeta de estadística compacta
+        const teamAName = teamANameInput.value || 'Equipo A';
+        const teamBName = teamBNameInput.value || 'Equipo B';
+
         statCard.innerHTML = `
             <h3>
                 <span class="stat-title">${stat.name}</span>
@@ -120,20 +125,20 @@ function renderCustomStats() {
                 <button class="delete-stat-btn" data-id="${stat.id}">🗑️</button>
             </h3>
             <div class="stat-controls-compact">
-                <div class="team-label-counter">
-                    <span class="team-name-small">${teamANameInput.value || 'Equipo A'}</span>
+                <div class="team-display-row">
+                    <span class="team-name-small">${teamAName}</span>
                     <span class="score-value-small" data-team-counter="${stat.id}-A">0</span>
-                    <div class="team-controls">
+                    <div class="team-buttons">
                         <button class="reset-btn" data-team="A" data-stat="${stat.id}">🔄</button>
                         <button class="minus-btn" data-team="A" data-stat="${stat.id}">-</button>
                         <button class="plus-btn" data-team="A" data-stat="${stat.id}">+</button>
                     </div>
                 </div>
                 <span class="score-display">0 - 0</span>
-                <div class="team-label-counter">
-                    <span class="team-name-small">${teamBNameInput.value || 'Equipo B'}</span>
+                <div class="team-display-row">
+                    <span class="team-name-small">${teamBName}</span>
                     <span class="score-value-small" data-team-counter="${stat.id}-B">0</span>
-                    <div class="team-controls">
+                    <div class="team-buttons">
                         <button class="reset-btn" data-team="B" data-stat="${stat.id}">🔄</button>
                         <button class="minus-btn" data-team="B" data-stat="${stat.id}">-</button>
                         <button class="plus-btn" data-team="B" data-stat="${stat.id}">+</button>
@@ -144,18 +149,16 @@ function renderCustomStats() {
         generalStatsContainer.appendChild(statCard);
     });
     addStatCardEventListeners();
-    updateCustomStatCounters();
+    updateCustomStatCounters(); // Esto recalculará y actualizará los contadores iniciales.
 }
 // FIN MODIFICACIÓN
 
 function updateCustomStatCounters() {
     customStats.forEach(stat => {
-        const scoreDisplayEl = generalStatsContainer.querySelector(`.score-display[data-team-main-counter="${stat.id}"]`);
-        // Actualizar el contador general (0 - 0)
         const teamAcount = stat.events.filter(event => event.team === 'A').length;
         const teamBcount = stat.events.filter(event => event.team === 'B').length;
         
-        // El span con data-team-main-counter es el que tiene el "0 - 0"
+        // Actualizar el contador general (0 - 0)
         const mainCounterSpan = generalStatsContainer.querySelector(`.stat-card[data-stat-id="${stat.id}"] .score-display`);
         if (mainCounterSpan) {
             mainCounterSpan.textContent = `${teamAcount} - ${teamBcount}`;
@@ -175,7 +178,7 @@ function updateCustomStatCounters() {
 }
 
 function addStatCardEventListeners() {
-    generalStatsContainer.removeEventListener('click', handleCustomStatControls);
+    generalStatsContainer.removeEventListener('click', handleCustomStatControls); // Previene duplicados
     generalStatsContainer.addEventListener('click', handleCustomStatControls);
 }
 
@@ -199,6 +202,7 @@ function handleCustomStatControls(e) {
             // Eliminar el último evento de ese equipo para esa estadística
             const eventsForTeam = statToUpdate.events.filter(event => event.team === team);
             if (eventsForTeam.length > 0) {
+                // Encontrar el evento con el timestamp más reciente para eliminarlo
                 const lastEventTime = Math.max(...eventsForTeam.map(event => event.timestamp));
                 const indexToRemove = statToUpdate.events.findIndex(event => event.team === team && event.timestamp === lastEventTime);
                 if (indexToRemove !== -1) {
@@ -225,7 +229,7 @@ function handleCustomStatControls(e) {
 
         customStats = customStats.filter(stat => stat.id !== statIdToDelete);
         localStorage.setItem('customStats', JSON.stringify(customStats));
-        renderCustomStats();
+        renderCustomStats(); // Volver a renderizar todas las tarjetas
     } else if (target.classList.contains('edit-stat-btn')) {
         const statIdToEdit = target.dataset.id;
         const statToEdit = customStats.find(stat => stat.id === statIdToEdit);
@@ -234,7 +238,7 @@ function handleCustomStatControls(e) {
             if (newName && newName.trim() !== "") {
                 statToEdit.name = newName.trim();
                 localStorage.setItem('customStats', JSON.stringify(customStats));
-                renderCustomStats();
+                renderCustomStats(); // Volver a renderizar todas las tarjetas para actualizar el nombre
             }
         }
     } else if (target.classList.contains('view-details-btn')) {
@@ -290,8 +294,8 @@ window.addEventListener('click', (event) => {
 
 // ====== INICIALIZACIÓN =======
 document.addEventListener('DOMContentLoaded', () => {
-    updateTeamLabels();
-    renderCustomStats();
+    updateTeamLabels(); // Esto llamará a renderCustomStats
+    // renderCustomStats(); // Ya es llamado por updateTeamLabels
 
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
