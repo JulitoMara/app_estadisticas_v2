@@ -303,7 +303,8 @@ toggleMatchTimerBtn.addEventListener('click', () => {
         clearInterval(matchTimerInterval);
         toggleMatchTimerBtn.textContent = '▶️ Reanudar';
         if (currentPossession) {
-            togglePossession(currentPossession);
+            // Pause possession when match timer is paused
+            togglePossession(currentPossession); // This will effectively stop the current possession timer
         }
     } else {
         matchTimerInterval = setInterval(() => {
@@ -349,10 +350,13 @@ function togglePossession(team) {
                 possessionTimerAEl.textContent = formatTime(possessionTimeA);
                 updatePossessionBar();
             }, 1000);
-        } else {
-            possessionTimeB++;
-            possessionTimerBEl.textContent = formatTime(possessionTimeB);
-            updatePossessionBar();
+        } else { // This 'else' block is for Team B
+            // FIX: Ensure setInterval is started for Team B
+            possessionIntervalB = setInterval(() => {
+                possessionTimeB++;
+                possessionTimerBEl.textContent = formatTime(possessionTimeB);
+                updatePossessionBar();
+            }, 1000);
         }
         updatePossessionButtons();
     }
