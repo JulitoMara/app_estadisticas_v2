@@ -177,12 +177,12 @@ button:not(.reset-btn):not(.minus-btn):not(.plus-btn):not(.active):hover {
 }
 
 /*
-    Sección de Marcador
+    Sección de Marcador (Ajustes para hacerlo más compacto)
 */
 .score-section .stat-group {
     display: flex;
     justify-content: space-around;
-    gap: 30px; /* Más espacio */
+    gap: 20px; /* Reducido para más compactación */
     flex-wrap: wrap;
 }
 
@@ -191,7 +191,7 @@ button:not(.reset-btn):not(.minus-btn):not(.plus-btn):not(.active):hover {
     flex-direction: column;
     align-items: center;
     background-color: #eaf5ff; /* Fondo claro para marcador */
-    padding: 20px;
+    padding: 15px; /* Reducido para más compactación */
     border-radius: 10px;
     flex: 1;
     min-width: 130px;
@@ -200,15 +200,15 @@ button:not(.reset-btn):not(.minus-btn):not(.plus-btn):not(.active):hover {
 /* MARCADOR Y TIEMPO: Mismo tamaño y más pequeños */
 .team-score .counter,
 .match-timer-section .timer {
-    font-size: 2.8em; /* ¡CLAVE: Tamaño más pequeño y uniforme! */
+    font-size: 2.8em; /* ¡CLAVE: Tamaño uniforme! */
     font-weight: 700; /* Más negrita */
     color: #333;
-    margin-bottom: 10px;
+    margin-bottom: 8px; /* Reducido ligeramente */
     display: block;
     width: 100%;
     text-align: center;
     background-color: #eaf5ff; /* Fondo para el número */
-    padding: 10px 5px;
+    padding: 8px 5px; /* Reducido ligeramente */
     border-radius: 8px;
     min-height: 1.5em; /* Asegura un alto mínimo */
     line-height: 1.2; /* Ajusta la altura de la línea */
@@ -216,21 +216,21 @@ button:not(.reset-btn):not(.minus-btn):not(.plus-btn):not(.active):hover {
 }
 
 .team-score .team-label {
-    font-size: 1.15em;
+    font-size: 1.1em; /* Ligeramente más pequeño */
     font-weight: 600;
     color: #555;
-    margin-bottom: 15px;
+    margin-bottom: 12px; /* Reducido ligeramente */
 }
 
 .team-score .controls {
     display: flex;
-    gap: 12px; /* Espacio entre botones de marcador */
-    margin-top: 15px;
+    gap: 10px; /* Reducido para más compactación */
+    margin-top: 10px; /* Reducido para más compactación */
 }
 .team-score .controls button {
-    padding: 10px 15px; /* Ajuste para estos botones */
-    font-size: 0.95em;
-    border-radius: 8px; /* Ligeramente menos redondos que los circulares */
+    padding: 8px 12px; /* Ajuste para estos botones */
+    font-size: 0.9em; /* Ligeramente más pequeño */
+    border-radius: 8px;
 }
 
 
@@ -395,14 +395,14 @@ button:not(.reset-btn):not(.minus-btn):not(.plus-btn):not(.active):hover {
     background-color: #eaf5ff;
     border: 1px solid #d0e8ff;
     border-radius: 12px;
-    padding: 15px; /* Padding aumentado para airear */
+    padding: 12px; /* Reducido a 12px para mayor compactación */
     text-align: center;
     display: flex;
     flex-direction: column;
     align-items: center;
     box-sizing: border-box;
     justify-content: space-between;
-    height: 200px; /* Altura ajustada para el nuevo contenido y espaciado */
+    height: 195px; /* Ligeramente ajustado para la compactación */
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
 }
 
@@ -412,7 +412,7 @@ button:not(.reset-btn):not(.minus-btn):not(.plus-btn):not(.active):hover {
     flex-direction: column;
     align-items: center;
     margin-top: 0;
-    margin-bottom: 12px; /* Más espacio */
+    margin-bottom: 10px; /* Reducido ligeramente */
     width: 100%;
 }
 
@@ -423,20 +423,20 @@ button:not(.reset-btn):not(.minus-btn):not(.plus-btn):not(.active):hover {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    margin-bottom: 8px; /* Espacio entre título e iconos */
+    margin-bottom: 6px; /* Reducido ligeramente */
     line-height: 1.3;
 }
 
 .stat-action-icons {
     display: flex;
-    gap: 8px; /* Más espacio entre iconos */
+    gap: 6px; /* Reducido ligeramente */
     justify-content: center;
     width: 100%;
 }
 
 .stat-action-icons button {
-    padding: 6px 10px; /* Botones de acción un poco más grandes */
-    font-size: 0.75em;
+    padding: 5px 9px; /* Reducido ligeramente */
+    font-size: 0.7em; /* Ligeramente más pequeño */
     border-radius: 6px;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
@@ -445,14 +445,6 @@ button:not(.reset-btn):not(.minus-btn):not(.plus-btn):not(.active):hover {
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
 }
 
-.stat-action-icons .edit-stat-btn { background-color: #ffc107; color: #333; }
-.stat-action-icons .edit-stat-btn:hover { background-color: #e0a800; }
-.stat-action-icons .delete-stat-btn { background-color: #dc3545; }
-.stat-action-icons .delete-stat-btn:hover { background-color: #c82333; }
-.stat-action-icons .view-details-btn { background-color: #17a2b8; }
-.stat-action-icons .view-details-btn:hover { background-color: #138496; }
-
-
 /* Controles de estadística: Main container para los 3 elementos (botones A, 0-0, botones B) */
 .stat-controls-group {
     display: flex;
@@ -460,21 +452,21 @@ button:not(.reset-btn):not(.minus-btn):not(.plus-btn):not(.active):hover {
     justify-content: space-between;
     width: 100%;
     flex-grow: 1;
-    padding: 0 5px; /* Pequeño padding horizontal para asegurar espacio */
+    padding: 0 2px; /* Reducido para más compactación */
 }
 
 /* Grupos de botones verticales para cada equipo */
 .team-buttons-column {
     display: flex;
     flex-direction: column;
-    gap: 6px; /* Más espacio entre los botones apilados */
+    gap: 5px; /* Reducido ligeramente */
 }
 
 .team-buttons-column button {
-    padding: 8px 12px; /* Padding de botones de stat */
-    font-size: 1em; /* Tamaño de fuente más estándar */
-    width: 45px; /* Ancho fijo para los botones */
-    height: 45px; /* Altura fija para los botones */
+    padding: 7px 10px; /* Ajustado */
+    font-size: 0.95em; /* Ligeramente más pequeño */
+    width: 42px; /* Ligeramente más pequeño */
+    height: 42px; /* Ligeramente más pequeño */
     display: flex;
     justify-content: center;
     align-items: center;
@@ -488,12 +480,12 @@ button:not(.reset-btn):not(.minus-btn):not(.plus-btn):not(.active):hover {
 
 /* El resultado central (0 - 0) */
 .stat-total-display {
-    font-size: 3.2em; /* Tamaño del resultado 0 - 0, prominente */
+    font-size: 2.8em; /* Ajustado a 2.8em para que quepa mejor */
     font-weight: 700;
     color: #333;
     line-height: 1;
     flex-shrink: 0;
-    margin: 0 10px; /* Espacio horizontal */
+    margin: 0 8px; /* Reducido ligeramente */
 }
 
 
@@ -661,16 +653,16 @@ button:not(.reset-btn):not(.minus-btn):not(.plus-btn):not(.active):hover {
         gap: 12px;
     }
     .stat-card {
-        padding: 12px;
-        height: 190px; /* Ajuste de altura */
+        padding: 10px; /* Ajustado */
+        height: 180px; /* Ajuste de altura */
     }
     .team-buttons-column button {
-        width: 40px; /* Botones más pequeños */
-        height: 40px;
-        font-size: 0.9em;
+        width: 38px; /* Botones más pequeños */
+        height: 38px;
+        font-size: 0.85em;
     }
     .stat-total-display {
-        font-size: 2.8em; /* Ligeramente más pequeño */
+        font-size: 2.6em; /* Ligeramente más pequeño */
     }
     .possession-controls button {
         max-width: 140px;
@@ -721,23 +713,23 @@ button:not(.reset-btn):not(.minus-btn):not(.plus-btn):not(.active):hover {
         gap: 10px;
     }
     .stat-card {
-        padding: 10px;
-        height: 180px; /* Ajuste de altura para móviles */
+        padding: 8px; /* Ajustado */
+        height: 170px; /* Ajuste de altura para móviles */
     }
     .stat-card-header .stat-title {
-        font-size: 1.1em;
+        font-size: 1.05em; /* Ajustado */
     }
     .stat-action-icons button {
-        padding: 4px 8px;
-        font-size: 0.7em;
+        padding: 4px 7px; /* Ajustado */
+        font-size: 0.65em; /* Ajustado */
     }
     .stat-total-display {
-        font-size: 2.5em;
+        font-size: 2.4em; /* Ajustado */
     }
     .team-buttons-column button {
-        width: 38px;
-        height: 38px;
-        font-size: 0.85em;
+        width: 36px; /* Ajustado */
+        height: 36px; /* Ajustado */
+        font-size: 0.8em; /* Ajustado */
     }
 
     .reset-all-button {
@@ -786,18 +778,18 @@ button:not(.reset-btn):not(.minus-btn):not(.plus-btn):not(.active):hover {
         grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
     }
     .stat-card {
-        height: 160px; /* Altura aún más ajustada */
-        padding: 8px;
+        height: 155px; /* Altura muy reducida */
+        padding: 6px; /* Ajustado */
     }
     .stat-card-header .stat-title {
-        font-size: 1em;
+        font-size: 0.95em; /* Ajustado */
     }
     .team-buttons-column button {
-        width: 35px;
-        height: 35px;
-        font-size: 0.8em;
+        width: 33px; /* Ajustado */
+        height: 33px; /* Ajustado */
+        font-size: 0.75em; /* Ajustado */
     }
     .stat-total-display {
-        font-size: 2.2em;
+        font-size: 2em; /* Ajustado */
     }
 }
