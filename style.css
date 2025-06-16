@@ -363,7 +363,7 @@ button:not(.reset-btn):not(.minus-btn):not(.plus-btn):not(.active):hover {
 }
 
 /*
-    Sección de Estadísticas Personalizadas
+    Sección de Estadísticas Personalizadas (Ajustes para iconos de acción y botones de control de goles)
 */
 .custom-stats-management {
     display: flex;
@@ -409,23 +409,24 @@ button:not(.reset-btn):not(.minus-btn):not(.plus-btn):not(.active):hover {
     background-color: #eaf5ff;
     border: 1px solid #d0e8ff;
     border-radius: 12px;
-    padding: 12px;
+    padding: 10px; /* Reducido de 12px a 10px para más espacio */
     text-align: center;
     display: flex;
     flex-direction: column;
     align-items: center;
     box-sizing: border-box;
     justify-content: space-between;
-    height: 195px;
+    height: 195px; /* Mantener altura base */
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
 }
 
+/* Título de la tarjeta centrado y botones de acción */
 .stat-card-header {
     display: flex;
     flex-direction: column;
     align-items: center;
     margin-top: 0;
-    margin-bottom: 10px;
+    margin-bottom: 8px; /* Reducido de 10px a 8px */
     width: 100%;
 }
 
@@ -436,66 +437,79 @@ button:not(.reset-btn):not(.minus-btn):not(.plus-btn):not(.active):hover {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    margin-bottom: 6px;
+    margin-bottom: 5px; /* Reducido de 6px a 5px */
     line-height: 1.3;
 }
 
 .stat-action-icons {
     display: flex;
-    gap: 6px;
-    justify-content: center;
+    gap: 4px; /* Espacio entre los botones de icono (view, edit, delete) */
+    justify-content: center; /* Centrar los iconos */
     width: 100%;
+    flex-wrap: wrap; /* Permitir que los iconos se ajusten si es necesario */
 }
 
 .stat-action-icons button {
-    padding: 5px 9px;
-    font-size: 0.7em;
+    padding: 4px 7px; /* Padding interno de los botones de icono */
+    font-size: 0.65em; /* Tamaño del icono */
     border-radius: 6px;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    min-width: unset; /* Permitir que se ajusten al contenido */
+    height: unset; /* Permitir que se ajusten al contenido */
 }
 .stat-action-icons button:hover {
     transform: translateY(-1px);
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
 }
 
+/* Controles de estadística: Main container para los 3 elementos (botones A, 0-0, botones B) */
 .stat-controls-group {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    /* Ajustado: se usará un poco de padding horizontal en vez de justify-content: space-between
+       para controlar mejor el espacio en tarjetas estrechas */
+    justify-content: center;
     width: 100%;
     flex-grow: 1;
-    padding: 0 2px;
+    /* Nuevo: Añadir padding horizontal para crear el espacio desde los bordes */
+    padding: 0 2px; /* Reducido de 0 2px a 0 1px o incluso 0 0px si sigue saliéndose */
+    gap: 4px; /* Añadido un pequeño gap entre columnas */
 }
 
+
+/* Grupos de botones verticales para cada equipo dentro de stat-card */
 .team-buttons-column {
     display: flex;
     flex-direction: column;
-    gap: 5px;
+    gap: 4px; /* Reducido de 5px a 4px (espacio entre botones +/-/🔄) */
 }
 
 .team-buttons-column button {
-    padding: 7px 10px;
-    font-size: 0.95em;
-    width: 42px;
-    height: 42px;
+    padding: 5px 8px; /* Reducido de 7px 10px (padding interno de los botones) */
+    font-size: 0.85em; /* Reducido de 0.95em (tamaño del icono +/-/🔄) */
+    width: 38px; /* Reducido de 42px */
+    height: 38px; /* Reducido de 42px */
     display: flex;
     justify-content: center;
     align-items: center;
     border-radius: 50%;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    flex-shrink: 0; /* Asegurar que no se encojan */
 }
 .team-buttons-column button:hover {
     transform: translateY(-1px);
     box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
 }
 
+/* El resultado central (0 - 0) en las tarjetas de estadística */
 .stat-total-display {
-    font-size: 2.8em;
+    font-size: 2.6em; /* Reducido de 2.8em */
     font-weight: 700;
     color: #333;
     line-height: 1;
     flex-shrink: 0;
-    margin: 0 8px;
+    margin: 0 6px; /* Reducido de 0 8px para más espacio */
+    min-width: 65px; /* Asegurar un ancho mínimo para el "0 - 0" */
 }
 
 
@@ -632,7 +646,7 @@ button:not(.reset-btn):not(.minus-btn):not(.plus-btn):not(.active):hover {
 }
 
 /*
-    Media Queries para Responsividad
+    Media Queries para Responsividad (revisados para los nuevos tamaños de botones)
 */
 @media (max-width: 1100px) {
     .left-column {
@@ -659,7 +673,7 @@ button:not(.reset-btn):not(.minus-btn):not(.plus-btn):not(.active):hover {
         min-width: 400px;
     }
     .score-section.card {
-        padding: 12px; /* Más compacto en pantallas medianas */
+        padding: 12px;
     }
     .score-section .card h2 {
         margin-bottom: 10px;
@@ -670,7 +684,7 @@ button:not(.reset-btn):not(.minus-btn):not(.plus-btn):not(.active):hover {
         font-size: 0.85em;
     }
     #mainScoreDisplay {
-        font-size: 2.6em; /* Ajuste de fuente */
+        font-size: 2.6em;
         padding: 4px 8px;
     }
 
@@ -679,16 +693,26 @@ button:not(.reset-btn):not(.minus-btn):not(.plus-btn):not(.active):hover {
         gap: 12px;
     }
     .stat-card {
-        padding: 10px;
+        padding: 8px; /* Ajustado para pantallas medianas */
         height: 180px;
     }
+    .stat-card-header .stat-title {
+        font-size: 1.1em; /* Ajustado */
+    }
+    .stat-action-icons button {
+        padding: 3px 6px; /* Ajustado */
+        font-size: 0.6em; /* Ajustado */
+    }
+    /* Ajustes para botones de estadísticas dentro de media query */
     .team-buttons-column button {
-        width: 38px;
-        height: 38px;
-        font-size: 0.85em;
+        width: 36px; /* Ligeramente más pequeño para pantallas medianas */
+        height: 36px;
+        font-size: 0.8em;
     }
     .stat-total-display {
-        font-size: 2.6em;
+        font-size: 2.4em; /* Ligeramente más pequeño para pantallas medianas */
+        margin: 0 5px; /* Reducir margen horizontal */
+        min-width: 60px; /* Ajuste mínimo */
     }
     .possession-controls button {
         max-width: 140px;
@@ -719,7 +743,7 @@ button:not(.reset-btn):not(.minus-btn):not(.plus-btn):not(.active):hover {
         margin-bottom: 0;
     }
     .score-section.card {
-        padding: 10px; /* Aún más compacto en móvil */
+        padding: 10px;
     }
     .score-section .card h2 {
         margin-bottom: 8px;
@@ -730,12 +754,12 @@ button:not(.reset-btn):not(.minus-btn):not(.plus-btn):not(.active):hover {
         font-size: 0.8em;
     }
     #mainScoreDisplay {
-        font-size: 2.5em; /* Ajuste de fuente para móvil */
+        font-size: 2.5em;
         padding: 3px 6px;
     }
 
     .match-timer-section .timer {
-        font-size: 2.5em; /* Ajuste para móvil */
+        font-size: 2.5em;
     }
 
     .match-timer-controls, .possession-controls {
@@ -748,27 +772,32 @@ button:not(.reset-btn):not(.minus-btn):not(.plus-btn):not(.active):hover {
     }
 
     .custom-stats-grid {
-        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-        gap: 10px;
+        grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+        gap: 8px;
     }
     .stat-card {
-        padding: 8px;
-        height: 170px;
+        padding: 6px; /* Aún más reducido para móvil */
+        height: 165px; /* Ajuste de altura */
     }
     .stat-card-header .stat-title {
-        font-size: 1.05em;
+        font-size: 1em; /* Ajustado para móvil */
+        margin-bottom: 4px;
     }
     .stat-action-icons button {
-        padding: 4px 7px;
-        font-size: 0.65em;
+        padding: 2px 5px; /* Aún más reducido */
+        font-size: 0.6em; /* Más pequeño */
+    }
+    /* Ajustes para botones de estadísticas dentro de media query */
+    .team-buttons-column button {
+        width: 32px; /* Más pequeño para móviles */
+        height: 32px;
+        font-size: 0.7em; /* Más pequeño para móviles */
+        padding: 4px 6px; /* Ajustado */
     }
     .stat-total-display {
-        font-size: 2.4em;
-    }
-    .team-buttons-column button {
-        width: 36px;
-        height: 36px;
-        font-size: 0.8em;
+        font-size: 2.2em; /* Ajustado para móviles */
+        margin: 0 4px; /* Reducir margen horizontal */
+        min-width: 55px; /* Ajuste mínimo */
     }
 
     .reset-all-button {
@@ -814,25 +843,33 @@ button:not(.reset-btn):not(.minus-btn):not(.plus-btn):not(.active):hover {
         max-width: unset;
     }
     .custom-stats-grid {
-        grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
     }
     .stat-card {
-        height: 155px;
-        padding: 6px;
+        height: 150px;
+        padding: 5px;
     }
     .stat-card-header .stat-title {
-        font-size: 0.95em;
+        font-size: 0.9em;
     }
+    .stat-action-icons button {
+        padding: 1px 4px;
+        font-size: 0.55em;
+    }
+    /* Ajustes para botones de estadísticas en pantallas muy pequeñas */
     .team-buttons-column button {
-        width: 33px;
-        height: 33px;
-        font-size: 0.75em;
+        width: 28px; /* Muy pequeño */
+        height: 28px;
+        font-size: 0.65em; /* Muy pequeño */
+        padding: 3px 5px; /* Ajustado */
     }
     .stat-total-display {
-        font-size: 2em;
+        font-size: 1.6em; /* Muy pequeño */
+        margin: 0 3px; /* Muy reducido */
+        min-width: 45px; /* Mínimo */
     }
     #mainScoreDisplay {
-        font-size: 2em; /* Más pequeño en pantallas muy pequeñas */
+        font-size: 2em;
     }
     .score-controls-column button {
         width: 33px;
