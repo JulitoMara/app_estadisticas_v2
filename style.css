@@ -23,11 +23,11 @@ header {
 
 .container {
     display: grid;
-    /* Por defecto, intentamos 3 columnas, pero que se ajusten automáticamente */
+    /* Las primeras 3 secciones pueden usar su ancho autoajustable */
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 20px;
     width: 100%;
-    max-width: 1200px; /* Mantener este ancho máximo para evitar que se estire demasiado */
+    max-width: 1200px;
 }
 
 .card {
@@ -217,9 +217,15 @@ button:disabled {
     max-width: 200px;
 }
 
+/* Las secciones de stats personalizadas y reset total ocuparán todo el ancho */
+.custom-stats, .reset-section {
+    grid-column: 1 / -1; /* Ocupa desde la primera columna hasta la última */
+}
+
 .custom-stats-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    /* Grid de estadísticas dentro de la sección de estadísticas */
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Ajustar minmax si es necesario */
     gap: 15px;
 }
 
@@ -431,35 +437,9 @@ button:disabled {
     cursor: not-allowed;
 }
 
-/* Controles de tiempo añadido */
+/* Controles de tiempo añadido (OCULTOS) */
 .added-time-controls {
-    margin-top: 15px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 5px;
-}
-
-.added-time-controls label {
-    font-weight: bold;
-    color: #555;
-}
-
-.added-time-controls input[type="number"] {
-    width: 50px;
-    padding: 5px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    text-align: center;
-}
-
-.added-time-controls button {
-    padding: 8px 15px;
-    background-color: #17a2b8; /* Azul claro para añadir tiempo */
-}
-
-.added-time-controls button:hover:not(:disabled) {
-    background-color: #138496;
+    display: none; /* Ocultar completamente */
 }
 
 
