@@ -110,7 +110,7 @@ body {
     background-color: #fcfcfc;
     border: 1px solid #e6ebf0;
     border-radius: 12px;
-    padding: 25px; /* Más padding en tarjetas */
+    padding: 25px; /* Padding general en tarjetas */
     margin-bottom: 25px; /* Espacio entre tarjetas */
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08); /* Sombra más definida */
 }
@@ -179,10 +179,18 @@ button:not(.reset-btn):not(.minus-btn):not(.plus-btn):not(.active):hover {
 /*
     Sección de Marcador (Ajustes para hacerlo más compacto)
 */
+.score-section.card { /* Aplicar padding directamente a la tarjeta del marcador */
+    padding: 20px; /* Reducido de 25px a 20px */
+}
+
+.score-section .card h2 {
+    margin-bottom: 15px; /* Reducido de 20px a 15px */
+}
+
 .score-section .stat-group {
     display: flex;
     justify-content: space-around;
-    gap: 20px; /* Reducido para más compactación */
+    gap: 15px; /* Reducido de 20px a 15px para más compactación */
     flex-wrap: wrap;
 }
 
@@ -191,45 +199,45 @@ button:not(.reset-btn):not(.minus-btn):not(.plus-btn):not(.active):hover {
     flex-direction: column;
     align-items: center;
     background-color: #eaf5ff; /* Fondo claro para marcador */
-    padding: 15px; /* Reducido para más compactación */
+    padding: 10px; /* Reducido de 15px a 10px para más compactación */
     border-radius: 10px;
     flex: 1;
     min-width: 130px;
 }
 
-/* MARCADOR Y TIEMPO: Mismo tamaño y más pequeños */
+/* MARCADOR Y TIEMPO: Mismo tamaño de fuente (ya configurado) */
 .team-score .counter,
 .match-timer-section .timer {
-    font-size: 2.8em; /* ¡CLAVE: Tamaño uniforme! */
-    font-weight: 700; /* Más negrita */
+    font-size: 2.8em; /* Tamaño de fuente uniforme para los números */
+    font-weight: 700;
     color: #333;
-    margin-bottom: 8px; /* Reducido ligeramente */
+    margin-bottom: 5px; /* Reducido de 8px a 5px */
     display: block;
     width: 100%;
     text-align: center;
-    background-color: #eaf5ff; /* Fondo para el número */
-    padding: 8px 5px; /* Reducido ligeramente */
+    background-color: #eaf5ff;
+    padding: 5px; /* Reducido de 8px 5px a 5px */
     border-radius: 8px;
-    min-height: 1.5em; /* Asegura un alto mínimo */
-    line-height: 1.2; /* Ajusta la altura de la línea */
+    min-height: 1.5em;
+    line-height: 1.2;
     box-sizing: border-box;
 }
 
 .team-score .team-label {
-    font-size: 1.1em; /* Ligeramente más pequeño */
+    font-size: 1.05em; /* Ligeramente más pequeño */
     font-weight: 600;
     color: #555;
-    margin-bottom: 12px; /* Reducido ligeramente */
+    margin-bottom: 8px; /* Reducido de 12px a 8px */
 }
 
 .team-score .controls {
     display: flex;
-    gap: 10px; /* Reducido para más compactación */
-    margin-top: 10px; /* Reducido para más compactación */
+    gap: 8px; /* Reducido de 10px a 8px */
+    margin-top: 8px; /* Reducido de 10px a 8px */
 }
 .team-score .controls button {
-    padding: 8px 12px; /* Ajuste para estos botones */
-    font-size: 0.9em; /* Ligeramente más pequeño */
+    padding: 6px 10px; /* Reducido de 8px 12px */
+    font-size: 0.85em; /* Reducido de 0.9em */
     border-radius: 8px;
 }
 
@@ -239,6 +247,11 @@ button:not(.reset-btn):not(.minus-btn):not(.plus-btn):not(.active):hover {
 */
 .match-timer-section {
     text-align: center;
+}
+
+/* El .card para el tiempo ya tiene el padding general de 25px */
+.match-timer-section .card h2 {
+    margin-bottom: 20px; /* Se mantiene igual que el general de card h2 */
 }
 
 .match-timer-controls {
@@ -648,6 +661,24 @@ button:not(.reset-btn):not(.minus-btn):not(.plus-btn):not(.active):hover {
     .right-column {
         min-width: 400px; /* Asegura 2 columnas en el grid */
     }
+    .score-section.card {
+        padding: 18px; /* Ajuste para media query */
+    }
+    .score-section .card h2 {
+        margin-bottom: 12px; /* Ajuste para media query */
+    }
+    .team-score {
+        padding: 8px; /* Ajuste para media query */
+    }
+    .team-score .controls {
+        gap: 6px; /* Ajuste para media query */
+        margin-top: 6px; /* Ajuste para media query */
+    }
+    .team-score .controls button {
+        padding: 5px 8px; /* Ajuste para media query */
+        font-size: 0.8em; /* Ajuste para media query */
+    }
+
     .custom-stats-grid {
         grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); /* Mantener 2 o 3 columnas, ajustando minmax */
         gap: 12px;
@@ -692,11 +723,32 @@ button:not(.reset-btn):not(.minus-btn):not(.plus-btn):not(.active):hover {
         padding: 20px;
         margin-bottom: 0;
     }
-
+    .score-section.card { /* Ajuste para móvil */
+        padding: 15px;
+    }
+    .score-section .card h2 {
+        margin-bottom: 10px;
+    }
+    .team-score {
+        padding: 8px;
+    }
     .team-score .counter,
     .match-timer-section .timer {
         font-size: 2.5em; /* Ajuste para móvil */
     }
+    .team-score .team-label {
+        font-size: 1em;
+        margin-bottom: 6px;
+    }
+    .team-score .controls {
+        gap: 5px;
+        margin-top: 5px;
+    }
+    .team-score .controls button {
+        padding: 4px 6px;
+        font-size: 0.75em;
+    }
+
 
     .match-timer-controls, .possession-controls {
         flex-wrap: wrap;
