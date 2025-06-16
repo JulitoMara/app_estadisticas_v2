@@ -27,6 +27,7 @@ const resetAllButton = document.getElementById('reset-all');
 const eventModal = document.getElementById('eventModal');
 const closeButton = document.querySelector('.modal .close-button');
 const modalEventList = document.getElementById('modal-event-list');
+const modalTitle = document.getElementById('modal-title'); // Añadido para el título del modal
 
 // Elemento para la lista de goles en el marcador
 const goalsList = document.getElementById('goals-list');
@@ -44,7 +45,7 @@ let possessionTimeB = 0;
 let currentPossessionTeam = null;
 
 // =================================================================
-// NUEVO: Estadísticas personalizadas iniciales / preconfiguradas
+// Estadísticas personalizadas iniciales / preconfiguradas
 // Esto se usará si no hay datos guardados o si están corruptos.
 // Cada estadística debe tener un ID único para evitar problemas.
 // =================================================================
@@ -138,7 +139,7 @@ function updatePossessionDisplays() {
 
 // Función para iniciar la posesión de un equipo
 function startPossession(team) {
-    // NUEVO: Solo permitir iniciar la posesión si el temporizador del partido está en marcha
+    // Solo permitir iniciar la posesión si el temporizador del partido está en marcha
     if (!isMatchTimerRunning) {
         alert('Debes iniciar el temporizador del partido para controlar la posesión.');
         return;
@@ -216,7 +217,7 @@ function renderStatCard(stat) {
     viewButton.innerHTML = '📋';
     viewButton.title = 'Ver Eventos';
     viewButton.addEventListener('click', () => {
-        showEventModal(stat.events, stat.name); // Pasar el nombre de la estadística al modal
+        showEventModal(stat.events, stat.name); // ¡CORRECCIÓN AQUÍ! Pasar stat.name
     });
     actionIcons.appendChild(viewButton);
 
@@ -419,7 +420,7 @@ function loadCustomStats() {
 
 // Funciones para el modal de eventos
 function showEventModal(events, statName) {
-    document.getElementById('modal-title').textContent = `Historial de ${statName}`; // Actualizar título del modal
+    modalTitle.textContent = `Historial de ${statName}`; // Actualizar título del modal
     modalEventList.innerHTML = ''; // Limpiar lista
     if (events.length === 0) {
         const li = document.createElement('li');
@@ -624,7 +625,7 @@ resetAllButton.addEventListener('click', () => {
         // Reiniciar Estadísticas Personalizadas a las predefinidas
         customStats = initialCustomStats.map(stat => ({ ...stat })); // Clonar para que sean independientes
         saveCustomStats(); // Guarda el array predefinido
-        renderCustomStats(); // Renderiza las estadísticas predefinidas
+        renderCustomStats(); // ¡Asegurarse de que se rendericen después de resetear!
 
         // Limpiar nombres de equipos si se desea (opcional)
         // teamANameInput.value = 'Equipo A';
