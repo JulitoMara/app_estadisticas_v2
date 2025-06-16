@@ -354,7 +354,6 @@ function loadCustomStats() {
 
 // Funciones para el modal de eventos
 function showEventModal(events, statName) {
-    // Verificar que modalTitle existe antes de usarlo
     if (modalTitle) {
         modalTitle.textContent = `Historial de ${statName}`;
     } else {
@@ -370,12 +369,13 @@ function showEventModal(events, statName) {
         events.forEach(event => {
             const li = document.createElement('li');
             li.classList.add(event.team === teamANameInput.value ? 'team-A' : 'team-B');
-            let eventTypeText;
-            if (event.type === 'sum') eventTypeText = 'Incremento';
-            else if (event.type === 'subtract') eventTypeText = 'Decremento';
-            else if (event.type === 'reset') eventTypeText = 'Reiniciado'; // Aunque eliminamos el botón, el tipo 'reset' podría existir en eventos antiguos
-            else eventTypeText = event.type; // Fallback
-            li.innerHTML = `<span class="event-time">${event.time}</span> - <span class="event-team">${event.team}: ${eventTypeText}</span>`;
+            let eventText = ''; // Aquí almacenaremos el texto del evento
+
+            // Mostraremos solo el equipo y la hora, sin "Incremento" o "Decremento"
+            // El 'type' lo usamos internamente para la lógica de añadir/eliminar.
+            eventText = `${event.time} - ${event.team}`;
+
+            li.textContent = eventText; // Usamos textContent para evitar inyección HTML
             modalEventList.appendChild(li);
         });
     }
@@ -586,19 +586,37 @@ customStatsGrid.addEventListener('click', (event) => {
         case 'increment':
             if (team === 'A') {
                 stat.valueA++;
-                stat.events.push({ time: formatTime(matchTime), team: teamANameInput.value, type: 'sum', value: 1 });
+                // Añadir evento al historial de la estadística
+                stat.events.push({ time: formatTime(matchTime), team: teamANameInput.value, type: 'increment' });
             } else if (team === 'B') {
                 stat.valueB++;
-                stat.events.push({ time: formatTime(matchTime), team: teamBNameInput.value, type: 'sum', value: 1 });
+                // Añadir evento al historial de la estadística
+                stat.events.push({ time: formatTime(matchTime), team: teamBNameInput.value, type: 'increment' });
             }
             break;
         case 'decrement':
             if (team === 'A' && stat.valueA > 0) {
                 stat.valueA--;
-                stat.events.push({ time: formatTime(matchTime), team: teamANameInput.value, type: 'subtract', value: 1 });
+                // Lógica para eliminar el ÚLTIMO evento de INCREMENTO de este equipo
+                const teamAEvents = stat.events.filter(e => e.team === teamANameInput.value && e.type === 'increment');
+                if (teamAEvents.length > 0) {
+                    // Encontrar el índice del último evento de incremento para el equipo A
+                    const lastIndex = stat.events.map(e => ({time: e.time, team: e.team, type: e.type})).lastIndexOf({time: teamAEvents[teamAEvents.length - 1].time, team: teamAEvents[teamAEvents.length - 1].team, type: 'increment'});
+                    if (lastIndex !== -1) {
+                        stat.events.splice(lastIndex, 1);
+                    }
+                }
             } else if (team === 'B' && stat.valueB > 0) {
                 stat.valueB--;
-                stat.events.push({ time: formatTime(matchTime), team: teamBNameInput.value, type: 'subtract', value: 1 });
+                // Lógica para eliminar el ÚLTIMO evento de INCREMENTO de este equipo
+                const teamBEvents = stat.events.filter(e => e.team === teamBNameInput.value && e.type === 'increment');
+                if (teamBEvents.length > 0) {
+                    // Encontrar el índice del último evento de incremento para el equipo B
+                    const lastIndex = stat.events.map(e => ({time: e.time, team: e.team, type: e.type})).lastIndexOf({time: teamBEvents[teamBEvents.length - 1].time, team: teamBEvents[teamBEvents.length - 1].team, type: 'increment'});
+                    if (lastIndex !== -1) {
+                        stat.events.splice(lastIndex, 1);
+                    }
+                }
             }
             break;
         default:
