@@ -27,7 +27,7 @@ const resetAllButton = document.getElementById('reset-all');
 const eventModal = document.getElementById('eventModal');
 const closeButton = document.querySelector('.modal .close-button');
 const modalEventList = document.getElementById('modal-event-list');
-const modalTitle = document.getElementById('modal-title'); // Ahora sí, este elemento debería existir en index.html
+const modalTitle = document.getElementById('modal-title'); // Este elemento debe existir en index.html
 
 // Elemento para la lista de goles en el marcador
 const goalsList = document.getElementById('goals-list');
@@ -368,14 +368,11 @@ function showEventModal(events, statName) {
     } else {
         events.forEach(event => {
             const li = document.createElement('li');
+            // La clase para el color del equipo
             li.classList.add(event.team === teamANameInput.value ? 'team-A' : 'team-B');
-            let eventText = ''; // Aquí almacenaremos el texto del evento
-
-            // Mostraremos solo el equipo y la hora, sin "Incremento" o "Decremento"
-            // El 'type' lo usamos internamente para la lógica de añadir/eliminar.
-            eventText = `${event.time} - ${event.team}`;
-
-            li.textContent = eventText; // Usamos textContent para evitar inyección HTML
+            
+            // Solo mostrar hora y equipo, sin "Incremento" o "Decremento"
+            li.textContent = `${event.time} - ${event.team}`; 
             modalEventList.appendChild(li);
         });
     }
@@ -586,36 +583,28 @@ customStatsGrid.addEventListener('click', (event) => {
         case 'increment':
             if (team === 'A') {
                 stat.valueA++;
-                // Añadir evento al historial de la estadística
-                stat.events.push({ time: formatTime(matchTime), team: teamANameInput.value, type: 'increment' });
+                // Añadir evento al historial de la estadística con un ID único para poder eliminarlo después
+                stat.events.push({ id: Date.now(), time: formatTime(matchTime), team: teamANameInput.value });
             } else if (team === 'B') {
                 stat.valueB++;
-                // Añadir evento al historial de la estadística
-                stat.events.push({ time: formatTime(matchTime), team: teamBNameInput.value, type: 'increment' });
+                // Añadir evento al historial de la estadística con un ID único para poder eliminarlo después
+                stat.events.push({ id: Date.now(), time: formatTime(matchTime), team: teamBNameInput.value });
             }
             break;
         case 'decrement':
             if (team === 'A' && stat.valueA > 0) {
                 stat.valueA--;
-                // Lógica para eliminar el ÚLTIMO evento de INCREMENTO de este equipo
-                const teamAEvents = stat.events.filter(e => e.team === teamANameInput.value && e.type === 'increment');
-                if (teamAEvents.length > 0) {
-                    // Encontrar el índice del último evento de incremento para el equipo A
-                    const lastIndex = stat.events.map(e => ({time: e.time, team: e.team, type: e.type})).lastIndexOf({time: teamAEvents[teamAEvents.length - 1].time, team: teamAEvents[teamAEvents.length - 1].team, type: 'increment'});
-                    if (lastIndex !== -1) {
-                        stat.events.splice(lastIndex, 1);
-                    }
+                // Encontrar el índice del ÚLTIMO evento de INCREMENTO de este equipo
+                const lastEventIndex = stat.events.map(e => e.team).lastIndexOf(teamANameInput.value);
+                if (lastEventIndex !== -1) {
+                    stat.events.splice(lastEventIndex, 1); // Eliminar ese evento
                 }
             } else if (team === 'B' && stat.valueB > 0) {
                 stat.valueB--;
-                // Lógica para eliminar el ÚLTIMO evento de INCREMENTO de este equipo
-                const teamBEvents = stat.events.filter(e => e.team === teamBNameInput.value && e.type === 'increment');
-                if (teamBEvents.length > 0) {
-                    // Encontrar el índice del último evento de incremento para el equipo B
-                    const lastIndex = stat.events.map(e => ({time: e.time, team: e.team, type: e.type})).lastIndexOf({time: teamBEvents[teamBEvents.length - 1].time, team: teamBEvents[teamBEvents.length - 1].team, type: 'increment'});
-                    if (lastIndex !== -1) {
-                        stat.events.splice(lastIndex, 1);
-                    }
+                // Encontrar el índice del ÚLTIMO evento de INCREMENTO de este equipo
+                const lastEventIndex = stat.events.map(e => e.team).lastIndexOf(teamBNameInput.value);
+                if (lastEventIndex !== -1) {
+                    stat.events.splice(lastEventIndex, 1); // Eliminar ese evento
                 }
             }
             break;
