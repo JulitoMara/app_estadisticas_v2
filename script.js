@@ -1,33 +1,33 @@
 // ====== SELECTORES DE ELEMENTOS DEL DOM =======
-// Marcador
-const teamAGoalsEl = document.getElementById('teamAGoals');
-const teamBGoalsEl = document.getElementById('teamBGoals');
-const teamALabelGoals = document.getElementById('teamALabelGoals');
-const teamBLabelGoals = document.getElementById('teamBLabelGoals');
+// Marcador (ahora variables internas para los goles)
+let _teamAGoals = 0;
+let _teamBGoals = 0;
+const mainScoreDisplayEl = document.getElementById('mainScoreDisplay'); // Nuevo elemento central del marcador
+
 
 // Nombres de Equipos
 const teamANameInput = document.getElementById('teamAName');
 const teamBNameInput = document.getElementById('teamBName');
 
-// Controles de Marcador (usando delegación de eventos)
-document.querySelectorAll('.score-section .controls').forEach(controls => {
-    controls.addEventListener('click', (e) => {
-        const targetId = e.target.dataset.target;
-        if (!targetId) return; // No es un botón de control
-
-        const counterEl = document.getElementById(targetId);
-        let currentValue = parseInt(counterEl.textContent);
+// Controles de Marcador (usando delegación de eventos en la nueva estructura)
+document.querySelectorAll('.score-section .score-controls-column button').forEach(button => {
+    button.addEventListener('click', (e) => {
+        const targetTeam = e.target.closest('.score-controls-column').classList.contains('team-A-controls') ? 'A' : 'B';
 
         if (e.target.classList.contains('plus-btn')) {
-            currentValue++;
+            if (targetTeam === 'A') _teamAGoals++;
+            else _teamBGoals++;
         } else if (e.target.classList.contains('minus-btn')) {
-            currentValue = Math.max(0, currentValue - 1); // No bajar de 0
+            if (targetTeam === 'A') _teamAGoals = Math.max(0, _teamAGoals - 1);
+            else _teamBGoals = Math.max(0, _teamBGoals - 1);
         } else if (e.target.classList.contains('reset-btn')) {
-            currentValue = 0;
+            if (targetTeam === 'A') _teamAGoals = 0;
+            else _teamBGoals = 0;
         }
-        counterEl.textContent = currentValue;
+        updateMainScoreDisplay(); // Llama a esta función para actualizar el display
     });
 });
+
 
 // Tiempo de Partido
 const matchTimerEl = document.getElementById('matchTimer');
@@ -77,10 +77,14 @@ function formatTime(seconds) {
     return `${h}:${m}:${s}`;
 }
 
-// Actualizar nombres de equipos
+// Actualizar el display central del marcador
+function updateMainScoreDisplay() {
+    mainScoreDisplayEl.textContent = `${_teamAGoals} - ${_teamBGoals}`;
+}
+
+// Actualizar nombres de equipos (ahora solo afecta a la posesión y stats)
 function updateTeamLabels() {
-    teamALabelGoals.textContent = teamANameInput.value || "Equipo A";
-    teamBLabelGoals.textContent = teamBNameInput.value || "Equipo B";
+    // teamALabelGoals y teamBLabelGoals ya no están en el marcador principal
     const possessionTeamAEl = document.getElementById('possessionTeamA');
     const possessionTeamBEl = document.getElementById('possessionTeamB');
     if (possessionTeamAEl) possessionTeamAEl.textContent = teamANameInput.value || "Equipo A";
@@ -106,7 +110,7 @@ if (!customStats || customStats.length === 0) {
     localStorage.setItem('customStats', JSON.stringify(customStats));
 }
 
-// MODIFICACIÓN CLAVE: renderCustomStats para el diseño COMPACTO con botones verticales
+// renderCustomStats para el diseño COMPACTO con botones verticales
 function renderCustomStats() {
     generalStatsContainer.innerHTML = ''; // Limpiar el contenedor
     customStats.forEach(stat => {
@@ -275,7 +279,7 @@ window.addEventListener('click', (event) => {
 // ====== INICIALIZACIÓN =======
 document.addEventListener('DOMContentLoaded', () => {
     updateTeamLabels(); // Esto llamará a renderCustomStats
-    // renderCustomStats(); // Ya es llamado por updateTeamLabels
+    updateMainScoreDisplay(); // Inicializar el marcador central
 
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
@@ -351,7 +355,6 @@ function togglePossession(team) {
                 updatePossessionBar();
             }, 1000);
         } else { // This 'else' block is for Team B
-            // FIX: Ensure setInterval is started for Team B
             possessionIntervalB = setInterval(() => {
                 possessionTimeB++;
                 possessionTimerBEl.textContent = formatTime(possessionTimeB);
@@ -421,8 +424,10 @@ addStatBtn.addEventListener('click', () => {
 // Reiniciar Todas las Estadísticas
 resetAllBtn.addEventListener('click', () => {
     if (confirm('¿Estás seguro de que quieres reiniciar TODAS las estadísticas del partido actual?')) {
-        teamAGoalsEl.textContent = '0';
-        teamBGoalsEl.textContent = '0';
+        // Reiniciar goles del marcador
+        _teamAGoals = 0;
+        _teamBGoals = 0;
+        updateMainScoreDisplay(); // Actualizar el display central
 
         clearInterval(matchTimerInterval);
         matchTimeElapsed = 0;
