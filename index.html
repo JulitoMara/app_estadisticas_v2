@@ -20,17 +20,18 @@
                 <span>vs</span>
                 <input type="text" id="teamB-name" value="Equipo B">
             </div>
-            <div id="mainScoreDisplay" class="score-display">0 - 0</div>
-            <div class="score-buttons">
-                <div class="team-score-buttons">
-                    <button id="minusA">-</button>
+            <div class="main-score-area">
+                <div class="team-score-buttons vertical">
                     <button id="plusA">+</button>
+                    <button id="minusA">-</button>
                 </div>
-                <div class="team-score-buttons">
-                    <button id="minusB">-</button>
+                <div id="mainScoreDisplay" class="score-display">0 - 0</div>
+                <div class="team-score-buttons vertical">
                     <button id="plusB">+</button>
+                    <button id="minusB">-</button>
                 </div>
             </div>
+            
             <h3>Goles:</h3>
             <ul id="goals-list" class="event-list">
                 </ul>
@@ -56,12 +57,6 @@
             <div class="timer-buttons">
                 <button id="start-pause-match-timer">Iniciar</button>
                 <button id="reset-match-timer">Reiniciar</button>
-            </div>
-
-            <div class="added-time-controls">
-                <label for="added-time-input">Añadir:</label>
-                <input type="number" id="added-time-input" value="0" min="0" max="20">
-                <button id="set-added-time-button">Minutos</button>
             </div>
         </section>
 
