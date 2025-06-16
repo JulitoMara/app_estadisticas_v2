@@ -330,8 +330,8 @@ function selectHalf(halfNum) {
         // Para la segunda mitad, el tiempo "interno" comienza donde terminó la primera mitad
         // Si totalTimeFirstHalf no está definido (ej. carga inicial), se asume 45 mins
         currentHalf = 2;
-        if (totalTimeFirstHalf === 0) {
-             totalTimeFirstHalf = REGULAR_HALF_DURATION; // Establecer a 45 minutos si no hay un valor previo
+        if (totalTimeFirstHalf === 0) { // Esto podría ocurrir si se carga desde localStorage un estado intermedio
+            totalTimeFirstHalf = REGULAR_HALF_DURATION; // Establecer a 45 minutos si no hay un valor previo
         }
         matchTime = totalTimeFirstHalf; // El cronómetro absoluto se posiciona al final de la 1ª mitad
         extraTimeSecondHalf = 0;
