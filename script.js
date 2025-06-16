@@ -1,446 +1,552 @@
-// ====== SELECTORES DE ELEMENTOS DEL DOM =======
-// Marcador (ahora variables internas para los goles)
-let _teamAGoals = 0;
-let _teamBGoals = 0;
-const mainScoreDisplayEl = document.getElementById('mainScoreDisplay'); // Nuevo elemento central del marcador
+// Constantes y variables globales (asegúrate de que estas existan)
+const teamANameInput = document.getElementById('teamA-name');
+const teamBNameInput = document.getElementById('teamB-name');
+const mainScoreDisplay = document.getElementById('mainScoreDisplay');
+const plusAButton = document.getElementById('plusA');
+const minusAButton = document.getElementById('minusA');
+const plusBButton = document.getElementById('plusB');
+const minusBButton = document.getElementById('minusB');
+const matchTimerDisplay = document.getElementById('match-timer');
+const startPauseMatchTimerButton = document.getElementById('start-pause-match-timer');
+const resetMatchTimerButton = document.getElementById('reset-match-timer');
+const teamAPossessionName = document.getElementById('teamA-possession-name');
+const teamBPossessionName = document.getElementById('teamB-possession-name');
+const possessionTimerADisplay = document.getElementById('possession-timer-A');
+const possessionTimerBDisplay = document.getElementById('possession-timer-B');
+const startPossessionAButton = document.getElementById('start-possession-A');
+const startPossessionBButton = document.getElementById('start-possession-B');
+const resetPossessionButton = document.getElementById('reset-possession');
+const possessionBarFill = document.getElementById('possession-bar-fill');
+const possessionPercentA = document.getElementById('possession-percent-A');
+const possessionPercentB = document.getElementById('possession-percent-B');
+const newStatNameInput = document.getElementById('new-stat-name');
+const addStatButton = document.getElementById('add-stat-btn');
+const customStatsGrid = document.getElementById('custom-stats-grid');
+const resetAllButton = document.getElementById('reset-all');
 
+const eventModal = document.getElementById('eventModal');
+const closeButton = document.querySelector('.modal .close-button');
+const modalEventList = document.getElementById('modal-event-list');
 
-// Nombres de Equipos
-const teamANameInput = document.getElementById('teamAName');
-const teamBNameInput = document.getElementById('teamBName');
+// NUEVO: Elemento para la lista de goles en el marcador
+const goalsList = document.getElementById('goals-list');
 
-// Controles de Marcador (usando delegación de eventos en la nueva estructura)
-document.querySelectorAll('.score-section .score-controls-column button').forEach(button => {
-    button.addEventListener('click', (e) => {
-        const targetTeam = e.target.closest('.score-controls-column').classList.contains('team-A-controls') ? 'A' : 'B';
-
-        if (e.target.classList.contains('plus-btn')) {
-            if (targetTeam === 'A') _teamAGoals++;
-            else _teamBGoals++;
-        } else if (e.target.classList.contains('minus-btn')) {
-            if (targetTeam === 'A') _teamAGoals = Math.max(0, _teamAGoals - 1);
-            else _teamBGoals = Math.max(0, _teamBGoals - 1);
-        } else if (e.target.classList.contains('reset-btn')) {
-            if (targetTeam === 'A') _teamAGoals = 0;
-            else _teamBGoals = 0;
-        }
-        updateMainScoreDisplay(); // Llama a esta función para actualizar el display
-    });
-});
-
-
-// Tiempo de Partido
-const matchTimerEl = document.getElementById('matchTimer');
-const toggleMatchTimerBtn = document.getElementById('toggleMatchTimer');
-const resetMatchTimerBtn = document.getElementById('resetMatchTimer');
+let scoreA = 0;
+let scoreB = 0;
 let matchTimerInterval;
-let matchTimeElapsed = 0;
-let isMatchTimerRunning = false; // Estado para saber si el tiempo de partido está corriendo
+let matchTime = 0; // en segundos
+let isMatchTimerRunning = false;
 
-// Posesión de Balón
-const possessionTimerAEl = document.getElementById('possessionTimerA');
-const possessionTimerBEl = document.getElementById('possessionTimerB');
-const togglePossessionABtn = document.getElementById('togglePossessionA');
-const togglePossessionBBtn = document.getElementById('togglePossessionB');
-const resetPossessionBtn = document.getElementById('resetPossession');
-const possessionBarA = document.getElementById('possessionBarA');
-const possessionPercentA = document.getElementById('possessionPercentA');
-const possessionPercentB = document.getElementById('possessionPercentB');
-
-let possessionIntervalA, possessionIntervalB;
+let possessionTimerAInterval;
+let possessionTimerBInterval;
 let possessionTimeA = 0;
 let possessionTimeB = 0;
-let currentPossession = null; // 'A', 'B', or null
+let currentPossessionTeam = null;
 
-// Estadísticas Personalizadas
-const newStatNameInput = document.getElementById('newStatName');
-const addStatBtn = document.getElementById('addStatBtn');
-const generalStatsContainer = document.getElementById('generalStatsContainer');
+let customStats = JSON.parse(localStorage.getItem('customStats')) || [];
 
-// Reiniciar Todo
-const resetAllBtn = document.getElementById('resetAll');
-
-// SELECTORES DEL MODAL
-const statDetailsModal = document.getElementById('statDetailsModal');
-const modalStatTitle = document.getElementById('modalStatTitle');
-const modalEventList = document.getElementById('modalEventList');
-const closeButton = document.querySelector('.modal .close-button');
+// NUEVO: Array para almacenar los goles y su tiempo
+let goalsHistory = JSON.parse(localStorage.getItem('goalsHistory')) || [];
 
 
-// ====== FUNCIONES GENERALES =======
+// Función para actualizar el marcador en el HTML
+function updateScoreDisplay() {
+    mainScoreDisplay.textContent = `${scoreA} - ${scoreB}`;
+    localStorage.setItem('scoreA', scoreA);
+    localStorage.setItem('scoreB', scoreB);
+}
 
-// Función para formatear tiempo (HH:MM:SS)
+// Función para formatear el tiempo
 function formatTime(seconds) {
-    const h = String(Math.floor(seconds / 3600)).padStart(2, '0');
-    const m = String(Math.floor((seconds % 3600) / 60)).padStart(2, '0');
-    const s = String(seconds % 60).padStart(2, '0');
-    return `${h}:${m}:${s}`;
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    return `${String(minutes).padStart(2, '0')}:${String(remainingSeconds).padStart(2, '0')}`;
 }
 
-// Actualizar el display central del marcador
-function updateMainScoreDisplay() {
-    mainScoreDisplayEl.textContent = `${_teamAGoals} - ${_teamBGoals}`;
+// Función para actualizar el temporizador de partido
+function updateMatchTimerDisplay() {
+    matchTimerDisplay.textContent = formatTime(matchTime);
+    localStorage.setItem('matchTime', matchTime);
 }
 
-// Actualizar nombres de equipos (ahora solo afecta a la posesión y stats)
-function updateTeamLabels() {
-    // teamALabelGoals y teamBLabelGoals ya no están en el marcador principal
-    const possessionTeamAEl = document.getElementById('possessionTeamA');
-    const possessionTeamBEl = document.getElementById('possessionTeamB');
-    if (possessionTeamAEl) possessionTeamAEl.textContent = teamANameInput.value || "Equipo A";
-    if (possessionTeamBEl) possessionTeamBEl.textContent = teamBNameInput.value || "Equipo B";
-
-    // Llamar a renderCustomStats para que actualice los nombres en las tarjetas de estadísticas
-    renderCustomStats();
+// Función para iniciar/pausar el temporizador de partido
+function toggleMatchTimer() {
+    if (isMatchTimerRunning) {
+        clearInterval(matchTimerInterval);
+        startPauseMatchTimerButton.textContent = 'Reanudar';
+    } else {
+        matchTimerInterval = setInterval(() => {
+            matchTime++;
+            updateMatchTimerDisplay();
+        }, 1000);
+        startPauseMatchTimerButton.textContent = 'Pausar';
+    }
+    isMatchTimerRunning = !isMatchTimerRunning;
+    localStorage.setItem('isMatchTimerRunning', isMatchTimerRunning);
 }
 
-let customStats = JSON.parse(localStorage.getItem('customStats'));
-
-if (!customStats || customStats.length === 0) {
-    customStats = [
-        { id: 'stat-shots-on-goal', name: 'Disparos a puerta', events: [] },
-        { id: 'stat-shots-off-goal', name: 'Disparos fuera', events: [] },
-        { id: 'stat-fouls', name: 'Faltas', events: [] },
-        { id: 'stat-yellow-cards', name: 'Tarjetas Amarillas', events: [] },
-        { id: 'stat-red-cards', name: 'Tarjetas Rojas', events: [] },
-        { id: 'stat-corners', name: 'Córners', events: [] },
-        { id: 'stat-offsides', name: 'Fueras de juego', events: [] },
-        { id: 'stat-saves', name: 'Paradas', events: [] }
-    ];
-    localStorage.setItem('customStats', JSON.stringify(customStats));
+// Función para resetear el temporizador de partido
+function resetMatchTimer() {
+    clearInterval(matchTimerInterval);
+    matchTime = 0;
+    isMatchTimerRunning = false;
+    updateMatchTimerDisplay();
+    startPauseMatchTimerButton.textContent = 'Iniciar';
+    localStorage.removeItem('matchTime');
+    localStorage.removeItem('isMatchTimerRunning');
 }
 
-// renderCustomStats para el diseño COMPACTO con botones verticales
-function renderCustomStats() {
-    generalStatsContainer.innerHTML = ''; // Limpiar el contenedor
-    customStats.forEach(stat => {
-        const statCard = document.createElement('div');
-        statCard.classList.add('stat-card');
-        statCard.dataset.statId = stat.id;
+// Función para actualizar el display de posesión
+function updatePossessionDisplays() {
+    possessionTimerADisplay.textContent = formatTime(possessionTimeA);
+    possessionTimerBDisplay.textContent = formatTime(possessionTimeB);
 
-        statCard.innerHTML = `
-            <h3 class="stat-card-header">
-                <span class="stat-title">${stat.name}</span>
-                <div class="stat-action-icons">
-                    <button class="view-details-btn" data-id="${stat.id}">📋</button>
-                    <button class="edit-stat-btn" data-id="${stat.id}">✏️</button>
-                    <button class="delete-stat-btn" data-id="${stat.id}">🗑️</button>
-                </div>
-            </h3>
-            <div class="stat-controls-group">
-                <div class="team-buttons-column team-A-controls">
-                    <button class="reset-btn" data-team="A" data-stat="${stat.id}">🔄</button>
-                    <button class="minus-btn" data-team="A" data-stat="${stat.id}">-</button>
-                    <button class="plus-btn" data-team="A" data-stat="${stat.id}">+</button>
-                </div>
-                <span class="stat-total-display" data-stat-total="${stat.id}">0 - 0</span>
-                <div class="team-buttons-column team-B-controls">
-                    <button class="reset-btn" data-team="B" data-stat="${stat.id}">🔄</button>
-                    <button class="minus-btn" data-team="B" data-stat="${stat.id}">-</button>
-                    <button class="plus-btn" data-team="B" data-stat="${stat.id}">+</button>
-                </div>
-            </div>
-        `;
-        generalStatsContainer.appendChild(statCard);
+    const totalTime = possessionTimeA + possessionTimeB;
+    let percentA = 0;
+    let percentB = 0;
+
+    if (totalTime > 0) {
+        percentA = (possessionTimeA / totalTime) * 100;
+        percentB = (possessionTimeB / totalTime) * 100;
+    }
+
+    possessionBarFill.style.width = `${percentA}%`;
+    possessionPercentA.textContent = `${Math.round(percentA)}%`;
+    possessionPercentB.textContent = `${Math.round(percentB)}%`;
+
+    localStorage.setItem('possessionTimeA', possessionTimeA);
+    localStorage.setItem('possessionTimeB', possessionTimeB);
+}
+
+// Función para iniciar la posesión de un equipo
+function startPossession(team) {
+    // Si el mismo equipo ya tiene la posesión, no hacer nada
+    if (currentPossessionTeam === team) return;
+
+    // Pausar el temporizador del equipo actual si hay uno
+    if (currentPossessionTeam === 'A') clearInterval(possessionTimerAInterval);
+    if (currentPossessionTeam === 'B') clearInterval(possessionTimerBInterval);
+
+    // Desactivar botones si se estaban resaltando
+    startPossessionAButton.classList.remove('active');
+    startPossessionBButton.classList.remove('active');
+
+    // Iniciar el temporizador para el nuevo equipo
+    currentPossessionTeam = team;
+    if (team === 'A') {
+        possessionTimerAInterval = setInterval(() => {
+            possessionTimeA++;
+            updatePossessionDisplays();
+        }, 1000);
+        startPossessionAButton.classList.add('active');
+    } else if (team === 'B') {
+        possessionTimerBInterval = setInterval(() => {
+            possessionTimeB++;
+            updatePossessionDisplays();
+        }, 1000);
+        startPossessionBButton.classList.add('active');
+    }
+    localStorage.setItem('currentPossessionTeam', currentPossessionTeam);
+}
+
+// Función para detener la posesión (útil si se reinicia o se para el partido)
+function stopPossession() {
+    clearInterval(possessionTimerAInterval);
+    clearInterval(possessionTimerBInterval);
+    currentPossessionTeam = null;
+    startPossessionAButton.classList.remove('active');
+    startPossessionBButton.classList.remove('active');
+    localStorage.removeItem('currentPossessionTeam');
+}
+
+// Función para resetear la posesión
+function resetPossession() {
+    stopPossession();
+    possessionTimeA = 0;
+    possessionTimeB = 0;
+    updatePossessionDisplays();
+    localStorage.removeItem('possessionTimeA');
+    localStorage.removeItem('possessionTimeB');
+}
+
+
+// Función para renderizar una tarjeta de estadística
+function renderStatCard(stat) {
+    const statCard = document.createElement('div');
+    statCard.classList.add('stat-card');
+    statCard.dataset.id = stat.id;
+
+    const header = document.createElement('div');
+    header.classList.add('stat-card-header');
+
+    const statTitle = document.createElement('span');
+    statTitle.classList.add('stat-title');
+    statTitle.textContent = stat.name;
+    header.appendChild(statTitle);
+
+    const actionIcons = document.createElement('div');
+    actionIcons.classList.add('stat-action-icons');
+
+    // Botón Ver Detalles
+    const viewButton = document.createElement('button');
+    viewButton.innerHTML = '📋';
+    viewButton.title = 'Ver Eventos';
+    viewButton.addEventListener('click', () => {
+        showEventModal(stat.events);
     });
-    addStatCardEventListeners();
-    updateCustomStatCounters(); // Esto recalculará y actualizará los contadores iniciales.
-}
-// FIN MODIFICACIÓN
+    actionIcons.appendChild(viewButton);
 
-function updateCustomStatCounters() {
-    customStats.forEach(stat => {
-        const teamAcount = stat.events.filter(event => event.team === 'A').length;
-        const teamBcount = stat.events.filter(event => event.team === 'B').length;
-        
-        // Actualizar el contador general (0 - 0)
-        const mainTotalSpan = generalStatsContainer.querySelector(`.stat-card[data-stat-id="${stat.id}"] .stat-total-display`);
-        if (mainTotalSpan) {
-            mainTotalSpan.textContent = `${teamAcount} - ${teamBcount}`;
+    // Botón Editar Nombre
+    const editButton = document.createElement('button');
+    editButton.innerHTML = '✏️';
+    editButton.title = 'Editar Nombre';
+    editButton.addEventListener('click', () => {
+        const newName = prompt('Editar nombre de la estadística:', stat.name);
+        if (newName && newName.trim() !== '') {
+            stat.name = newName.trim();
+            statTitle.textContent = newName.trim();
+            saveCustomStats();
         }
     });
+    actionIcons.appendChild(editButton);
+
+    // Botón Eliminar
+    const deleteButton = document.createElement('button');
+    deleteButton.innerHTML = '🗑️';
+    deleteButton.title = 'Eliminar Estadística';
+    deleteButton.addEventListener('click', () => {
+        if (confirm(`¿Estás seguro de que quieres eliminar la estadística "${stat.name}"?`)) {
+            customStats = customStats.filter(s => s.id !== stat.id);
+            saveCustomStats();
+            renderCustomStats();
+        }
+    });
+    actionIcons.appendChild(deleteButton);
+
+    header.appendChild(actionIcons);
+    statCard.appendChild(header);
+
+    const controlsGroup = document.createElement('div');
+    controlsGroup.classList.add('stat-controls-group');
+
+    // Controles Equipo A
+    const teamAControls = document.createElement('div');
+    teamAControls.classList.add('team-buttons-column');
+    const plusA = document.createElement('button');
+    plusA.classList.add('plus-btn');
+    plusA.textContent = '+';
+    plusA.addEventListener('click', () => {
+        stat.valueA++;
+        updateStatDisplay();
+        stat.events.push({ time: formatTime(matchTime), team: teamANameInput.value, type: 'sum', value: 1 });
+        saveCustomStats();
+    });
+    const minusA = document.createElement('button');
+    minusA.classList.add('minus-btn');
+    minusA.textContent = '-';
+    minusA.addEventListener('click', () => {
+        if (stat.valueA > 0) {
+            stat.valueA--;
+            updateStatDisplay();
+            stat.events.push({ time: formatTime(matchTime), team: teamANameInput.value, type: 'subtract', value: 1 });
+            saveCustomStats();
+        }
+    });
+    const resetA = document.createElement('button');
+    resetA.classList.add('reset-btn');
+    resetA.innerHTML = '🔄';
+    resetA.title = `Reiniciar ${teamANameInput.value}`;
+    resetA.addEventListener('click', () => {
+        if (confirm(`¿Reiniciar ${stat.name} para ${teamANameInput.value}?`)) {
+            stat.valueA = 0;
+            updateStatDisplay();
+            stat.events.push({ time: formatTime(matchTime), team: teamANameInput.value, type: 'reset' });
+            saveCustomStats();
+        }
+    });
+    teamAControls.appendChild(plusA);
+    teamAControls.appendChild(minusA);
+    teamAControls.appendChild(resetA);
+    controlsGroup.appendChild(teamAControls);
+
+    // Display central
+    const statTotalDisplay = document.createElement('span');
+    statTotalDisplay.classList.add('stat-total-display');
+    statTotalDisplay.textContent = `${stat.valueA} - ${stat.valueB}`;
+    controlsGroup.appendChild(statTotalDisplay);
+
+    // Controles Equipo B
+    const teamBControls = document.createElement('div');
+    teamBControls.classList.add('team-buttons-column');
+    const plusB = document.createElement('button');
+    plusB.classList.add('plus-btn');
+    plusB.textContent = '+';
+    plusB.addEventListener('click', () => {
+        stat.valueB++;
+        updateStatDisplay();
+        stat.events.push({ time: formatTime(matchTime), team: teamBNameInput.value, type: 'sum', value: 1 });
+        saveCustomStats();
+    });
+    const minusB = document.createElement('button');
+    minusB.classList.add('minus-btn');
+    minusB.textContent = '-';
+    minusB.addEventListener('click', () => {
+        if (stat.valueB > 0) {
+            stat.valueB--;
+            updateStatDisplay();
+            stat.events.push({ time: formatTime(matchTime), team: teamBNameInput.value, type: 'subtract', value: 1 });
+            saveCustomStats();
+        }
+    });
+    const resetB = document.createElement('button');
+    resetB.classList.add('reset-btn');
+    resetB.innerHTML = '🔄';
+    resetB.title = `Reiniciar ${teamBNameInput.value}`;
+    resetB.addEventListener('click', () => {
+        if (confirm(`¿Reiniciar ${stat.name} para ${teamBNameInput.value}?`)) {
+            stat.valueB = 0;
+            updateStatDisplay();
+            stat.events.push({ time: formatTime(matchTime), team: teamBNameInput.value, type: 'reset' });
+            saveCustomStats();
+        }
+    });
+    teamBControls.appendChild(plusB);
+    teamBControls.appendChild(minusB);
+    teamBControls.appendChild(resetB);
+    controlsGroup.appendChild(teamBControls);
+
+    statCard.appendChild(controlsGroup);
+
+    // Función interna para actualizar el display de esta tarjeta
+    function updateStatDisplay() {
+        statTotalDisplay.textContent = `${stat.valueA} - ${stat.valueB}`;
+    }
+
+    return statCard;
 }
 
-function addStatCardEventListeners() {
-    generalStatsContainer.removeEventListener('click', handleCustomStatControls); // Previene duplicados
-    generalStatsContainer.addEventListener('click', handleCustomStatControls);
-}
-
-function handleCustomStatControls(e) {
-    const target = e.target;
-    const isControlBtn = target.classList.contains('plus-btn') || target.classList.contains('minus-btn') || target.classList.contains('reset-btn');
-
-    if (isControlBtn) {
-        const team = target.dataset.team;
-        const statId = target.dataset.stat;
-
-        const statToUpdate = customStats.find(s => s.id === statId);
-        if (!statToUpdate) return;
-
-        if (target.classList.contains('plus-btn')) {
-            statToUpdate.events.push({
-                timestamp: matchTimeElapsed,
-                team: team
-            });
-        } else if (target.classList.contains('minus-btn')) {
-            // Eliminar el último evento de ese equipo para esa estadística
-            const eventsForTeam = statToUpdate.events.filter(event => event.team === team);
-            if (eventsForTeam.length > 0) {
-                // Encontrar el evento con el timestamp más reciente para eliminarlo
-                const lastEventTime = Math.max(...eventsForTeam.map(event => event.timestamp));
-                const indexToRemove = statToUpdate.events.findIndex(event => event.team === team && event.timestamp === lastEventTime);
-                if (indexToRemove !== -1) {
-                    statToUpdate.events.splice(indexToRemove, 1);
-                }
-            }
-        } else if (target.classList.contains('reset-btn')) {
-            // Eliminar todos los eventos de ese equipo para esa estadística
-            statToUpdate.events = statToUpdate.events.filter(event => event.team !== team);
-        }
-        localStorage.setItem('customStats', JSON.stringify(customStats));
-        updateCustomStatCounters(); // Esto recalculará y actualizará el contador total (0-0)
-    } else if (target.classList.contains('delete-stat-btn')) {
-        const statIdToDelete = target.dataset.id;
-        const defaultStatIds = [
-            'stat-shots-on-goal', 'stat-shots-off-goal', 'stat-fouls',
-            'stat-yellow-cards', 'stat-red-cards', 'stat-corners',
-            'stat-offsides', 'stat-saves'
-        ];
-        if (defaultStatIds.includes(statIdToDelete)) {
-            alert('No se pueden eliminar las estadísticas predeterminadas.');
-            return;
-        }
-
-        customStats = customStats.filter(stat => stat.id !== statIdToDelete);
-        localStorage.setItem('customStats', JSON.stringify(customStats));
-        renderCustomStats(); // Volver a renderizar todas las tarjetas
-    } else if (target.classList.contains('edit-stat-btn')) {
-        const statIdToEdit = target.dataset.id;
-        const statToEdit = customStats.find(stat => stat.id === statIdToEdit);
-        if (statToEdit) {
-            const newName = prompt("Editar nombre de la estadística:", statToEdit.name);
-            if (newName && newName.trim() !== "") {
-                statToEdit.name = newName.trim();
-                localStorage.setItem('customStats', JSON.stringify(customStats));
-                renderCustomStats(); // Volver a renderizar todas las tarjetas para actualizar el nombre
-            }
-        }
-    } else if (target.classList.contains('view-details-btn')) {
-        const statId = target.dataset.id;
-        showStatDetailsModal(statId);
+// Función para añadir una nueva estadística
+function addCustomStat() {
+    const statName = newStatNameInput.value.trim();
+    if (statName) {
+        const newStat = {
+            id: Date.now(), // ID único
+            name: statName,
+            valueA: 0,
+            valueB: 0,
+            events: [] // Historial de eventos para esta estadística
+        };
+        customStats.push(newStat);
+        saveCustomStats();
+        renderCustomStats();
+        newStatNameInput.value = '';
+    } else {
+        alert('Por favor, introduce un nombre para la estadística.');
     }
 }
 
+// Función para renderizar todas las estadísticas personalizadas
+function renderCustomStats() {
+    customStatsGrid.innerHTML = ''; // Limpiar antes de renderizar
+    customStats.forEach(stat => {
+        customStatsGrid.appendChild(renderStatCard(stat));
+    });
+}
 
-// ====== FUNCIONES DEL MODAL =======
+// Función para guardar estadísticas en localStorage
+function saveCustomStats() {
+    localStorage.setItem('customStats', JSON.stringify(customStats));
+}
 
-function showStatDetailsModal(statId) {
-    const stat = customStats.find(s => s.id === statId);
-    if (!stat) return;
+// Función para cargar estadísticas de localStorage
+function loadCustomStats() {
+    const savedStats = localStorage.getItem('customStats');
+    if (savedStats) {
+        customStats = JSON.parse(savedStats);
+        renderCustomStats();
+    }
+}
 
-    modalStatTitle.textContent = `Detalles de ${stat.name}`;
-    modalEventList.innerHTML = ''; // Limpiar lista anterior
-
-    if (stat.events.length === 0) {
+// Funciones para el modal de eventos
+function showEventModal(events) {
+    modalEventList.innerHTML = ''; // Limpiar lista
+    if (events.length === 0) {
         const li = document.createElement('li');
         li.textContent = 'No hay eventos registrados para esta estadística.';
         modalEventList.appendChild(li);
     } else {
-        // Ordenar los eventos por timestamp de forma ascendente
-        const sortedEvents = [...stat.events].sort((a, b) => a.timestamp - b.timestamp);
-
-        sortedEvents.forEach(event => {
+        events.forEach(event => {
             const li = document.createElement('li');
-            li.classList.add(`team-${event.team}`); // Para aplicar estilos de color por equipo
-            li.innerHTML = `
-                <span class="event-time">${formatTime(event.timestamp)}</span>
-                <span class="event-team">${event.team === 'A' ? (teamANameInput.value || 'Equipo A') : (teamBNameInput.value || 'Equipo B')}</span>
-            `;
+            li.classList.add(event.team === teamANameInput.value ? 'team-A' : 'team-B');
+            li.innerHTML = `<span class="event-time">${event.time}</span> - <span class="event-team">${event.team}: ${event.type === 'sum' ? 'Incremento' : event.type === 'subtract' ? 'Decremento' : 'Reiniciado'}</span>`;
             modalEventList.appendChild(li);
         });
     }
-
-    statDetailsModal.style.display = 'flex'; // Mostrar el modal
+    eventModal.style.display = 'flex'; // Mostrar el modal
 }
 
-// Cerrar el modal al hacer clic en la X
-closeButton.addEventListener('click', () => {
-    statDetailsModal.style.display = 'none';
-});
-
-// Cerrar el modal al hacer clic fuera del contenido del modal
-window.addEventListener('click', (event) => {
-    if (event.target === statDetailsModal) {
-        statDetailsModal.style.display = 'none';
-    }
-});
+function hideEventModal() {
+    eventModal.style.display = 'none'; // Ocultar el modal
+}
 
 
-// ====== INICIALIZACIÓN =======
-document.addEventListener('DOMContentLoaded', () => {
-    updateTeamLabels(); // Esto llamará a renderCustomStats
-    updateMainScoreDisplay(); // Inicializar el marcador central
+// NUEVO: Función para añadir un gol al historial
+function addGoalToHistory(teamName) {
+    const goalTime = formatTime(matchTime);
+    const goalEntry = { time: goalTime, team: teamName };
+    goalsHistory.push(goalEntry);
+    localStorage.setItem('goalsHistory', JSON.stringify(goalsHistory));
+    renderGoalsHistory(); // Renderizar en la lista del marcador
+}
 
-    if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-            navigator.serviceWorker.register('/service-worker.js')
-                .then(registration => {
-                    console.log('Service Worker registrado con éxito:', registration);
-                })
-                .catch(error => {
-                    console.log('Fallo el registro del Service Worker:', error);
-                });
+// NUEVO: Función para renderizar el historial de goles
+function renderGoalsHistory() {
+    goalsList.innerHTML = ''; // Limpiar la lista antes de renderizar
+    if (goalsHistory.length === 0) {
+        const li = document.createElement('li');
+        li.textContent = 'Aún no se han marcado goles.';
+        goalsList.appendChild(li);
+    } else {
+        // Ordenar los goles por tiempo (si no lo están ya) y mostrarlos
+        goalsHistory.forEach(goal => {
+            const li = document.createElement('li');
+            li.classList.add(goal.team === teamANameInput.value ? 'team-A' : 'team-B');
+            li.innerHTML = `<span class="event-time">${goal.time}</span> - <span class="event-team">${goal.team}</span>`;
+            goalsList.appendChild(li);
         });
     }
-});
+}
 
 
-// ====== EVENT LISTENERS =======
+// Event Listeners
+document.addEventListener('DOMContentLoaded', () => {
+    // Cargar nombres de equipos
+    teamANameInput.value = localStorage.getItem('teamAName') || 'Equipo A';
+    teamBNameInput.value = localStorage.getItem('teamBName') || 'Equipo B';
+    teamAPossessionName.textContent = teamANameInput.value;
+    teamBPossessionName.textContent = teamBNameInput.value;
 
-// Nombres de Equipos
-teamANameInput.addEventListener('input', updateTeamLabels);
-teamBNameInput.addEventListener('input', updateTeamLabels);
+    // Cargar marcador
+    scoreA = parseInt(localStorage.getItem('scoreA')) || 0;
+    scoreB = parseInt(localStorage.getItem('scoreB')) || 0;
+    updateScoreDisplay();
 
-// Tiempo de Partido
-toggleMatchTimerBtn.addEventListener('click', () => {
+    // Cargar temporizador de partido
+    matchTime = parseInt(localStorage.getItem('matchTime')) || 0;
+    isMatchTimerRunning = JSON.parse(localStorage.getItem('isMatchTimerRunning')) || false;
+    updateMatchTimerDisplay();
     if (isMatchTimerRunning) {
-        clearInterval(matchTimerInterval);
-        toggleMatchTimerBtn.textContent = '▶️ Reanudar';
-        if (currentPossession) {
-            // Pause possession when match timer is paused
-            togglePossession(currentPossession); // This will effectively stop the current possession timer
-        }
-    } else {
-        matchTimerInterval = setInterval(() => {
-            matchTimeElapsed++;
-            matchTimerEl.textContent = formatTime(matchTimeElapsed);
-        }, 1000);
-        toggleMatchTimerBtn.textContent = '⏸️ Pausar';
+        toggleMatchTimer(); // Reanudar si estaba corriendo
     }
-    isMatchTimerRunning = !isMatchTimerRunning;
+
+    // Cargar posesión
+    possessionTimeA = parseInt(localStorage.getItem('possessionTimeA')) || 0;
+    possessionTimeB = parseInt(localStorage.getItem('possessionTimeB')) || 0;
+    currentPossessionTeam = localStorage.getItem('currentPossessionTeam');
+    updatePossessionDisplays();
+    if (currentPossessionTeam === 'A') {
+        startPossession('A');
+    } else if (currentPossessionTeam === 'B') {
+        startPossession('B');
+    }
+
+    // Cargar estadísticas personalizadas
+    loadCustomStats();
+
+    // NUEVO: Cargar y renderizar historial de goles
+    renderGoalsHistory();
 });
 
-resetMatchTimerBtn.addEventListener('click', () => {
-    clearInterval(matchTimerInterval);
-    matchTimeElapsed = 0;
-    matchTimerEl.textContent = formatTime(matchTimeElapsed);
-    toggleMatchTimerBtn.textContent = '▶️ Iniciar';
-    isMatchTimerRunning = false;
-    resetPossession();
+// Event Listeners para nombres de equipos
+teamANameInput.addEventListener('input', () => {
+    localStorage.setItem('teamAName', teamANameInput.value);
+    teamAPossessionName.textContent = teamANameInput.value;
+});
+teamBNameInput.addEventListener('input', () => {
+    localStorage.setItem('teamBName', teamBNameInput.value);
+    teamBPossessionName.textContent = teamBNameInput.value;
 });
 
-// Posesión de Balón
-togglePossessionABtn.addEventListener('click', () => togglePossession('A'));
-togglePossessionBBtn.addEventListener('click', () => togglePossession('B'));
-resetPossessionBtn.addEventListener('click', resetPossession);
-
-function togglePossession(team) {
-    if (!isMatchTimerRunning && currentPossession === null) {
-        alert('Para iniciar la posesión, primero debes iniciar el tiempo de partido.');
-        return;
-    }
-
-    clearInterval(possessionIntervalA);
-    clearInterval(possessionIntervalB);
-
-    if (currentPossession === team) {
-        currentPossession = null;
-        updatePossessionButtons();
-    } else {
-        currentPossession = team;
-        if (team === 'A') {
-            possessionIntervalA = setInterval(() => {
-                possessionTimeA++;
-                possessionTimerAEl.textContent = formatTime(possessionTimeA);
-                updatePossessionBar();
-            }, 1000);
-        } else { // This 'else' block is for Team B
-            possessionIntervalB = setInterval(() => {
-                possessionTimeB++;
-                possessionTimerBEl.textContent = formatTime(possessionTimeB);
-                updatePossessionBar();
-            }, 1000);
-        }
-        updatePossessionButtons();
-    }
-}
-
-function resetPossession() {
-    clearInterval(possessionIntervalA);
-    clearInterval(possessionIntervalB);
-    possessionTimeA = 0;
-    possessionTimeB = 0;
-    currentPossession = null;
-    possessionTimerAEl.textContent = formatTime(0);
-    possessionTimerBEl.textContent = formatTime(0);
-    updatePossessionBar();
-    updatePossessionButtons();
-}
-
-function updatePossessionBar() {
-    const totalTime = possessionTimeA + possessionTimeB;
-    if (totalTime === 0) {
-        possessionBarA.style.width = '50%';
-        possessionPercentA.textContent = '0%';
-        possessionPercentB.textContent = '0%';
-        return;
-    }
-
-    const percentA = (possessionTimeA / totalTime) * 100;
-    const percentB = (possessionTimeB / totalTime) * 100;
-
-    possessionBarA.style.width = `${percentA}%`;
-    possessionPercentA.textContent = `${Math.round(percentA)}%`;
-    possessionPercentB.textContent = `${Math.round(percentB)}%`;
-}
-
-function updatePossessionButtons() {
-    togglePossessionABtn.classList.remove('active');
-    togglePossessionBBtn.classList.remove('active');
-    if (currentPossession === 'A') {
-        togglePossessionABtn.classList.add('active');
-    } else if (currentPossession === 'B') {
-        togglePossessionBBtn.classList.add('active');
-    }
-}
-
-// Estadísticas Personalizadas: Añadir nueva estadística
-addStatBtn.addEventListener('click', () => {
-    const newStatName = newStatNameInput.value.trim();
-    if (newStatName) {
-        const newId = 'stat-' + newStatName.toLowerCase().replace(/\s+/g, '-');
-        if (customStats.some(stat => stat.id === newId)) {
-            alert('¡Ya existe una estadística con un nombre similar!');
-            return;
-        }
-
-        customStats.push({ id: newId, name: newStatName, events: [] });
-        localStorage.setItem('customStats', JSON.stringify(customStats));
-        newStatNameInput.value = '';
-        renderCustomStats();
+// Event Listeners para el Marcador
+plusAButton.addEventListener('click', () => {
+    scoreA++;
+    updateScoreDisplay();
+    addGoalToHistory(teamANameInput.value); // NUEVO: Añadir gol al historial
+});
+minusAButton.addEventListener('click', () => {
+    if (scoreA > 0) {
+        scoreA--;
+        updateScoreDisplay();
+        // Opcional: Podrías añadir lógica para quitar el último gol de A si se resta
+        // Por simplicidad, no lo implementamos ahora.
     }
 });
 
-// Reiniciar Todas las Estadísticas
-resetAllBtn.addEventListener('click', () => {
-    if (confirm('¿Estás seguro de que quieres reiniciar TODAS las estadísticas del partido actual?')) {
-        // Reiniciar goles del marcador
-        _teamAGoals = 0;
-        _teamBGoals = 0;
-        updateMainScoreDisplay(); // Actualizar el display central
+plusBButton.addEventListener('click', () => {
+    scoreB++;
+    updateScoreDisplay();
+    addGoalToHistory(teamBNameInput.value); // NUEVO: Añadir gol al historial
+});
+minusBButton.addEventListener('click', () => {
+    if (scoreB > 0) {
+        scoreB--;
+        updateScoreDisplay();
+        // Opcional: Podrías añadir lógica para quitar el último gol de B si se resta
+    }
+});
 
-        clearInterval(matchTimerInterval);
-        matchTimeElapsed = 0;
-        matchTimerEl.textContent = formatTime(matchTimeElapsed);
-        toggleMatchTimerBtn.textContent = '▶️ Iniciar';
-        isMatchTimerRunning = false;
 
+// Event Listeners para el Temporizador del Partido
+startPauseMatchTimerButton.addEventListener('click', toggleMatchTimer);
+resetMatchTimerButton.addEventListener('click', resetMatchTimer);
+
+// Event Listeners para Posesión
+startPossessionAButton.addEventListener('click', () => startPossession('A'));
+startPossessionBButton.addEventListener('click', () => startPossession('B'));
+resetPossessionButton.addEventListener('click', resetPossession);
+
+// Event Listener para añadir estadística
+addStatButton.addEventListener('click', addCustomStat);
+
+// Event Listener para Reiniciar Todo
+resetAllButton.addEventListener('click', () => {
+    if (confirm('¿Estás seguro de que quieres reiniciar TODO el partido? Esto borrará el marcador, tiempos, posesión y todas las estadísticas personalizadas.')) {
+        // Reiniciar Marcador
+        scoreA = 0;
+        scoreB = 0;
+        updateScoreDisplay();
+        goalsHistory = []; // NUEVO: Borrar historial de goles
+        localStorage.removeItem('goalsHistory'); // Borrar de localStorage
+        renderGoalsHistory(); // Renderizar vacío
+
+        // Reiniciar Temporizador de Partido
+        resetMatchTimer();
+
+        // Reiniciar Posesión
         resetPossession();
 
-        customStats.forEach(stat => {
-            stat.events = [];
-        });
-        localStorage.setItem('customStats', JSON.stringify(customStats));
-        updateCustomStatCounters();
+        // Reiniciar Estadísticas Personalizadas
+        customStats = [];
+        saveCustomStats();
+        renderCustomStats();
+
+        // Limpiar nombres de equipos si se desea (opcional)
+        // teamANameInput.value = 'Equipo A';
+        // teamBNameInput.value = 'Equipo B';
+        // localStorage.removeItem('teamAName');
+        // localStorage.removeItem('teamBName');
+        // teamAPossessionName.textContent = 'Equipo A';
+        // teamBPossessionName.textContent = 'Equipo B';
+
+        alert('El partido ha sido reiniciado por completo.');
+    }
+});
+
+
+// Event Listeners para el Modal
+closeButton.addEventListener('click', hideEventModal);
+window.addEventListener('click', (event) => {
+    if (event.target === eventModal) {
+        hideEventModal();
     }
 });
