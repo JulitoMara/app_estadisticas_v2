@@ -43,9 +43,26 @@ let possessionTimeA = 0;
 let possessionTimeB = 0;
 let currentPossessionTeam = null;
 
-// Cargar estadísticas personalizadas al inicio
-let customStats = []; // Inicializamos como array vacío, se llenará en loadCustomStats()
-let goalsHistory = []; // Inicializamos como array vacío, se llenará en renderGoalsHistory()
+// =================================================================
+// NUEVO: Estadísticas personalizadas iniciales / preconfiguradas
+// Esto se usará si no hay datos guardados o si están corruptos.
+// Cada estadística debe tener un ID único para evitar problemas.
+// =================================================================
+const initialCustomStats = [
+    { id: 101, name: 'Tiros a puerta', valueA: 0, valueB: 0, events: [] },
+    { id: 102, name: 'Faltas', valueA: 0, valueB: 0, events: [] },
+    { id: 103, name: 'Tarjetas Amarillas', valueA: 0, valueB: 0, events: [] },
+    { id: 104, name: 'Tarjetas Rojas', valueA: 0, valueB: 0, events: [] },
+    { id: 105, name: 'Saques de esquina', valueA: 0, valueB: 0, events: [] },
+    { id: 106, name: 'Fueras de juego', valueA: 0, valueB: 0, events: [] },
+    { id: 107, name: 'Penaltis', valueA: 0, valueB: 0, events: [] },
+    { id: 108, name: 'Paradas', valueA: 0, valueB: 0, events: [] },
+    // Puedes añadir más estadísticas aquí si lo deseas
+];
+
+
+let customStats = []; // Se llenará en loadCustomStats()
+let goalsHistory = []; // Se llenará en renderGoalsHistory()
 
 
 // Función para actualizar el marcador en el HTML
@@ -73,6 +90,7 @@ function toggleMatchTimer() {
     if (isMatchTimerRunning) {
         clearInterval(matchTimerInterval);
         startPauseMatchTimerButton.textContent = 'Reanudar';
+        stopPossession(); // Pausar posesión si el partido se pausa
     } else {
         matchTimerInterval = setInterval(() => {
             matchTime++;
@@ -93,6 +111,7 @@ function resetMatchTimer() {
     startPauseMatchTimerButton.textContent = 'Iniciar';
     localStorage.removeItem('matchTime');
     localStorage.removeItem('isMatchTimerRunning');
+    stopPossession(); // Asegurarse de que la posesión también se detiene al reiniciar el partido
 }
 
 // Función para actualizar el display de posesión
@@ -119,6 +138,12 @@ function updatePossessionDisplays() {
 
 // Función para iniciar la posesión de un equipo
 function startPossession(team) {
+    // NUEVO: Solo permitir iniciar la posesión si el temporizador del partido está en marcha
+    if (!isMatchTimerRunning) {
+        alert('Debes iniciar el temporizador del partido para controlar la posesión.');
+        return;
+    }
+
     // Si el mismo equipo ya tiene la posesión, no hacer nada
     if (currentPossessionTeam === team) return;
 
@@ -191,7 +216,7 @@ function renderStatCard(stat) {
     viewButton.innerHTML = '📋';
     viewButton.title = 'Ver Eventos';
     viewButton.addEventListener('click', () => {
-        showEventModal(stat.events);
+        showEventModal(stat.events, stat.name); // Pasar el nombre de la estadística al modal
     });
     actionIcons.appendChild(viewButton);
 
@@ -328,12 +353,13 @@ function renderStatCard(stat) {
 function addCustomStat() {
     const statName = newStatNameInput.value.trim();
     if (statName) {
+        // Asegurarse de que el ID es único, usando una marca de tiempo
         const newStat = {
-            id: Date.now(), // ID único
+            id: Date.now(),
             name: statName,
             valueA: 0,
             valueB: 0,
-            events: [] // Historial de eventos para esta estadística
+            events: []
         };
         customStats.push(newStat);
         saveCustomStats();
@@ -349,7 +375,7 @@ function renderCustomStats() {
     customStatsGrid.innerHTML = ''; // Limpiar antes de renderizar
     if (customStats.length === 0) {
         const noStatsMessage = document.createElement('p');
-        noStatsMessage.textContent = 'No hay estadísticas personalizadas. ¡Añade una!';
+        noStatsMessage.textContent = 'No hay estadísticas personalizadas. ¡Añade una o reinicia para cargar las predeterminadas!';
         noStatsMessage.style.textAlign = 'center';
         noStatsMessage.style.color = '#777';
         noStatsMessage.style.marginTop = '20px';
@@ -365,34 +391,50 @@ function saveCustomStats() {
     localStorage.setItem('customStats', JSON.stringify(customStats));
 }
 
-// Función para cargar estadísticas de localStorage
+// Función para cargar estadísticas de localStorage o usar predefinidas
 function loadCustomStats() {
     const savedStats = localStorage.getItem('customStats');
     if (savedStats) {
         try {
-            customStats = JSON.parse(savedStats);
+            const parsedStats = JSON.parse(savedStats);
+            // Verificar si los datos parseados son un array y tienen el formato esperado
+            if (Array.isArray(parsedStats) && parsedStats.every(s => typeof s.id === 'number' && typeof s.name === 'string')) {
+                customStats = parsedStats;
+            } else {
+                console.warn("Datos de customStats en localStorage corruptos o con formato incorrecto. Cargando estadísticas iniciales.");
+                customStats = initialCustomStats.map(stat => ({ ...stat })); // Clonar para evitar mutación
+            }
         } catch (e) {
-            console.error("Error parsing custom stats from localStorage:", e);
-            customStats = []; // Reset if corrupted
+            console.error("Error al parsear custom stats de localStorage:", e);
+            console.warn("Cargando estadísticas iniciales.");
+            customStats = initialCustomStats.map(stat => ({ ...stat })); // Clonar para evitar mutación
         }
     } else {
-        customStats = []; // Ensure it's an empty array if nothing in localStorage
+        // Si no hay nada en localStorage, cargar las estadísticas iniciales
+        customStats = initialCustomStats.map(stat => ({ ...stat })); // Clonar para evitar mutación
     }
     renderCustomStats();
 }
 
+
 // Funciones para el modal de eventos
-function showEventModal(events) {
+function showEventModal(events, statName) {
+    document.getElementById('modal-title').textContent = `Historial de ${statName}`; // Actualizar título del modal
     modalEventList.innerHTML = ''; // Limpiar lista
     if (events.length === 0) {
         const li = document.createElement('li');
-        li.textContent = 'No hay eventos registrados para esta estadística.';
+        li.textContent = `No hay eventos registrados para ${statName}.`;
         modalEventList.appendChild(li);
     } else {
         events.forEach(event => {
             const li = document.createElement('li');
             li.classList.add(event.team === teamANameInput.value ? 'team-A' : 'team-B');
-            li.innerHTML = `<span class="event-time">${event.time}</span> - <span class="event-team">${event.team}: ${event.type === 'sum' ? 'Incremento' : event.type === 'subtract' ? 'Decremento' : 'Reiniciado'}</span>`;
+            let eventTypeText;
+            if (event.type === 'sum') eventTypeText = 'Incremento';
+            else if (event.type === 'subtract') eventTypeText = 'Decremento';
+            else if (event.type === 'reset') eventTypeText = 'Reiniciado';
+            else eventTypeText = event.type; // Fallback
+            li.innerHTML = `<span class="event-time">${event.time}</span> - <span class="event-team">${event.team}: ${eventTypeText}</span>`;
             modalEventList.appendChild(li);
         });
     }
@@ -413,7 +455,7 @@ function addGoalToHistory(teamName) {
     renderGoalsHistory(); // Renderizar en la lista del marcador
 }
 
-// NUEVO: Función para eliminar el ÚLTIMO gol del equipo especificado del historial
+// Función para eliminar el ÚLTIMO gol del equipo especificado del historial
 function removeLastGoalFromHistory(teamName) {
     // Buscar la última ocurrencia del gol de este equipo en el historial
     for (let i = goalsHistory.length - 1; i >= 0; i--) {
@@ -433,9 +475,15 @@ function renderGoalsHistory() {
     const savedGoals = localStorage.getItem('goalsHistory');
     if (savedGoals) {
         try {
-            goalsHistory = JSON.parse(savedGoals);
+            const parsedGoals = JSON.parse(savedGoals);
+            if (Array.isArray(parsedGoals)) {
+                goalsHistory = parsedGoals;
+            } else {
+                console.warn("Datos de goalsHistory en localStorage corruptos. Reiniciando historial de goles.");
+                goalsHistory = [];
+            }
         } catch (e) {
-            console.error("Error parsing goals history from localStorage:", e);
+            console.error("Error al parsear goals history de localStorage:", e);
             goalsHistory = []; // Reset if corrupted
         }
     } else {
@@ -476,22 +524,30 @@ document.addEventListener('DOMContentLoaded', () => {
     matchTime = parseInt(localStorage.getItem('matchTime')) || 0;
     isMatchTimerRunning = JSON.parse(localStorage.getItem('isMatchTimerRunning')) || false;
     updateMatchTimerDisplay();
+    // No reanudar automáticamente el match timer aquí, para evitar que corra sin interacción
+    // El usuario debe hacer clic en "Reanudar" si quiere que siga.
     if (isMatchTimerRunning) {
-        toggleMatchTimer(); // Reanudar si estaba corriendo
+        startPauseMatchTimerButton.textContent = 'Pausar'; // Actualizar el texto del botón
+        matchTimerInterval = setInterval(() => { // Asegurarse de que el intervalo se reestablece
+            matchTime++;
+            updateMatchTimerDisplay();
+        }, 1000);
+    } else {
+        startPauseMatchTimerButton.textContent = 'Iniciar';
     }
+
 
     // Cargar posesión
     possessionTimeA = parseInt(localStorage.getItem('possessionTimeA')) || 0;
     possessionTimeB = parseInt(localStorage.getItem('possessionTimeB')) || 0;
     currentPossessionTeam = localStorage.getItem('currentPossessionTeam');
     updatePossessionDisplays();
-    if (currentPossessionTeam === 'A') {
-        startPossession('A');
-    } else if (currentPossessionTeam === 'B') {
-        startPossession('B');
+    // No reanudar la posesión automáticamente, solo si el partido está en marcha
+    if (isMatchTimerRunning && currentPossessionTeam) {
+         startPossession(currentPossessionTeam); // Reanudar si estaba corriendo y el partido está corriendo
     }
 
-    // Cargar estadísticas personalizadas
+    // Cargar estadísticas personalizadas (usando la nueva lógica de carga)
     loadCustomStats();
 
     // Cargar y renderizar historial de goles
@@ -518,7 +574,7 @@ minusAButton.addEventListener('click', () => {
     if (scoreA > 0) {
         scoreA--;
         updateScoreDisplay();
-        removeLastGoalFromHistory(teamANameInput.value); // NUEVO: Eliminar el último gol de A
+        removeLastGoalFromHistory(teamANameInput.value);
     }
 });
 
@@ -531,7 +587,7 @@ minusBButton.addEventListener('click', () => {
     if (scoreB > 0) {
         scoreB--;
         updateScoreDisplay();
-        removeLastGoalFromHistory(teamBNameInput.value); // NUEVO: Eliminar el último gol de B
+        removeLastGoalFromHistory(teamBNameInput.value);
     }
 });
 
@@ -560,15 +616,15 @@ resetAllButton.addEventListener('click', () => {
         renderGoalsHistory();
 
         // Reiniciar Temporizador de Partido
-        resetMatchTimer();
+        resetMatchTimer(); // Esto también detendrá la posesión
 
-        // Reiniciar Posesión
+        // Reiniciar Posesión (por si acaso, aunque resetMatchTimer ya lo hace)
         resetPossession();
 
-        // Reiniciar Estadísticas Personalizadas
-        customStats = [];
-        saveCustomStats(); // Guarda el array vacío
-        renderCustomStats(); // Renderiza las estadísticas vacías
+        // Reiniciar Estadísticas Personalizadas a las predefinidas
+        customStats = initialCustomStats.map(stat => ({ ...stat })); // Clonar para que sean independientes
+        saveCustomStats(); // Guarda el array predefinido
+        renderCustomStats(); // Renderiza las estadísticas predefinidas
 
         // Limpiar nombres de equipos si se desea (opcional)
         // teamANameInput.value = 'Equipo A';
@@ -578,7 +634,7 @@ resetAllButton.addEventListener('click', () => {
         // teamAPossessionName.textContent = 'Equipo A';
         // teamBPossessionName.textContent = 'Equipo B';
 
-        alert('El partido ha sido reiniciado por completo.');
+        alert('El partido ha sido reiniciado por completo. Las estadísticas predeterminadas han sido cargadas.');
     }
 });
 
