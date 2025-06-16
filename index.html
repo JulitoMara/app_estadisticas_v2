@@ -3,52 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Estadísticas de Partido</title>
+    <title>Sports Stats Tracker</title>
     <link rel="stylesheet" href="style.css">
     <link rel="manifest" href="manifest.json">
-    <link rel="apple-touch-icon" href="icon-192x192.png">
+    <link rel="apple-touch-icon" href="icons/icon-192x192.png">
     <meta name="theme-color" content="#007bff">
-    <meta name="description" content="Aplicación para gestionar estadísticas de un partido de fútbol, incluyendo marcador, tiempo y posesión.">
 </head>
 <body>
     <div class="main-app-container">
         <header class="app-header">
-            <h1>Estadísticas de Partido</h1>
-            <div class="config-section card">
+            <h1>📊 Sports Stats Tracker</h1>
+            <div class="config-section">
                 <div class="team-name-group">
-                    <label for="teamAName">Equipo A:</label>
-                    <input type="text" id="teamAName" value="Tarragona" placeholder="Nombre Equipo A">
+                    <label for="teamAName">Nombre del Equipo Local</label>
+                    <input type="text" id="teamAName" placeholder="Equipo A" value="Tarragona">
                 </div>
                 <div class="team-name-group">
-                    <label for="teamBName">Equipo B:</label>
-                    <input type="text" id="teamBName" value="Camp Clar" placeholder="Nombre Equipo B">
+                    <label for="teamBName">Nombre del Equipo Visitante</label>
+                    <input type="text" id="teamBName" placeholder="Equipo B" value="Camp Clar">
                 </div>
             </div>
         </header>
 
         <main class="match-dashboard">
-            <!-- Sección Izquierda: Marcador, Tiempo, Posesión -->
-            <section class="left-column">
+            <div class="left-column">
                 <div class="score-section card">
                     <h2>Marcador</h2>
-                    <div class="stat-group">
-                        <div class="team-score">
-                            <span id="teamAGoals" class="counter">0</span>
-                            <span id="teamALabelGoals" class="team-label">Equipo A</span>
-                            <div class="controls">
-                                <button class="reset-btn" data-target="teamAGoals">🔄</button>
-                                <button class="minus-btn" data-target="teamAGoals">-</button>
-                                <button class="plus-btn" data-target="teamAGoals">+</button>
-                            </div>
+                    <div class="score-display-group">
+                        <div class="score-controls-column team-A-controls">
+                            <button class="reset-btn" data-team="A">🔄</button>
+                            <button class="minus-btn" data-team="A">-</button>
+                            <button class="plus-btn" data-team="A">+</button>
                         </div>
-                        <div class="team-score">
-                            <span id="teamBGoals" class="counter">0</span>
-                            <span id="teamBLabelGoals" class="team-label">Equipo B</span>
-                            <div class="controls">
-                                <button class="reset-btn" data-target="teamBGoals">🔄</button>
-                                <button class="minus-btn" data-target="teamBGoals">-</button>
-                                <button class="plus-btn" data-target="teamBGoals">+</button>
-                            </div>
+                        <span id="mainScoreDisplay" class="counter">0 - 0</span>
+                        <div class="score-controls-column team-B-controls">
+                            <button class="reset-btn" data-team="B">🔄</button>
+                            <button class="minus-btn" data-team="B">-</button>
+                            <button class="plus-btn" data-team="B">+</button>
                         </div>
                     </div>
                 </div>
@@ -58,7 +49,7 @@
                     <span id="matchTimer" class="timer">00:00:00</span>
                     <div class="match-timer-controls">
                         <button id="toggleMatchTimer">▶️ Iniciar</button>
-                        <button id="resetMatchTimer">🔄 Reiniciar</button>
+                        <button id="resetMatchTimer" class="reset-btn">🔄 Reiniciar</button>
                     </div>
                 </div>
 
@@ -76,48 +67,43 @@
                     </div>
                     <div class="possession-bar-container">
                         <div id="possessionBarA" class="possession-bar-fill"></div>
-                        <span id="possessionPercentA" class="possession-percentage-text left-percent">0%</span>
-                        <span id="possessionPercentB" class="possession-percentage-text right-percent">0%</span>
+                        <span id="possessionPercentA" class="possession-percentage-text left-percent">50%</span>
+                        <span id="possessionPercentB" class="possession-percentage-text right-percent">50%</span>
                     </div>
                     <div class="possession-controls">
-                        <button id="togglePossessionA">Posesión A</button>
-                        <button id="togglePossessionB">Posesión B</button>
-                        <button id="resetPossession" class="reset-btn">🔄 Reiniciar</button>
+                        <button id="togglePossessionA">Posesión Equipo A</button>
+                        <button id="togglePossessionB">Posesión Equipo B</button>
                     </div>
+                    <button id="resetPossession" class="reset-btn">🔄 Reiniciar Posesión</button>
                 </div>
-            </section>
+            </div>
 
-            <!-- Sección Derecha: Estadísticas Personalizadas -->
-            <section class="right-column">
+            <div class="right-column">
                 <div class="custom-stats-management card">
                     <h2>Estadísticas Personalizadas</h2>
                     <div class="add-custom-stat-integrated">
-                        <input type="text" id="newStatName" placeholder="Nueva estadística (ej: Faltas)">
-                        <button id="addStatBtn">Añadir</button>
+                        <input type="text" id="newStatName" placeholder="Nombre de la nueva estadística">
+                        <button id="addStatBtn">➕ Añadir</button>
                     </div>
                     <div id="generalStatsContainer" class="custom-stats-grid">
-                        <!-- Las estadísticas personalizadas se cargarán aquí dinámicamente mediante JS -->
-                    </div>
+                        </div>
                 </div>
-            </section>
+            </div>
         </main>
 
         <hr class="section-divider">
 
-        <button id="resetAll" class="reset-all-button">Reiniciar Todas las Estadísticas del Partido Actual</button>
+        <button id="resetAll" class="reset-all-button">🔴 Reiniciar TODO el Partido</button>
     </div>
 
-    <!-- ESTRUCTURA DEL MODAL DE DETALLES DE ESTADÍSTICAS -->
     <div id="statDetailsModal" class="modal">
         <div class="modal-content">
             <span class="close-button">&times;</span>
             <h2 id="modalStatTitle">Detalles de la Estadística</h2>
             <ul id="modalEventList" class="event-list">
-                <!-- Los eventos se cargarán aquí -->
-            </ul>
+                </ul>
         </div>
     </div>
-    <!-- FIN ESTRUCTURA DEL MODAL -->
 
     <script src="script.js"></script>
 </body>
