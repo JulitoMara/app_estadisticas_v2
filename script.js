@@ -30,11 +30,12 @@ const modalEventList = document.getElementById('modal-event-list');
 const modalTitle = document.getElementById('modal-title');
 
 const goalsList = document.getElementById('goals-list');
+const viewGoalsHistoryButton = document.getElementById('view-goals-history-button'); // Nuevo botón
 
 // === Variables y elementos para el cronómetro de fútbol ===
 const halfIndicator = document.getElementById('half-indicator');
-const addedTimeInput = document.getElementById('added-time-input');
-const setAddedTimeButton = document.getElementById('set-added-time-button');
+// const addedTimeInput = document.getElementById('added-time-input'); // ELIMINADO
+// const setAddedTimeButton = document.getElementById('set-added-time-button'); // ELIMINADO
 const matchStatusDisplay = document.getElementById('match-status-display');
 const totalAddedTimeDisplay = document.getElementById('total-added-time-display');
 
@@ -59,9 +60,9 @@ let currentPossessionTeam = null;
 // === Variables de tiempo para fútbol ===
 let currentHalf = 1; // 1 o 2
 const REGULAR_HALF_DURATION = 45 * 60; // 45 minutos en segundos
-let extraTimeFirstHalf = 0; // Tiempo añadido a la primera mitad (en segundos)
-let extraTimeSecondHalf = 0; // Tiempo añadido a la segunda mitad (en segundos)
-let totalTimeFirstHalf = 0; // Duración total de la primera mitad (45 + extra)
+let extraTimeFirstHalfDisplay = 0; // Se usará para el display, no para la lógica de fin de mitad
+let extraTimeSecondHalfDisplay = 0; // Se usará para el display
+let totalTimeFirstHalf = 0; // Duración total de la primera mitad (45 + el tiempo REAL que duró)
 
 // Estado del partido: 'not-started', 'running', 'paused', 'half-time-ended', 'full-time'
 let matchState = 'not-started';
@@ -99,42 +100,41 @@ function formatTime(seconds) {
 // === Funciones para el cronómetro de partido ===
 function updateMatchTimerDisplay() {
     let displayTime = matchTime;
+    let actualTimeInHalf = 0; // Tiempo real transcurrido en la mitad actual
 
-    // Si estamos en la segunda mitad, ajustamos el tiempo de display para que empiece en 45:00
-    if (currentHalf === 2) {
-        // Asegura que la visualización de la 2da mitad comience desde 45:00
-        // `matchTime - totalTimeFirstHalf` da el tiempo transcurrido DESDE el inicio "real" de la 2da mitad
-        // Luego le sumamos 45 * 60 para que la visualización sea 45:00 + tiempo transcurrido
-        displayTime = REGULAR_HALF_DURATION + (matchTime - totalTimeFirstHalf);
-        // Evitar que muestre tiempos negativos si matchTime es menor que totalTimeFirstHalf
+    if (currentHalf === 1) {
+        actualTimeInHalf = matchTime;
+        displayTime = matchTime; // La 1ª mitad siempre empieza en 00:00
+        if (actualTimeInHalf >= REGULAR_HALF_DURATION) {
+            extraTimeFirstHalfDisplay = actualTimeInHalf - REGULAR_HALF_DURATION;
+        } else {
+            extraTimeFirstHalfDisplay = 0;
+        }
+        totalAddedTimeDisplay.textContent = extraTimeFirstHalfDisplay > 0 ? `+${formatTime(extraTimeFirstHalfDisplay)}` : '';
+
+    } else if (currentHalf === 2) {
+        // El tiempo transcurrido en la segunda mitad es matchTime - totalTimeFirstHalf
+        actualTimeInHalf = matchTime - totalTimeFirstHalf;
+        displayTime = REGULAR_HALF_DURATION + actualTimeInHalf; // Mostrar 45:00 + tiempo extra de 2da mitad
+        if (actualTimeInHalf >= REGULAR_HALF_DURATION) {
+            extraTimeSecondHalfDisplay = actualTimeInHalf - REGULAR_HALF_DURATION;
+        } else {
+            extraTimeSecondHalfDisplay = 0;
+        }
+        totalAddedTimeDisplay.textContent = extraTimeSecondHalfDisplay > 0 ? `+${formatTime(extraTimeSecondHalfDisplay)}` : '';
+
+        // Asegurarse de que no muestre tiempos negativos si matchTime es menor que totalTimeFirstHalf
         if (displayTime < REGULAR_HALF_DURATION) {
             displayTime = REGULAR_HALF_DURATION;
         }
-    } else { // Primera mitad
-        displayTime = matchTime;
     }
 
     matchTimerDisplay.textContent = formatTime(displayTime);
-
-    // Mostrar indicador de mitad y tiempo añadido
-    let displayAddedTime = '';
-    if (currentHalf === 1 && matchTime >= REGULAR_HALF_DURATION) {
-        displayAddedTime = `+${formatTime(extraTimeFirstHalf)}`;
-    } else if (currentHalf === 2 && matchTime >= totalTimeFirstHalf + REGULAR_HALF_DURATION) {
-        displayAddedTime = `+${formatTime(extraTimeSecondHalf)}`;
-    }
     halfIndicator.textContent = `${currentHalf}ª Mitad`;
-    totalAddedTimeDisplay.textContent = displayAddedTime;
-
-    // Actualizar el estado del partido en el display y la UI
-    updateMatchStatusDisplay();
-
-    // Guardar en localStorage
+    updateMatchStatusDisplay(); // Asegurar que el estado y los botones se actualizan
     localStorage.setItem('matchTime', matchTime);
     localStorage.setItem('currentHalf', currentHalf);
     localStorage.setItem('matchState', matchState);
-    localStorage.setItem('extraTimeFirstHalf', extraTimeFirstHalf);
-    localStorage.setItem('extraTimeSecondHalf', extraTimeSecondHalf);
     localStorage.setItem('totalTimeFirstHalf', totalTimeFirstHalf);
 }
 
@@ -142,11 +142,8 @@ function updateMatchStatusDisplay() {
     let statusText = '';
     let startPauseBtnText = 'Iniciar';
 
-    // Ocultar todos los botones de transición y añadir tiempo por defecto
     startPauseMatchTimerButton.style.display = 'inline-block';
-    addedTimeInput.style.display = 'none';
-    setAddedTimeButton.style.display = 'none';
-    halfSelector.style.display = 'flex'; // Mostrar el selector por defecto, su estado se maneja en updateHalfSelectorButtons
+    halfSelector.style.display = 'flex';
 
     switch (matchState) {
         case 'not-started':
@@ -160,56 +157,43 @@ function updateMatchStatusDisplay() {
         case 'paused':
             statusText = `Partido pausado en ${formatTime(matchTime)}.`;
             startPauseBtnText = 'Reanudar';
-            // Mostrar controles de añadir tiempo si estamos cerca del final de una mitad
-            if (currentHalf === 1 && matchTime >= REGULAR_HALF_DURATION) {
-                 addedTimeInput.style.display = 'inline-block';
-                 setAddedTimeButton.style.display = 'inline-block';
-            } else if (currentHalf === 2 && matchTime >= totalTimeFirstHalf + REGULAR_HALF_DURATION) {
-                 addedTimeInput.style.display = 'inline-block';
-                 setAddedTimeButton.style.display = 'inline-block';
-            }
             break;
         case 'half-time-ended':
             statusText = `¡Fin de la 1ª Mitad (${formatTime(totalTimeFirstHalf)})! Selecciona 2ª Mitad para continuar.`;
             startPauseMatchTimerButton.style.display = 'none'; // No se puede iniciar/pausar desde aquí
-            addedTimeInput.style.display = 'inline-block'; // Permitir ajustar tiempo añadido si no se hizo
-            setAddedTimeButton.style.display = 'inline-block';
             break;
         case 'full-time':
             statusText = '¡PARTIDO FINALIZADO!';
             startPauseMatchTimerButton.style.display = 'none';
-            addedTimeInput.style.display = 'none'; // No se puede añadir más tiempo
-            setAddedTimeButton.style.display = 'none';
             break;
     }
     matchStatusDisplay.textContent = statusText;
     startPauseMatchTimerButton.textContent = startPauseBtnText;
-    updateHalfSelectorButtons(); // Asegurar que el selector de mitad se actualiza con el estado
+    updateHalfSelectorButtons();
 }
-
 
 function toggleMatchTimer() {
     if (isMatchTimerRunning) {
-        // Pausar el reloj
         clearInterval(matchTimerInterval);
         isMatchTimerRunning = false;
         matchState = 'paused';
-        stopPossession(); // Pausar la posesión también
+        stopPossession();
     } else {
-        // No permitir iniciar si el partido ha terminado
-        if (matchState === 'full-time' || matchState === 'half-time-ended') {
-            alert('No se puede iniciar el cronómetro en este estado. Por favor, selecciona la siguiente mitad o reinicia el partido.');
+        if (matchState === 'full-time') {
+            alert('El partido ya ha finalizado. Por favor, reinicia para empezar uno nuevo.');
+            return;
+        }
+        if (matchState === 'half-time-ended' && currentHalf === 1) {
+            alert('La primera mitad ha terminado. Por favor, selecciona la 2ª Mitad para continuar.');
             return;
         }
 
-        // Si es el primer inicio en una mitad (o reanudación desde 'not-started' de la mitad)
         if (matchState === 'not-started') {
             if (currentHalf === 1) {
-                matchTime = 0; // Asegurarse de que la 1ra mitad empieza en 0
-                totalTimeFirstHalf = REGULAR_HALF_DURATION; // Valor por defecto antes de añadir tiempo
+                matchTime = 0; // Asegura que la 1ª mitad siempre inicia en 0
             } else if (currentHalf === 2) {
                 // Si la 2da mitad empieza y no se ha definido totalTimeFirstHalf, asumimos 45 min
-                if (totalTimeFirstHalf === 0) { // Esto podría ocurrir si se carga desde localStorage un estado intermedio
+                if (totalTimeFirstHalf === 0) {
                     totalTimeFirstHalf = REGULAR_HALF_DURATION;
                 }
                 matchTime = totalTimeFirstHalf; // La 2da mitad empieza el tiempo donde terminó la 1ra
@@ -221,162 +205,138 @@ function toggleMatchTimer() {
         matchTimerInterval = setInterval(() => {
             matchTime++;
 
-            // --- Lógica de Detección de Hitos (Fin de mitades) ---
-            if (currentHalf === 1 && matchTime >= REGULAR_HALF_DURATION + extraTimeFirstHalf && matchState !== 'half-time-ended') {
-                clearInterval(matchTimerInterval); // Detener el cronómetro
-                isMatchTimerRunning = false;
-                matchState = 'half-time-ended'; // Estado especial para transición de mitad
-                totalTimeFirstHalf = matchTime; // Guardar el tiempo final real de la primera mitad
-                stopPossession(); // Pausar posesión
-                alert(`¡Fin de la 1ª Mitad (${formatTime(totalTimeFirstHalf)})!`);
-            } else if (currentHalf === 2 && matchTime >= totalTimeFirstHalf + REGULAR_HALF_DURATION + extraTimeSecondHalf && matchState !== 'full-time') {
-                clearInterval(matchTimerInterval); // Detener el cronómetro
-                isMatchTimerRunning = false;
-                matchState = 'full-time';
-                stopPossession();
-                alert('¡Partido Finalizado!');
+            // Fin de la 1ª mitad (a los 45 minutos exactos si no se ha superado ya)
+            if (currentHalf === 1 && matchTime >= REGULAR_HALF_DURATION && matchState !== 'half-time-ended') {
+                // Si el cronómetro sigue corriendo después de 45 mins, es tiempo añadido
+                // El estado half-time-ended se activa cuando el usuario PAUSA o la duración total de la primera mitad es estrictamente 45 minutos
+                // Si el usuario deja correr el crono más allá de 45 min, se muestra el +X:XX
+                // La "detección" de fin de mitad reglamentaria ocurre aquí, pero el crono sigue si está en 'running'
+                if (matchTime === REGULAR_HALF_DURATION) { // Solo si llegamos justo a los 45:00
+                    /*
+                    clearInterval(matchTimerInterval);
+                    isMatchTimerRunning = false;
+                    matchState = 'half-time-ended';
+                    totalTimeFirstHalf = matchTime; // Guardar el tiempo final real de la primera mitad
+                    stopPossession();
+                    alert(`¡Fin de la 1ª Mitad (${formatTime(totalTimeFirstHalf)})!`);
+                    */
+                }
+            }
+            // Fin del Partido (a los 90 minutos absolutos si no se ha superado ya)
+            else if (currentHalf === 2 && matchTime >= totalTimeFirstHalf + REGULAR_HALF_DURATION && matchState !== 'full-time') {
+                 // Similar a la 1ª mitad, si el cronómetro sigue corriendo después de los 90, es tiempo añadido
+                 if (matchTime === totalTimeFirstHalf + REGULAR_HALF_DURATION) { // Solo si llegamos justo a los 90:00
+                    /*
+                    clearInterval(matchTimerInterval);
+                    isMatchTimerRunning = false;
+                    matchState = 'full-time';
+                    stopPossession();
+                    alert('¡Partido Finalizado!');
+                    */
+                 }
             }
             updateMatchTimerDisplay();
-
         }, 1000);
     }
-    updateMatchStatusDisplay(); // Asegurarse de que el botón se actualiza
+    updateMatchStatusDisplay();
     localStorage.setItem('isMatchTimerRunning', isMatchTimerRunning);
 }
 
 function resetMatchTimer() {
     clearInterval(matchTimerInterval);
     matchTime = 0;
-    extraTimeFirstHalf = 0;
-    extraTimeSecondHalf = 0;
+    extraTimeFirstHalfDisplay = 0; // Resetear display
+    extraTimeSecondHalfDisplay = 0; // Resetear display
     totalTimeFirstHalf = 0;
     isMatchTimerRunning = false;
-    currentHalf = 1; // Siempre vuelve a la 1ª mitad
+    currentHalf = 1;
     matchState = 'not-started';
     updateMatchTimerDisplay();
-    updateHalfSelectorButtons(); // Resetea la selección de mitad
+    updateHalfSelectorButtons();
 
-    // Limpiar localStorage de tiempos y estados
     localStorage.removeItem('matchTime');
     localStorage.removeItem('isMatchTimerRunning');
     localStorage.removeItem('currentHalf');
     localStorage.removeItem('matchState');
-    localStorage.removeItem('extraTimeFirstHalf');
-    localStorage.removeItem('extraTimeSecondHalf');
     localStorage.removeItem('totalTimeFirstHalf');
 
     stopPossession();
-    updateMatchStatusDisplay(); // Actualiza la visibilidad de los botones
-}
-
-// Función para establecer el tiempo añadido (para la mitad actual)
-function setAddedTime() {
-    const timeToAdd = parseInt(addedTimeInput.value);
-    if (isNaN(timeToAdd) || timeToAdd < 0) {
-        alert('Por favor, introduce un número válido de minutos a añadir.');
-        return;
-    }
-
-    const secondsToAdd = timeToAdd * 60;
-
-    if (currentHalf === 1) {
-        extraTimeFirstHalf = secondsToAdd;
-        totalTimeFirstHalf = REGULAR_HALF_DURATION + extraTimeFirstHalf; // Actualizar duración total 1ª mitad
-        alert(`Se han añadido ${timeToAdd} minutos a la primera mitad.`);
-        // Si estaba en 'half-time-ended', volver a 'paused' para permitir reanudar
-        if (matchState === 'half-time-ended') {
-            matchState = 'paused';
-        }
-    } else if (currentHalf === 2) {
-        extraTimeSecondHalf = secondsToAdd;
-        alert(`Se han añadido ${timeToAdd} minutos a la segunda mitad.`);
-        // Si estaba en estado de finalización de 2da mitad, pasar a full-time definitivo
-        if (matchTime >= totalTimeFirstHalf + REGULAR_HALF_DURATION + extraTimeSecondHalf) {
-             matchState = 'full-time';
-             clearInterval(matchTimerInterval);
-             isMatchTimerRunning = false;
-        }
-    } else {
-        alert('Solo puedes añadir tiempo al final de la mitad correspondiente.');
-        return;
-    }
-
-    updateMatchTimerDisplay();
     updateMatchStatusDisplay();
-    localStorage.setItem('extraTimeFirstHalf', extraTimeFirstHalf);
-    localStorage.setItem('extraTimeSecondHalf', extraTimeSecondHalf);
-    localStorage.setItem('totalTimeFirstHalf', totalTimeFirstHalf);
 }
 
 
 // === Funciones del selector de mitad ===
 function selectHalf(halfNum) {
     if (isMatchTimerRunning) {
-        // Si el cronómetro está corriendo, pausarlo primero
-        toggleMatchTimer(); // Esto cambiará matchState a 'paused'
+        toggleMatchTimer(); // Pausar si está corriendo
         alert('El temporizador del partido ha sido pausado para cambiar de mitad.');
     }
 
-    // Lógica para cambiar de mitad
     if (halfNum === 1) {
-        // NUEVO: Aviso si se intenta volver a la 1ª mitad desde la 2ª
         if (currentHalf === 2) {
-            if (!confirm('Estás volviendo a la 1ª Mitad. Esto reiniciará el tiempo de la 1ª Mitad y afectará el tiempo acumulado para la 2ª Mitad. ¿Estás seguro?')) {
-                return; // Si el usuario cancela, no hacer nada
+            if (!confirm('Estás volviendo a la 1ª Mitad. Esto reiniciará el tiempo de la 1ª Mitad. ¿Estás seguro?')) {
+                return;
             }
         }
         currentHalf = 1;
         matchTime = 0;
-        extraTimeFirstHalf = 0;
-        extraTimeSecondHalf = 0;
-        totalTimeFirstHalf = 0;
-        matchState = 'not-started'; // Reinicia el estado para la 1ª mitad
+        extraTimeFirstHalfDisplay = 0; // Resetear el display de tiempo añadido
+        extraTimeSecondHalfDisplay = 0; // Resetear el display de tiempo añadido
+        totalTimeFirstHalf = 0; // Se reseteará a 45*60 si se inicia la 2da mitad sin jugar la 1ra
+        matchState = 'not-started';
     } else if (halfNum === 2) {
-        // Para la segunda mitad, el tiempo "interno" comienza donde terminó la primera mitad
-        // Si totalTimeFirstHalf no está definido (ej. carga inicial), se asume 45 mins
-        currentHalf = 2;
-        if (totalTimeFirstHalf === 0) { // Esto podría ocurrir si se carga desde localStorage un estado intermedio
-            totalTimeFirstHalf = REGULAR_HALF_DURATION; // Establecer a 45 minutos si no hay un valor previo
+        // Permitir ir a la 2da mitad solo si la 1ra ha llegado al menos a 45 minutos
+        if (currentHalf === 1 && matchTime < REGULAR_HALF_DURATION && !confirm('La 1ª mitad aún no ha alcanzado los 45 minutos. ¿Deseas iniciar la 2ª mitad de todas formas? El tiempo de la 1ª mitad se establecerá a 45 minutos.')) {
+            return;
         }
-        matchTime = totalTimeFirstHalf; // El cronómetro absoluto se posiciona al final de la 1ª mitad
-        extraTimeSecondHalf = 0;
-        matchState = 'not-started'; // Estado inicial para la 2ª mitad (antes de iniciarla)
+
+        currentHalf = 2;
+        // Si la 1ra mitad no se jugó completamente, asumimos que duró 45 min
+        if (totalTimeFirstHalf === 0 || totalTimeFirstHalf < REGULAR_HALF_DURATION) {
+            totalTimeFirstHalf = REGULAR_HALF_DURATION;
+        }
+        matchTime = totalTimeFirstHalf; // La 2ª mitad empieza el tiempo donde terminó la 1ª
+        extraTimeSecondHalfDisplay = 0; // Resetear display
+        matchState = 'not-started';
     }
 
     localStorage.setItem('currentHalf', currentHalf);
     localStorage.setItem('matchTime', matchTime);
     localStorage.setItem('totalTimeFirstHalf', totalTimeFirstHalf);
-    localStorage.setItem('matchState', matchState); // Guardar el nuevo estado
+    localStorage.setItem('matchState', matchState);
 
-    updateMatchTimerDisplay(); // Actualizar la visualización del cronómetro
-    updateHalfSelectorButtons(); // Actualizar el estilo de los botones del selector
-    updateMatchStatusDisplay(); // Actualizar el mensaje de estado y visibilidad de botones
+    updateMatchTimerDisplay();
+    updateHalfSelectorButtons();
+    updateMatchStatusDisplay();
 }
 
 function updateHalfSelectorButtons() {
     selectHalf1Button.classList.remove('active');
     selectHalf2Button.classList.remove('active');
-    selectHalf1Button.disabled = false; // Por defecto habilitamos ambos
+    selectHalf1Button.disabled = false;
     selectHalf2Button.disabled = false;
 
     if (currentHalf === 1) {
         selectHalf1Button.classList.add('active');
     } else if (currentHalf === 2) {
         selectHalf2Button.classList.add('active');
-        // MODIFICADO: Solo deshabilitar 1ª mitad si el partido ha finalizado COMPLETAMENTE (full-time)
+        // Si estamos en la 2da mitad y el partido ha finalizado completamente (matchState === 'full-time'), deshabilitar ambos.
         if (matchState === 'full-time') {
             selectHalf1Button.disabled = true;
+            selectHalf2Button.disabled = true;
         }
     }
 
-    // Deshabilitar selectores si el partido ha terminado completamente
+    // Siempre deshabilitar ambos si el partido ha terminado completamente
     if (matchState === 'full-time') {
         selectHalf1Button.disabled = true;
         selectHalf2Button.disabled = true;
     }
-    // Deshabilitar la 2ª mitad si la 1ª aún no ha terminado (tiempo regulatorio + añadido)
-    // Y no está ya en el estado de "half-time-ended" (que es el puente)
-    if (currentHalf === 1 && matchTime < REGULAR_HALF_DURATION + extraTimeFirstHalf && matchState !== 'half-time-ended') {
+
+    // Si la primera mitad está en curso y aún no llega a 45 minutos, deshabilitar la 2ª mitad
+    // para evitar un cambio accidental sin el prompt de confirmación.
+    // El prompt se activa si se hace click directamente, pero el botón visualmente estará deshabilitado.
+    if (currentHalf === 1 && matchTime < REGULAR_HALF_DURATION && matchState === 'running') {
         selectHalf2Button.disabled = true;
     }
 }
@@ -643,12 +603,12 @@ function hideEventModal() {
 
 // Función para añadir un gol al historial
 function addGoalToHistory(teamName) {
-    const goalTime = formatTime(matchTime); // Usar el matchTime real para el registro
-    const currentScore = `${scoreA} - ${scoreB}`; // NUEVO: Capturar el marcador actual
-    const goalEntry = { time: goalTime, team: teamName, score: currentScore }; // MODIFICADO: Añadir el marcador
+    const goalTime = formatTime(matchTime);
+    const currentScore = `${scoreA} - ${scoreB}`;
+    const goalEntry = { time: goalTime, team: teamName, score: currentScore };
     goalsHistory.push(goalEntry);
     localStorage.setItem('goalsHistory', JSON.stringify(goalsHistory));
-    renderGoalsHistory();
+    renderGoalsHistory(); // Volver a renderizar el resumen
 }
 
 // Función para eliminar el ÚLTIMO gol del equipo especificado del historial
@@ -660,11 +620,11 @@ function removeLastGoalFromHistory(teamName) {
         }
     }
     localStorage.setItem('goalsHistory', JSON.stringify(goalsHistory));
-    renderGoalsHistory();
+    renderGoalsHistory(); // Volver a renderizar el resumen
 }
 
 
-// Función para renderizar el historial de goles
+// Función para renderizar el historial de goles (RESUMEN en la vista principal)
 function renderGoalsHistory() {
     goalsList.innerHTML = '';
     const savedGoals = localStorage.getItem('goalsHistory');
@@ -685,20 +645,45 @@ function renderGoalsHistory() {
         goalsHistory = [];
     }
 
-
     if (goalsHistory.length === 0) {
         const li = document.createElement('li');
         li.textContent = 'Aún no se han marcado goles.';
         goalsList.appendChild(li);
+        viewGoalsHistoryButton.style.display = 'none'; // Ocultar botón si no hay goles
+    } else {
+        // Mostrar solo el último gol o un mensaje de resumen
+        const lastGoal = goalsHistory[goalsHistory.length - 1];
+        const li = document.createElement('li');
+        li.classList.add(lastGoal.team === teamANameInput.value ? 'team-A' : 'team-B');
+        li.innerHTML = `<span class="event-time">${lastGoal.time}</span> - <span class="event-team">${lastGoal.team}</span> <span class="goal-score">(${lastGoal.score})</span> (Último gol)`;
+        goalsList.appendChild(li);
+
+        if (goalsHistory.length > 1) {
+            viewGoalsHistoryButton.style.display = 'block'; // Mostrar botón si hay más de un gol
+        } else {
+            viewGoalsHistoryButton.style.display = 'none';
+        }
+    }
+}
+
+// Función para mostrar el modal con el historial completo de goles
+function showGoalsHistoryModal() {
+    modalTitle.textContent = 'Historial de Goles';
+    modalEventList.innerHTML = '';
+
+    if (goalsHistory.length === 0) {
+        const li = document.createElement('li');
+        li.textContent = 'No hay goles registrados.';
+        modalEventList.appendChild(li);
     } else {
         goalsHistory.forEach(goal => {
             const li = document.createElement('li');
             li.classList.add(goal.team === teamANameInput.value ? 'team-A' : 'team-B');
-            // MODIFICADO: Añadir el marcador al texto
             li.innerHTML = `<span class="event-time">${goal.time}</span> - <span class="event-team">${goal.team}</span> <span class="goal-score">(${goal.score})</span>`;
-            goalsList.appendChild(li);
+            modalEventList.appendChild(li);
         });
     }
+    eventModal.style.display = 'flex';
 }
 
 
@@ -718,13 +703,20 @@ document.addEventListener('DOMContentLoaded', () => {
     // Cargar temporizador de partido
     matchTime = parseInt(localStorage.getItem('matchTime')) || 0;
     currentHalf = parseInt(localStorage.getItem('currentHalf')) || 1;
-    extraTimeFirstHalf = parseInt(localStorage.getItem('extraTimeFirstHalf')) || 0;
-    extraTimeSecondHalf = parseInt(localStorage.getItem('extraTimeSecondHalf')) || 0;
+    // extraTimeFirstHalf = parseInt(localStorage.getItem('extraTimeFirstHalf')) || 0; // ELIMINADO
+    // extraTimeSecondHalf = parseInt(localStorage.getItem('extraTimeSecondHalf')) || 0; // ELIMINADO
     totalTimeFirstHalf = parseInt(localStorage.getItem('totalTimeFirstHalf')) || REGULAR_HALF_DURATION;
 
     // Asegurarse de que totalTimeFirstHalf no sea 0 si la mitad actual es 2
     if (currentHalf === 2 && totalTimeFirstHalf === 0) {
         totalTimeFirstHalf = REGULAR_HALF_DURATION;
+    }
+
+    // Si el matchTime ya ha superado los 45 minutos en la 1ª mitad al cargar, calcular el display de tiempo añadido
+    if (currentHalf === 1 && matchTime >= REGULAR_HALF_DURATION) {
+        extraTimeFirstHalfDisplay = matchTime - REGULAR_HALF_DURATION;
+    } else if (currentHalf === 2 && matchTime >= totalTimeFirstHalf + REGULAR_HALF_DURATION) {
+        extraTimeSecondHalfDisplay = matchTime - (totalTimeFirstHalf + REGULAR_HALF_DURATION);
     }
 
     matchState = localStorage.getItem('matchState') || 'not-started';
@@ -811,7 +803,10 @@ addStatButton.addEventListener('click', addCustomStat);
 // === NUEVOS EVENT LISTENERS PARA EL CONTROL DE MITADES ===
 selectHalf1Button.addEventListener('click', () => selectHalf(1));
 selectHalf2Button.addEventListener('click', () => selectHalf(2));
-setAddedTimeButton.addEventListener('click', setAddedTime);
+// setAddedTimeButton.addEventListener('click', setAddedTime); // ELIMINADO
+
+// === NUEVO EVENT LISTENER para el botón de Ver Historial Completo de goles ===
+viewGoalsHistoryButton.addEventListener('click', showGoalsHistoryModal);
 
 
 // =================================================================
@@ -863,7 +858,7 @@ customStatsGrid.addEventListener('click', (event) => {
                 stat.valueA--;
                 const lastEventIndex = stat.events.map(e => e.team).lastIndexOf(teamANameInput.value);
                 if (lastEventIndex !== -1) {
-                    stat.events.splice(lastEventIndex, 1);
+                    stat.events.splice(lastEventIdex, 1);
                 }
             } else if (team === 'B' && stat.valueB > 0) {
                 stat.valueB--;
