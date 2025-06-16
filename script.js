@@ -27,7 +27,7 @@ const resetAllButton = document.getElementById('reset-all');
 const eventModal = document.getElementById('eventModal');
 const closeButton = document.querySelector('.modal .close-button');
 const modalEventList = document.getElementById('modal-event-list');
-const modalTitle = document.getElementById('modal-title'); // Añadido para el título del modal
+const modalTitle = document.getElementById('modal-title'); // Asegurarse de que este elemento exista en index.html y esté correctamente seleccionado.
 
 // Elemento para la lista de goles en el marcador
 const goalsList = document.getElementById('goals-list');
@@ -58,7 +58,6 @@ const initialCustomStats = [
     { id: 106, name: 'Fueras de juego', valueA: 0, valueB: 0, events: [] },
     { id: 107, name: 'Penaltis', valueA: 0, valueB: 0, events: [] },
     { id: 108, name: 'Paradas', valueA: 0, valueB: 0, events: [] },
-    // Puedes añadir más estadísticas aquí si lo deseas
 ];
 
 
@@ -199,7 +198,7 @@ function resetPossession() {
 function renderStatCard(stat) {
     const statCard = document.createElement('div');
     statCard.classList.add('stat-card');
-    statCard.dataset.id = stat.id;
+    statCard.dataset.id = stat.id; // Almacena el ID para la delegación de eventos
 
     const header = document.createElement('div');
     header.classList.add('stat-card-header');
@@ -216,36 +215,21 @@ function renderStatCard(stat) {
     const viewButton = document.createElement('button');
     viewButton.innerHTML = '📋';
     viewButton.title = 'Ver Eventos';
-    viewButton.addEventListener('click', () => {
-        showEventModal(stat.events, stat.name); // ¡CORRECCIÓN AQUÍ! Pasar stat.name
-    });
+    viewButton.dataset.action = 'view'; // Para delegación de eventos
     actionIcons.appendChild(viewButton);
 
     // Botón Editar Nombre
     const editButton = document.createElement('button');
     editButton.innerHTML = '✏️';
     editButton.title = 'Editar Nombre';
-    editButton.addEventListener('click', () => {
-        const newName = prompt('Editar nombre de la estadística:', stat.name);
-        if (newName && newName.trim() !== '') {
-            stat.name = newName.trim();
-            statTitle.textContent = newName.trim();
-            saveCustomStats();
-        }
-    });
+    editButton.dataset.action = 'edit'; // Para delegación de eventos
     actionIcons.appendChild(editButton);
 
     // Botón Eliminar
     const deleteButton = document.createElement('button');
     deleteButton.innerHTML = '🗑️';
     deleteButton.title = 'Eliminar Estadística';
-    deleteButton.addEventListener('click', () => {
-        if (confirm(`¿Estás seguro de que quieres eliminar la estadística "${stat.name}"?`)) {
-            customStats = customStats.filter(s => s.id !== stat.id);
-            saveCustomStats();
-            renderCustomStats();
-        }
-    });
+    deleteButton.dataset.action = 'delete'; // Para delegación de eventos
     actionIcons.appendChild(deleteButton);
 
     header.appendChild(actionIcons);
@@ -260,44 +244,22 @@ function renderStatCard(stat) {
     const plusA = document.createElement('button');
     plusA.classList.add('plus-btn');
     plusA.textContent = '+';
-    plusA.addEventListener('click', () => {
-        stat.valueA++;
-        updateStatDisplay();
-        stat.events.push({ time: formatTime(matchTime), team: teamANameInput.value, type: 'sum', value: 1 });
-        saveCustomStats();
-    });
+    plusA.dataset.team = 'A'; // Para delegación de eventos
+    plusA.dataset.action = 'increment'; // Para delegación de eventos
     const minusA = document.createElement('button');
     minusA.classList.add('minus-btn');
     minusA.textContent = '-';
-    minusA.addEventListener('click', () => {
-        if (stat.valueA > 0) {
-            stat.valueA--;
-            updateStatDisplay();
-            stat.events.push({ time: formatTime(matchTime), team: teamANameInput.value, type: 'subtract', value: 1 });
-            saveCustomStats();
-        }
-    });
-    const resetA = document.createElement('button');
-    resetA.classList.add('reset-btn');
-    resetA.innerHTML = '🔄';
-    resetA.title = `Reiniciar ${teamANameInput.value}`;
-    resetA.addEventListener('click', () => {
-        if (confirm(`¿Reiniciar ${stat.name} para ${teamANameInput.value}?`)) {
-            stat.valueA = 0;
-            updateStatDisplay();
-            stat.events.push({ time: formatTime(matchTime), team: teamANameInput.value, type: 'reset' });
-            saveCustomStats();
-        }
-    });
+    minusA.dataset.team = 'A'; // Para delegación de eventos
+    minusA.dataset.action = 'decrement'; // Para delegación de eventos
     teamAControls.appendChild(plusA);
     teamAControls.appendChild(minusA);
-    teamAControls.appendChild(resetA);
     controlsGroup.appendChild(teamAControls);
 
     // Display central
     const statTotalDisplay = document.createElement('span');
     statTotalDisplay.classList.add('stat-total-display');
     statTotalDisplay.textContent = `${stat.valueA} - ${stat.valueB}`;
+    statTotalDisplay.dataset.display = 'value'; // Identificador para actualizar fácilmente
     controlsGroup.appendChild(statTotalDisplay);
 
     // Controles Equipo B
@@ -306,46 +268,18 @@ function renderStatCard(stat) {
     const plusB = document.createElement('button');
     plusB.classList.add('plus-btn');
     plusB.textContent = '+';
-    plusB.addEventListener('click', () => {
-        stat.valueB++;
-        updateStatDisplay();
-        stat.events.push({ time: formatTime(matchTime), team: teamBNameInput.value, type: 'sum', value: 1 });
-        saveCustomStats();
-    });
+    plusB.dataset.team = 'B'; // Para delegación de eventos
+    plusB.dataset.action = 'increment'; // Para delegación de eventos
     const minusB = document.createElement('button');
     minusB.classList.add('minus-btn');
     minusB.textContent = '-';
-    minusB.addEventListener('click', () => {
-        if (stat.valueB > 0) {
-            stat.valueB--;
-            updateStatDisplay();
-            stat.events.push({ time: formatTime(matchTime), team: teamBNameInput.value, type: 'subtract', value: 1 });
-            saveCustomStats();
-        }
-    });
-    const resetB = document.createElement('button');
-    resetB.classList.add('reset-btn');
-    resetB.innerHTML = '🔄';
-    resetB.title = `Reiniciar ${teamBNameInput.value}`;
-    resetB.addEventListener('click', () => {
-        if (confirm(`¿Reiniciar ${stat.name} para ${teamBNameInput.value}?`)) {
-            stat.valueB = 0;
-            updateStatDisplay();
-            stat.events.push({ time: formatTime(matchTime), team: teamBNameInput.value, type: 'reset' });
-            saveCustomStats();
-        }
-    });
+    minusB.dataset.team = 'B'; // Para delegación de eventos
+    minusB.dataset.action = 'decrement'; // Para delegación de eventos
     teamBControls.appendChild(plusB);
     teamBControls.appendChild(minusB);
-    teamBControls.appendChild(resetB);
     controlsGroup.appendChild(teamBControls);
 
     statCard.appendChild(controlsGroup);
-
-    // Función interna para actualizar el display de esta tarjeta
-    function updateStatDisplay() {
-        statTotalDisplay.textContent = `${stat.valueA} - ${stat.valueB}`;
-    }
 
     return statCard;
 }
@@ -420,7 +354,7 @@ function loadCustomStats() {
 
 // Funciones para el modal de eventos
 function showEventModal(events, statName) {
-    modalTitle.textContent = `Historial de ${statName}`; // Actualizar título del modal
+    modalTitle.textContent = `Historial de ${statName}`; // Asegurarse de que modalTitle está correctamente seleccionado
     modalEventList.innerHTML = ''; // Limpiar lista
     if (events.length === 0) {
         const li = document.createElement('li');
@@ -433,7 +367,7 @@ function showEventModal(events, statName) {
             let eventTypeText;
             if (event.type === 'sum') eventTypeText = 'Incremento';
             else if (event.type === 'subtract') eventTypeText = 'Decremento';
-            else if (event.type === 'reset') eventTypeText = 'Reiniciado';
+            else if (event.type === 'reset') eventTypeText = 'Reiniciado'; // Aunque eliminamos el botón, el tipo 'reset' podría existir en eventos antiguos
             else eventTypeText = event.type; // Fallback
             li.innerHTML = `<span class="event-time">${event.time}</span> - <span class="event-team">${event.team}: ${eventTypeText}</span>`;
             modalEventList.appendChild(li);
@@ -604,6 +538,77 @@ resetPossessionButton.addEventListener('click', resetPossession);
 
 // Event Listener para añadir estadística
 addStatButton.addEventListener('click', addCustomStat);
+
+// =================================================================
+// NUEVO: Delegación de eventos para las estadísticas personalizadas
+// Esto mejora el rendimiento al tener un solo listener para todos los botones
+// de las tarjetas de estadísticas.
+// =================================================================
+customStatsGrid.addEventListener('click', (event) => {
+    const target = event.target;
+    const statCard = target.closest('.stat-card'); // Encuentra la tarjeta de estadística más cercana
+    if (!statCard) return; // Si no es un clic dentro de una tarjeta de estadística, salir
+
+    const statId = parseInt(statCard.dataset.id);
+    const stat = customStats.find(s => s.id === statId);
+
+    if (!stat) return; // Si no se encuentra la estadística, salir
+
+    const action = target.dataset.action; // Acción definida en el dataset del botón
+    const team = target.dataset.team; // Equipo (A/B) para botones de incremento/decremento
+
+    switch (action) {
+        case 'view':
+            showEventModal(stat.events, stat.name);
+            break;
+        case 'edit':
+            const newName = prompt('Editar nombre de la estadística:', stat.name);
+            if (newName && newName.trim() !== '') {
+                stat.name = newName.trim();
+                // Actualizar el título en la tarjeta directamente
+                statCard.querySelector('.stat-title').textContent = newName.trim();
+                saveCustomStats();
+            }
+            break;
+        case 'delete':
+            if (confirm(`¿Estás seguro de que quieres eliminar la estadística "${stat.name}"?`)) {
+                customStats = customStats.filter(s => s.id !== stat.id);
+                saveCustomStats();
+                renderCustomStats(); // Volver a renderizar la cuadrícula
+            }
+            break;
+        case 'increment':
+            if (team === 'A') {
+                stat.valueA++;
+                stat.events.push({ time: formatTime(matchTime), team: teamANameInput.value, type: 'sum', value: 1 });
+            } else if (team === 'B') {
+                stat.valueB++;
+                stat.events.push({ time: formatTime(matchTime), team: teamBNameInput.value, type: 'sum', value: 1 });
+            }
+            break;
+        case 'decrement':
+            if (team === 'A' && stat.valueA > 0) {
+                stat.valueA--;
+                stat.events.push({ time: formatTime(matchTime), team: teamANameInput.value, type: 'subtract', value: 1 });
+            } else if (team === 'B' && stat.valueB > 0) {
+                stat.valueB--;
+                stat.events.push({ time: formatTime(matchTime), team: teamBNameInput.value, type: 'subtract', value: 1 });
+            }
+            break;
+        default:
+            return; // No es una acción conocida
+    }
+
+    // Después de cualquier cambio de valor, actualizar el display y guardar
+    if (action === 'increment' || action === 'decrement') {
+        const statDisplay = statCard.querySelector('[data-display="value"]');
+        if (statDisplay) {
+            statDisplay.textContent = `${stat.valueA} - ${stat.valueB}`;
+        }
+        saveCustomStats();
+    }
+});
+
 
 // Event Listener para Reiniciar Todo
 resetAllButton.addEventListener('click', () => {
