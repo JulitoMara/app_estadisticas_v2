@@ -3,112 +3,109 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Score Tracker</title>
+    <title>Marcador Deportivo Personalizable</title>
     <link rel="stylesheet" href="style.css">
     <link rel="manifest" href="manifest.json">
-    <link rel="apple-touch-icon" href="icons/icon-192x192.png">
-    <meta name="theme-color" content="#007bff">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content="Marcador">
+    <link rel="apple-touch-icon" href="icons/apple-icon-180.png">
 </head>
 <body>
-    <div class="main-app-container">
-        <header class="app-header">
-            <h1>Score Tracker</h1>
-            <div class="config-section">
-                <div class="team-name-group">
-                    <label for="teamA-name">Nombre Equipo A:</label>
-                    <input type="text" id="teamA-name" value="Equipo A" placeholder="Introduce nombre equipo A">
+    <header>
+        <h1>Marcador Deportivo</h1>
+    </header>
+
+    <main class="container">
+        <section class="score-control card">
+            <h2>Marcador del Partido</h2>
+            <div class="team-names">
+                <input type="text" id="teamA-name" value="Equipo A">
+                <span>vs</span>
+                <input type="text" id="teamB-name" value="Equipo B">
+            </div>
+            <div id="mainScoreDisplay" class="score-display">0 - 0</div>
+            <div class="score-buttons">
+                <div class="team-score-buttons">
+                    <button id="minusA">-</button>
+                    <button id="plusA">+</button>
                 </div>
-                <div class="team-name-group">
-                    <label for="teamB-name">Nombre Equipo B:</label>
-                    <input type="text" id="teamB-name" value="Equipo B" placeholder="Introduce nombre equipo B">
+                <div class="team-score-buttons">
+                    <button id="minusB">-</button>
+                    <button id="plusB">+</button>
                 </div>
             </div>
-        </header>
+            <div class="goals-history-container">
+                <h3>Goles Anotados:</h3>
+                <ul id="goals-list">
+                    </ul>
+            </div>
+        </section>
 
-        <main class="match-dashboard">
-            <section class="left-column">
-                <div class="score-section card">
-                    <h2>Marcador</h2>
-                    <div class="score-display-group">
-                        <div class="score-controls-column">
-                            <button id="minusA" class="minus-btn">-</button>
-                            <button id="plusA" class="plus-btn">+</button>
-                        </div>
-                        <span id="mainScoreDisplay">0 - 0</span>
-                        <div class="score-controls-column">
-                            <button id="minusB" class="minus-btn">-</button>
-                            <button id="plusB" class="plus-btn">+</button>
-                        </div>
-                    </div>
-                    <div class="goals-list-container">
-                        <h3>Goles Marcados</h3>
-                        <ul id="goals-list" class="event-list">
-                            </ul>
-                    </div>
+        <section class="timer-control card">
+            <h2>Tiempo de Partido</h2>
+            <div id="match-timer" class="timer-display">00:00</div>
+            <div class="timer-buttons">
+                <button id="start-pause-match-timer">Iniciar</button>
+                <button id="reset-match-timer">Reiniciar</button>
+            </div>
+        </section>
+
+        <section class="possession-control card">
+            <h2>Control de Posesión</h2>
+            <div class="possession-team-names">
+                <span id="teamA-possession-name">Equipo A</span>
+                <span>vs</span>
+                <span id="teamB-possession-name">Equipo B</span>
+            </div>
+            <div class="possession-timers">
+                <div id="possession-timer-A" class="timer-display">00:00</div>
+                <div id="possession-timer-B" class="timer-display">00:00</div>
+            </div>
+            <div class="possession-buttons">
+                <button id="start-possession-A">Iniciar Posesión A</button>
+                <button id="start-possession-B">Iniciar Posesión B</button>
+            </div>
+            <div class="possession-bar">
+                <div id="possession-bar-fill" class="possession-bar-fill"></div>
+            </div>
+            <div class="possession-percentages">
+                <span id="possession-percent-A">0%</span>
+                <span id="possession-percent-B">0%</span>
+            </div>
+            <button id="reset-possession" class="reset-full-possession">Reiniciar Posesión</button>
+        </section>
+
+        <section class="custom-stats-section card">
+            <h2>Estadísticas Personalizadas</h2>
+            <div class="add-stat-input">
+                <input type="text" id="new-stat-name" placeholder="Nombre de nueva estadística">
+                <button id="add-stat-btn">Añadir Estadística</button>
+            </div>
+            <div id="custom-stats-grid" class="custom-stats-grid">
                 </div>
+        </section>
 
-                <div class="match-timer-section card">
-                    <h2>Tiempo de Partido</h2>
-                    <span class="timer" id="match-timer">00:00</span>
-                    <div class="match-timer-controls">
-                        <button id="start-pause-match-timer">Iniciar</button>
-                        <button id="reset-match-timer" class="reset-btn">Reiniciar</button>
-                    </div>
-                </div>
-
-                <div class="possession-section card">
-                    <h2>Posesión de Balón</h2>
-                    <div class="possession-timers-container">
-                        <div class="timer-group">
-                            <span id="teamA-possession-name">Equipo A</span>
-                            <span class="timer" id="possession-timer-A">00:00</span>
-                        </div>
-                        <div class="timer-group">
-                            <span id="teamB-possession-name">Equipo B</span>
-                            <span class="timer" id="possession-timer-B">00:00</span>
-                        </div>
-                    </div>
-                    <div class="possession-bar-container">
-                        <div class="possession-bar-fill" id="possession-bar-fill"></div>
-                        <span class="possession-percentage-text left-percent" id="possession-percent-A">50%</span>
-                        <span class="possession-percentage-text right-percent" id="possession-percent-B">50%</span>
-                    </div>
-                    <div class="possession-controls">
-                        <button id="start-possession-A">Equipo A</button>
-                        <button id="start-possession-B">Equipo B</button>
-                        <button id="reset-possession" class="reset-btn">Reiniciar</button>
-                    </div>
-                </div>
-            </section>
-
-            <section class="right-column">
-                <div class="custom-stats-management card">
-                    <h2>Estadísticas Personalizadas</h2>
-                    <div class="add-custom-stat-integrated">
-                        <input type="text" id="new-stat-name" placeholder="Nombre de nueva estadística">
-                        <button id="add-stat-btn">Añadir</button>
-                    </div>
-                    <div class="custom-stats-grid" id="custom-stats-grid">
-                        </div>
-                </div>
-            </section>
-        </main>
-
-        <hr class="section-divider">
-
-        <button id="reset-all" class="reset-all-button">Reiniciar Todo el Partido</button>
-    </div>
+        <section class="reset-all-section">
+            <button id="reset-all" class="button-danger">Reiniciar Todo el Partido</button>
+        </section>
+    </main>
 
     <div id="eventModal" class="modal">
         <div class="modal-content">
             <span class="close-button">&times;</span>
-            <h2>Historial de Eventos</h2>
-            <ul id="modal-event-list" class="event-list"></ul>
+            <h2 id="modal-title">Detalles de Eventos</h2> <ul id="modal-event-list">
+                </ul>
         </div>
     </div>
 
+    <footer>
+        <p>&copy; 2025 Marcador Deportivo</p>
+    </footer>
+
     <script src="script.js"></script>
     <script>
+        // Service Worker para la PWA
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('/service-worker.js')
