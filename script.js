@@ -53,7 +53,7 @@ let possessionTimerAInterval;
 let possessionTimerBInterval;
 let possessionTimeA = 0;
 let possessionTimeB = 0;
-let currentPossessionTeam = null;
+let currentPossessionTeam = null; // 'A', 'B', o null (nadie tiene la posesión)
 
 // === Variables de tiempo para fútbol ===
 let currentHalf = 1; // 1 o 2
@@ -175,7 +175,7 @@ function toggleMatchTimer() {
         clearInterval(matchTimerInterval);
         isMatchTimerRunning = false;
         matchState = 'paused';
-        stopPossession();
+        stopPossession(); // Detener posesión al pausar el partido
     } else {
         if (matchState === 'full-time') {
             alert('El partido ya ha finalizado. Por favor, reinicia para empezar uno nuevo.');
@@ -206,7 +206,7 @@ function toggleMatchTimer() {
             // Fin de la 1ª mitad (a los 45 minutos exactos si no se ha superado ya)
             if (currentHalf === 1 && matchTime >= REGULAR_HALF_DURATION && matchState !== 'half-time-ended') {
                 if (matchTime === REGULAR_HALF_DURATION) {
-                    /*
+                    /* Comentado para permitir tiempo añadido sin detener el timer en 45:00 exactos
                     clearInterval(matchTimerInterval);
                     isMatchTimerRunning = false;
                     matchState = 'half-time-ended';
@@ -219,7 +219,7 @@ function toggleMatchTimer() {
             // Fin del Partido (a los 90 minutos absolutos si no se ha superado ya)
             else if (currentHalf === 2 && matchTime >= totalTimeFirstHalf + REGULAR_HALF_DURATION && matchState !== 'full-time') {
                  if (matchTime === totalTimeFirstHalf + REGULAR_HALF_DURATION) {
-                    /*
+                    /* Comentado para permitir tiempo añadido sin detener el timer en 90:00 exactos
                     clearInterval(matchTimerInterval);
                     isMatchTimerRunning = false;
                     matchState = 'full-time';
@@ -253,7 +253,7 @@ function resetMatchTimer() {
     localStorage.removeItem('matchState');
     localStorage.removeItem('totalTimeFirstHalf');
 
-    stopPossession();
+    stopPossession(); // Asegurarse de detener posesión al resetear el partido
     updateMatchStatusDisplay();
 }
 
@@ -350,21 +350,28 @@ function updatePossessionDisplays() {
     localStorage.setItem('possessionTimeB', possessionTimeB);
 }
 
-// Función para iniciar la posesión de un equipo
+// Función para iniciar la posesión de un equipo (o pausarla si ya la tiene)
 function startPossession(team) {
     if (matchState !== 'running') {
         alert('El temporizador del partido debe estar en marcha para controlar la posesión.');
         return;
     }
 
-    if (currentPossessionTeam === team) return;
+    // Si el equipo que se intenta activar ya tiene la posesión, la detenemos
+    if (currentPossessionTeam === team) {
+        stopPossession();
+        return; // Salimos de la función después de detener la posesión
+    }
 
+    // Detenemos cualquier temporizador de posesión activo
     if (currentPossessionTeam === 'A') clearInterval(possessionTimerAInterval);
     if (currentPossessionTeam === 'B') clearInterval(possessionTimerBInterval);
 
+    // Removemos la clase 'active' de ambos botones
     startPossessionAButton.classList.remove('active');
     startPossessionBButton.classList.remove('active');
 
+    // Asignamos la nueva posesión y la iniciamos
     currentPossessionTeam = team;
     if (team === 'A') {
         possessionTimerAInterval = setInterval(() => {
@@ -698,25 +705,26 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     matchState = localStorage.getItem('matchState') || 'not-started';
-    isMatchTimerRunning = JSON.parse(localStorage.getItem('isMatchTimerRunning')) || false;
-
+    // isMatchTimerRunning = JSON.parse(localStorage.getItem('isMatchTimerRunning')) || false; // No necesitamos cargar este estado, lo manejamos por matchState
 
     updateMatchTimerDisplay();
     updateMatchStatusDisplay();
     updateHalfSelectorButtons();
 
-    if (isMatchTimerRunning && matchState === 'running') {
-        toggleMatchTimer(); // Reinicia el temporizador si estaba corriendo
+    // Reiniciar el temporizador si el estado guardado era 'running'
+    if (matchState === 'running') {
+        isMatchTimerRunning = false; // Forzar a false para que toggleMatchTimer lo inicie correctamente
+        toggleMatchTimer();
     }
 
 
     // Cargar posesión
     possessionTimeA = parseInt(localStorage.getItem('possessionTimeA')) || 0;
     possessionTimeB = parseInt(localStorage.getItem('possessionTimeB')) || 0;
-    currentPossessionTeam = localStorage.getItem('currentPossessionTeam');
+    currentPossessionTeam = localStorage.getItem('currentPossessionTeam'); // Puede ser null, 'A', 'B'
     updatePossessionDisplays();
     if (matchState === 'running' && currentPossessionTeam) {
-        startPossession(currentPossessionTeam);
+        startPossession(currentPossessionTeam); // Reanudar posesión si el partido y la posesión estaban corriendo
     }
 
     // Cargar estadísticas personalizadas
