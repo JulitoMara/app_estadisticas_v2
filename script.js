@@ -27,7 +27,7 @@ const resetAllButton = document.getElementById('reset-all');
 const eventModal = document.getElementById('eventModal');
 const closeButton = document.querySelector('.modal .close-button');
 const modalEventList = document.getElementById('modal-event-list');
-const modalTitle = document.getElementById('modal-title'); // Asegurarse de que este elemento exista en index.html y esté correctamente seleccionado.
+const modalTitle = document.getElementById('modal-title'); // Ahora sí, este elemento debería existir en index.html
 
 // Elemento para la lista de goles en el marcador
 const goalsList = document.getElementById('goals-list');
@@ -354,7 +354,13 @@ function loadCustomStats() {
 
 // Funciones para el modal de eventos
 function showEventModal(events, statName) {
-    modalTitle.textContent = `Historial de ${statName}`; // Asegurarse de que modalTitle está correctamente seleccionado
+    // Verificar que modalTitle existe antes de usarlo
+    if (modalTitle) {
+        modalTitle.textContent = `Historial de ${statName}`;
+    } else {
+        console.error("Elemento con ID 'modal-title' no encontrado en el DOM.");
+    }
+    
     modalEventList.innerHTML = ''; // Limpiar lista
     if (events.length === 0) {
         const li = document.createElement('li');
@@ -540,7 +546,7 @@ resetPossessionButton.addEventListener('click', resetPossession);
 addStatButton.addEventListener('click', addCustomStat);
 
 // =================================================================
-// NUEVO: Delegación de eventos para las estadísticas personalizadas
+// Delegación de eventos para las estadísticas personalizadas
 // Esto mejora el rendimiento al tener un solo listener para todos los botones
 // de las tarjetas de estadísticas.
 // =================================================================
