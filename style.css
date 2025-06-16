@@ -177,87 +177,88 @@ button:not(.reset-btn):not(.minus-btn):not(.plus-btn):not(.active):hover {
 }
 
 /*
-    Sección de Marcador (Ajustes para hacerlo más compacto)
+    Sección de Marcador (Optimizado para espacio)
 */
-.score-section.card { /* Aplicar padding directamente a la tarjeta del marcador */
-    padding: 20px; /* Reducido de 25px a 20px */
+.score-section.card {
+    padding: 15px; /* Muy compacto */
 }
 
 .score-section .card h2 {
-    margin-bottom: 15px; /* Reducido de 20px a 15px */
+    margin-bottom: 15px; /* Compacto */
 }
 
-.score-section .stat-group {
+.score-display-group {
     display: flex;
-    justify-content: space-around;
-    gap: 15px; /* Reducido de 20px a 15px para más compactación */
-    flex-wrap: wrap;
-}
-
-.team-score {
-    display: flex;
-    flex-direction: column;
     align-items: center;
-    background-color: #eaf5ff; /* Fondo claro para marcador */
-    padding: 10px; /* Reducido de 15px a 10px para más compactación */
-    border-radius: 10px;
-    flex: 1;
-    min-width: 130px;
+    justify-content: space-between; /* Espacia el marcador y los botones */
+    width: 100%;
+    margin-bottom: 0;
 }
 
-/* MARCADOR Y TIEMPO: Mismo tamaño de fuente (ya configurado) */
-.team-score .counter,
-.match-timer-section .timer {
-    font-size: 2.8em; /* Tamaño de fuente uniforme para los números */
+#mainScoreDisplay {
+    font-size: 2.8em; /* Tamaño de fuente consistente con el tiempo */
     font-weight: 700;
     color: #333;
-    margin-bottom: 5px; /* Reducido de 8px a 5px */
+    line-height: 1;
+    flex-shrink: 0; /* No se encoge */
+    padding: 5px 10px; /* Pequeño padding alrededor de los números */
+    background-color: #eaf5ff;
+    border-radius: 8px;
+    text-align: center; /* Asegura que el "0 - 0" esté centrado */
+    min-width: 80px; /* Asegura un ancho mínimo para el "0 - 0" */
+}
+
+.score-controls-column { /* Columnas de botones para el marcador */
+    display: flex;
+    flex-direction: column;
+    gap: 5px; /* Pequeño espacio entre botones */
+}
+
+.score-controls-column button {
+    padding: 7px 10px;
+    font-size: 0.95em;
+    width: 42px; /* Ancho fijo para botones circulares */
+    height: 42px; /* Alto fijo para botones circulares */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%; /* Botones circulares */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.score-controls-column button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+}
+
+
+/*
+    Sección de Tiempo de Partido (se mantiene compacta)
+*/
+.match-timer-section {
+    text-align: center;
+}
+
+.match-timer-section .timer { /* Mismo tamaño de fuente que el marcador */
+    font-size: 2.8em;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 8px;
     display: block;
     width: 100%;
     text-align: center;
     background-color: #eaf5ff;
-    padding: 5px; /* Reducido de 8px 5px a 5px */
+    padding: 8px 5px;
     border-radius: 8px;
     min-height: 1.5em;
     line-height: 1.2;
     box-sizing: border-box;
 }
 
-.team-score .team-label {
-    font-size: 1.05em; /* Ligeramente más pequeño */
-    font-weight: 600;
-    color: #555;
-    margin-bottom: 8px; /* Reducido de 12px a 8px */
-}
-
-.team-score .controls {
-    display: flex;
-    gap: 8px; /* Reducido de 10px a 8px */
-    margin-top: 8px; /* Reducido de 10px a 8px */
-}
-.team-score .controls button {
-    padding: 6px 10px; /* Reducido de 8px 12px */
-    font-size: 0.85em; /* Reducido de 0.9em */
-    border-radius: 8px;
-}
-
-
-/*
-    Sección de Tiempo de Partido
-*/
-.match-timer-section {
-    text-align: center;
-}
-
-/* El .card para el tiempo ya tiene el padding general de 25px */
-.match-timer-section .card h2 {
-    margin-bottom: 20px; /* Se mantiene igual que el general de card h2 */
-}
-
 .match-timer-controls {
     display: flex;
     justify-content: center;
-    gap: 20px; /* Espacio entre botones de tiempo */
+    gap: 20px;
     margin-top: 20px;
 }
 
@@ -288,7 +289,7 @@ button:not(.reset-btn):not(.minus-btn):not(.plus-btn):not(.active):hover {
 }
 
 .possession-timers-container .timer {
-    font-size: 1.9em; /* Tamaño del texto del timer de posesión */
+    font-size: 1.9em;
     font-weight: bold;
     color: #333;
     background-color: #eaf5ff;
@@ -297,8 +298,8 @@ button:not(.reset-btn):not(.minus-btn):not(.plus-btn):not(.active):hover {
 }
 
 .possession-bar-container {
-    width: 95%; /* Barra más ancha */
-    height: 35px; /* Barra más alta */
+    width: 95%;
+    height: 35px;
     background-color: #dc3545; /* Equipo B */
     border-radius: 8px;
     margin: 25px auto;
@@ -307,7 +308,7 @@ button:not(.reset-btn):not(.minus-btn):not(.plus-btn):not(.active):hover {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.2); /* Sutil sombra interna */
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.2);
 }
 
 .possession-bar-fill {
@@ -315,7 +316,7 @@ button:not(.reset-btn):not(.minus-btn):not(.plus-btn):not(.active):hover {
     background-color: #007bff; /* Equipo A */
     width: 50%; /* Default */
     border-radius: 8px;
-    transition: width 0.4s ease-in-out; /* Transición más suave */
+    transition: width 0.4s ease-in-out;
     position: absolute;
     left: 0;
 }
@@ -324,31 +325,31 @@ button:not(.reset-btn):not(.minus-btn):not(.plus-btn):not(.active):hover {
     position: absolute;
     font-weight: bold;
     color: white;
-    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.6); /* Sombra de texto más fuerte */
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.6);
     z-index: 1;
     font-size: 1.1em;
 }
 
 .left-percent {
-    left: 10px; /* Más espacio del borde */
+    left: 10px;
 }
 
 .right-percent {
-    right: 10px; /* Más espacio del borde */
+    right: 10px;
 }
 
 .possession-controls {
     display: flex;
     justify-content: center;
-    gap: 15px; /* Espacio entre botones */
+    gap: 15px;
     margin-top: 20px;
     flex-wrap: wrap;
 }
 
 .possession-controls button {
     flex: 1 1 auto;
-    max-width: 160px; /* Un poco más de ancho para ser cómodos */
-    padding: 12px 18px; /* Padding consistente */
+    max-width: 160px;
+    padding: 12px 18px;
     font-size: 1.0em;
     border-radius: 10px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
@@ -357,7 +358,7 @@ button:not(.reset-btn):not(.minus-btn):not(.plus-btn):not(.active):hover {
 .possession-controls button.active {
     background-color: #28a745;
     border: 2px solid #1a7e32;
-    transform: scale(1.03); /* Menos escalado */
+    transform: scale(1.03);
     box-shadow: 0 4px 10px rgba(40, 167, 69, 0.4);
 }
 
@@ -372,9 +373,9 @@ button:not(.reset-btn):not(.minus-btn):not(.plus-btn):not(.active):hover {
 
 .add-custom-stat-integrated {
     display: flex;
-    gap: 12px; /* Más espacio */
+    gap: 12px;
     width: 100%;
-    max-width: 450px; /* Más ancho para la entrada */
+    max-width: 450px;
     margin-bottom: 25px;
 }
 
@@ -393,14 +394,14 @@ button:not(.reset-btn):not(.minus-btn):not(.plus-btn):not(.active):hover {
     outline: none;
 }
 .add-custom-stat-integrated button {
-    padding: 12px 25px; /* Botón de "Añadir" más grande */
+    padding: 12px 25px;
 }
 
 .custom-stats-grid {
     width: 100%;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Más espacio para cada tarjeta */
-    gap: 20px; /* Más espacio entre tarjetas */
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
     justify-content: center;
 }
 
@@ -408,48 +409,47 @@ button:not(.reset-btn):not(.minus-btn):not(.plus-btn):not(.active):hover {
     background-color: #eaf5ff;
     border: 1px solid #d0e8ff;
     border-radius: 12px;
-    padding: 12px; /* Reducido a 12px para mayor compactación */
+    padding: 12px;
     text-align: center;
     display: flex;
     flex-direction: column;
     align-items: center;
     box-sizing: border-box;
     justify-content: space-between;
-    height: 195px; /* Ligeramente ajustado para la compactación */
+    height: 195px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
 }
 
-/* Título de la tarjeta centrado y botones debajo */
 .stat-card-header {
     display: flex;
     flex-direction: column;
     align-items: center;
     margin-top: 0;
-    margin-bottom: 10px; /* Reducido ligeramente */
+    margin-bottom: 10px;
     width: 100%;
 }
 
 .stat-card-header .stat-title {
     color: #0056b3;
-    font-size: 1.2em; /* Título un poco más grande */
+    font-size: 1.2em;
     font-weight: 600;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    margin-bottom: 6px; /* Reducido ligeramente */
+    margin-bottom: 6px;
     line-height: 1.3;
 }
 
 .stat-action-icons {
     display: flex;
-    gap: 6px; /* Reducido ligeramente */
+    gap: 6px;
     justify-content: center;
     width: 100%;
 }
 
 .stat-action-icons button {
-    padding: 5px 9px; /* Reducido ligeramente */
-    font-size: 0.7em; /* Ligeramente más pequeño */
+    padding: 5px 9px;
+    font-size: 0.7em;
     border-radius: 6px;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
@@ -458,32 +458,30 @@ button:not(.reset-btn):not(.minus-btn):not(.plus-btn):not(.active):hover {
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
 }
 
-/* Controles de estadística: Main container para los 3 elementos (botones A, 0-0, botones B) */
 .stat-controls-group {
     display: flex;
     align-items: center;
     justify-content: space-between;
     width: 100%;
     flex-grow: 1;
-    padding: 0 2px; /* Reducido para más compactación */
+    padding: 0 2px;
 }
 
-/* Grupos de botones verticales para cada equipo */
 .team-buttons-column {
     display: flex;
     flex-direction: column;
-    gap: 5px; /* Reducido ligeramente */
+    gap: 5px;
 }
 
 .team-buttons-column button {
-    padding: 7px 10px; /* Ajustado */
-    font-size: 0.95em; /* Ligeramente más pequeño */
-    width: 42px; /* Ligeramente más pequeño */
-    height: 42px; /* Ligeramente más pequeño */
+    padding: 7px 10px;
+    font-size: 0.95em;
+    width: 42px;
+    height: 42px;
     display: flex;
     justify-content: center;
     align-items: center;
-    border-radius: 50%; /* Redondos */
+    border-radius: 50%;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 .team-buttons-column button:hover {
@@ -491,14 +489,13 @@ button:not(.reset-btn):not(.minus-btn):not(.plus-btn):not(.active):hover {
     box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
 }
 
-/* El resultado central (0 - 0) */
 .stat-total-display {
-    font-size: 2.8em; /* Ajustado a 2.8em para que quepa mejor */
+    font-size: 2.8em;
     font-weight: 700;
     color: #333;
     line-height: 1;
     flex-shrink: 0;
-    margin: 0 8px; /* Reducido ligeramente */
+    margin: 0 8px;
 }
 
 
@@ -508,28 +505,28 @@ button:not(.reset-btn):not(.minus-btn):not(.plus-btn):not(.active):hover {
 .reset-all-button {
     display: block;
     width: fit-content;
-    margin: 40px auto 25px auto; /* Más espacio */
-    padding: 18px 35px; /* Más grande y prominente */
+    margin: 40px auto 25px auto;
+    padding: 18px 35px;
     font-size: 1.2em;
     background-color: #ffc107;
     color: #333;
     border: 2px solid #e0a800;
-    border-radius: 12px; /* Más redondeado */
+    border-radius: 12px;
     cursor: pointer;
-    box-shadow: 0 5px 15px rgba(255, 193, 7, 0.3); /* Sombra amarilla distintiva */
+    box-shadow: 0 5px 15px rgba(255, 193, 7, 0.3);
 }
 
 .reset-all-button:hover {
     background-color: #e0a800;
-    transform: translateY(-3px); /* Mayor efecto al pasar el ratón */
+    transform: translateY(-3px);
     box-shadow: 0 7px 20px rgba(255, 193, 7, 0.5);
 }
 
 .section-divider {
     border: 0;
-    height: 2px; /* Más grueso */
+    height: 2px;
     background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.15), rgba(0, 0, 0, 0));
-    margin: 50px 0; /* Más espacio */
+    margin: 50px 0;
 }
 
 /*
@@ -544,7 +541,7 @@ button:not(.reset-btn):not(.minus-btn):not(.plus-btn):not(.active):hover {
     width: 100%;
     height: 100%;
     overflow: auto;
-    background-color: rgba(0, 0, 0, 0.8); /* Fondo más oscuro para el modal */
+    background-color: rgba(0, 0, 0, 0.8);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -555,12 +552,12 @@ button:not(.reset-btn):not(.minus-btn):not(.plus-btn):not(.active):hover {
 .modal-content {
     background-color: #fefefe;
     margin: auto;
-    padding: 30px; /* Más padding */
+    padding: 30px;
     border: 1px solid #777;
-    border-radius: 15px; /* Más redondeado */
+    border-radius: 15px;
     width: 90%;
-    max-width: 650px; /* Ancho máximo para el modal */
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3); /* Sombra más fuerte */
+    max-width: 650px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
     position: relative;
     max-height: 90vh;
     overflow-y: auto;
@@ -569,15 +566,15 @@ button:not(.reset-btn):not(.minus-btn):not(.plus-btn):not(.active):hover {
 .modal-content h2 {
     color: #007bff;
     margin-top: 0;
-    margin-bottom: 25px; /* Más espacio */
+    margin-bottom: 25px;
     text-align: center;
-    font-size: 2em; /* Título del modal más grande */
+    font-size: 2em;
     font-weight: 600;
 }
 
 .close-button {
     color: #888;
-    font-size: 32px; /* Botón de cerrar más grande */
+    font-size: 32px;
     font-weight: bold;
     position: absolute;
     top: 15px;
@@ -594,7 +591,7 @@ button:not(.reset-btn):not(.minus-btn):not(.plus-btn):not(.active):hover {
     list-style: none;
     padding: 0;
     margin: 0;
-    max-height: 450px; /* Altura máxima para la lista de eventos */
+    max-height: 450px;
     overflow-y: auto;
     border: 1px solid #eee;
     border-radius: 10px;
@@ -602,12 +599,12 @@ button:not(.reset-btn):not(.minus-btn):not(.plus-btn):not(.active):hover {
 }
 
 .event-list li {
-    padding: 12px 18px; /* Más padding */
+    padding: 12px 18px;
     border-bottom: 1px solid #e0e0e0;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    font-size: 1.15em; /* Fuente ligeramente más grande */
+    font-size: 1.15em;
 }
 
 .event-list li:last-child {
@@ -637,7 +634,7 @@ button:not(.reset-btn):not(.minus-btn):not(.plus-btn):not(.active):hover {
 /*
     Media Queries para Responsividad
 */
-@media (max-width: 1100px) { /* Ajuste para pantallas más pequeñas */
+@media (max-width: 1100px) {
     .left-column {
         flex: 0 0 28%;
         max-width: 280px;
@@ -652,48 +649,46 @@ button:not(.reset-btn):not(.minus-btn):not(.plus-btn):not(.active):hover {
     }
 }
 
-@media (max-width: 992px) { /* Para tablets y pantallas medianas */
+@media (max-width: 992px) {
     .left-column {
-        flex: 0 0 32%; /* Ocupa un poco más de espacio */
+        flex: 0 0 32%;
         max-width: 300px;
         min-width: 250px;
     }
     .right-column {
-        min-width: 400px; /* Asegura 2 columnas en el grid */
+        min-width: 400px;
     }
     .score-section.card {
-        padding: 18px; /* Ajuste para media query */
+        padding: 12px; /* Más compacto en pantallas medianas */
     }
     .score-section .card h2 {
-        margin-bottom: 12px; /* Ajuste para media query */
+        margin-bottom: 10px;
     }
-    .team-score {
-        padding: 8px; /* Ajuste para media query */
+    .score-controls-column button {
+        width: 38px;
+        height: 38px;
+        font-size: 0.85em;
     }
-    .team-score .controls {
-        gap: 6px; /* Ajuste para media query */
-        margin-top: 6px; /* Ajuste para media query */
-    }
-    .team-score .controls button {
-        padding: 5px 8px; /* Ajuste para media query */
-        font-size: 0.8em; /* Ajuste para media query */
+    #mainScoreDisplay {
+        font-size: 2.6em; /* Ajuste de fuente */
+        padding: 4px 8px;
     }
 
     .custom-stats-grid {
-        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); /* Mantener 2 o 3 columnas, ajustando minmax */
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
         gap: 12px;
     }
     .stat-card {
-        padding: 10px; /* Ajustado */
-        height: 180px; /* Ajuste de altura */
+        padding: 10px;
+        height: 180px;
     }
     .team-buttons-column button {
-        width: 38px; /* Botones más pequeños */
+        width: 38px;
         height: 38px;
         font-size: 0.85em;
     }
     .stat-total-display {
-        font-size: 2.6em; /* Ligeramente más pequeño */
+        font-size: 2.6em;
     }
     .possession-controls button {
         max-width: 140px;
@@ -702,13 +697,13 @@ button:not(.reset-btn):not(.minus-btn):not(.plus-btn):not(.active):hover {
     }
 }
 
-@media (max-width: 768px) { /* Para móviles y tablets pequeñas */
+@media (max-width: 768px) {
     .main-app-container {
         padding: 20px;
         gap: 20px;
     }
     .match-dashboard {
-        flex-direction: column; /* Apila las columnas en pantallas pequeñas */
+        flex-direction: column;
         align-items: center;
         gap: 25px;
     }
@@ -716,72 +711,64 @@ button:not(.reset-btn):not(.minus-btn):not(.plus-btn):not(.active):hover {
     .left-column, .right-column {
         min-width: unset;
         width: 100%;
-        max-width: 500px; /* Límite de ancho para una buena lectura en móvil */
-        margin-bottom: 0; /* Ya hay gap en el dashboard */
+        max-width: 500px;
+        margin-bottom: 0;
     }
     .card {
         padding: 20px;
         margin-bottom: 0;
     }
-    .score-section.card { /* Ajuste para móvil */
-        padding: 15px;
+    .score-section.card {
+        padding: 10px; /* Aún más compacto en móvil */
     }
     .score-section .card h2 {
-        margin-bottom: 10px;
+        margin-bottom: 8px;
     }
-    .team-score {
-        padding: 8px;
+    .score-controls-column button {
+        width: 36px;
+        height: 36px;
+        font-size: 0.8em;
     }
-    .team-score .counter,
+    #mainScoreDisplay {
+        font-size: 2.5em; /* Ajuste de fuente para móvil */
+        padding: 3px 6px;
+    }
+
     .match-timer-section .timer {
         font-size: 2.5em; /* Ajuste para móvil */
     }
-    .team-score .team-label {
-        font-size: 1em;
-        margin-bottom: 6px;
-    }
-    .team-score .controls {
-        gap: 5px;
-        margin-top: 5px;
-    }
-    .team-score .controls button {
-        padding: 4px 6px;
-        font-size: 0.75em;
-    }
-
 
     .match-timer-controls, .possession-controls {
         flex-wrap: wrap;
         gap: 12px;
     }
     .possession-controls button {
-        flex: 1 1 45%; /* Dos botones por fila */
-        max-width: unset; /* Ancho flexible */
+        flex: 1 1 45%;
+        max-width: unset;
     }
 
-    /* Estadísticas personalizadas */
     .custom-stats-grid {
-        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); /* Aún más compacto para teléfonos pequeños */
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
         gap: 10px;
     }
     .stat-card {
-        padding: 8px; /* Ajustado */
-        height: 170px; /* Ajuste de altura para móviles */
+        padding: 8px;
+        height: 170px;
     }
     .stat-card-header .stat-title {
-        font-size: 1.05em; /* Ajustado */
+        font-size: 1.05em;
     }
     .stat-action-icons button {
-        padding: 4px 7px; /* Ajustado */
-        font-size: 0.65em; /* Ajustado */
+        padding: 4px 7px;
+        font-size: 0.65em;
     }
     .stat-total-display {
-        font-size: 2.4em; /* Ajustado */
+        font-size: 2.4em;
     }
     .team-buttons-column button {
-        width: 36px; /* Ajustado */
-        height: 36px; /* Ajustado */
-        font-size: 0.8em; /* Ajustado */
+        width: 36px;
+        height: 36px;
+        font-size: 0.8em;
     }
 
     .reset-all-button {
@@ -823,25 +810,33 @@ button:not(.reset-btn):not(.minus-btn):not(.plus-btn):not(.active):hover {
         font-size: 1.6em;
     }
     .possession-controls button {
-        flex: 1 1 100%; /* Un botón por fila en pantallas muy pequeñas */
+        flex: 1 1 100%;
         max-width: unset;
     }
     .custom-stats-grid {
         grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
     }
     .stat-card {
-        height: 155px; /* Altura muy reducida */
-        padding: 6px; /* Ajustado */
+        height: 155px;
+        padding: 6px;
     }
     .stat-card-header .stat-title {
-        font-size: 0.95em; /* Ajustado */
+        font-size: 0.95em;
     }
     .team-buttons-column button {
-        width: 33px; /* Ajustado */
-        height: 33px; /* Ajustado */
-        font-size: 0.75em; /* Ajustado */
+        width: 33px;
+        height: 33px;
+        font-size: 0.75em;
     }
     .stat-total-display {
-        font-size: 2em; /* Ajustado */
+        font-size: 2em;
+    }
+    #mainScoreDisplay {
+        font-size: 2em; /* Más pequeño en pantallas muy pequeñas */
+    }
+    .score-controls-column button {
+        width: 33px;
+        height: 33px;
+        font-size: 0.75em;
     }
 }
