@@ -1,7 +1,7 @@
 body {
     font-family: 'Arial', sans-serif;
     margin: 0;
-    padding: 15px; /* Reducir padding general */
+    padding: 15px;
     background-color: #f4f7f6;
     color: #333;
     display: flex;
@@ -11,22 +11,20 @@ body {
 
 header {
     width: 100%;
-    max-width: 1200px; /* Aumentar el max-width del header para que coincida con el container */
+    max-width: 1200px;
     text-align: center;
-    margin-bottom: 15px; /* Reducir margen inferior */
+    margin-bottom: 15px;
     background-color: #28a745;
     color: white;
-    padding: 15px 0; /* Reducir padding */
+    padding: 15px 0;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .container {
     display: grid;
-    /* Las primeras 3 secciones pueden usar su ancho autoajustable */
-    /* Ajustado para intentar una distribución más compacta */
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 15px; /* Reducir gap entre tarjetas */
+    gap: 15px;
     width: 100%;
     max-width: 1200px;
 }
@@ -35,18 +33,18 @@ header {
     background-color: #ffffff;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    padding: 15px; /* Reducir padding general de las tarjetas */
+    padding: 15px;
     text-align: center;
-    display: flex; /* Usar flexbox para mejor control de altura */
+    display: flex;
     flex-direction: column;
-    justify-content: space-between; /* Distribuir el espacio verticalmente */
+    justify-content: space-between;
 }
 
 h2 {
     color: #28a745;
     margin-top: 0;
-    margin-bottom: 10px; /* Reducir margen inferior del título */
-    font-size: 1.5em; /* Ligeramente más pequeño */
+    margin-bottom: 10px;
+    font-size: 1.5em;
 }
 
 /* Marcador y nombres de equipo */
@@ -54,59 +52,57 @@ h2 {
     display: flex;
     justify-content: space-around;
     align-items: center;
-    margin-bottom: 15px; /* Reducir margen inferior */
+    margin-bottom: 15px;
 }
 
 .score-control .team-names input[type="text"] {
     width: 45%;
-    padding: 6px; /* Reducir padding */
+    padding: 6px;
     border: 1px solid #ddd;
     border-radius: 4px;
     text-align: center;
-    font-size: 1em; /* Ligeramente más pequeño */
+    font-size: 1em;
     font-weight: bold;
 }
 
 .score-control .team-names span {
-    font-size: 1.1em; /* Ligeramente más pequeño */
+    font-size: 1.1em;
     font-weight: bold;
     color: #555;
 }
 
-/* NUEVO: Contenedor para el marcador y sus botones laterales */
 .main-score-area {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 10px; /* Espacio entre botones y marcador */
-    margin-bottom: 15px; /* Margen inferior para separar de los goles */
+    gap: 10px;
+    margin-bottom: 15px;
 }
 
 .score-display {
-    font-size: 2.8em; /* Ligeramente más pequeño */
+    font-size: 2.8em;
     font-weight: bold;
     color: #333;
-    flex-shrink: 0; /* Evitar que el marcador se encoja */
+    flex-shrink: 0;
 }
 
-/* Botones de score ahora verticales y más pequeños */
 .team-score-buttons.vertical {
     display: flex;
     flex-direction: column;
-    gap: 5px; /* Espacio entre + y - */
+    gap: 5px;
 }
 
 .team-score-buttons.vertical button {
-    padding: 6px 12px; /* Reducir padding de los botones de score */
-    font-size: 0.9em; /* Reducir tamaño de fuente de los botones */
-    min-width: 40px; /* Asegurar un ancho mínimo */
-    box-sizing: border-box; /* Incluir padding y borde en el ancho */
+    padding: 6px 12px;
+    font-size: 0.9em;
+    min-width: 40px;
+    box-sizing: border-box;
 }
 
 
 button {
-    padding: 8px 15px; /* Reducir padding general de botones */
-    font-size: 0.95em; /* Ligeramente más pequeño */
+    padding: 8px 15px;
+    font-size: 0.95em;
     cursor: pointer;
     border: none;
     border-radius: 5px;
@@ -143,19 +139,19 @@ button:disabled {
 
 /* Temporizadores */
 .timer-display {
-    font-size: 2.2em; /* Ligeramente más pequeño */
+    font-size: 2.2em;
     font-weight: bold;
-    margin: 8px 0; /* Reducir margen */
+    margin: 8px 0;
     color: #333;
 }
 
 .small-timer {
-    font-size: 1.6em; /* Ligeramente más pequeño */
+    font-size: 1.6em;
 }
 
 .timer-control .timer-buttons {
-    margin-top: 10px; /* Reducir margen superior */
-    margin-bottom: 0; /* Eliminar margen inferior si es el último elemento */
+    margin-top: 10px;
+    margin-bottom: 0;
 }
 
 
@@ -164,21 +160,21 @@ button:disabled {
     display: flex;
     justify-content: space-around;
     width: 100%;
-    margin-bottom: 10px; /* Reducir margen inferior */
+    margin-bottom: 10px;
 }
 
 .possession-team {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 3px; /* Reducir gap */
-    font-size: 0.9em; /* Nombres de equipo más pequeños */
+    gap: 3px;
+    font-size: 0.9em;
 }
 
 .possession-team button {
     background-color: #6c757d;
-    padding: 6px 10px; /* Reducir padding */
-    font-size: 0.85em; /* Reducir tamaño de fuente */
+    padding: 6px 10px;
+    font-size: 0.85em;
 }
 
 .possession-team button:hover:not(:disabled) {
@@ -192,11 +188,11 @@ button:disabled {
 }
 
 .possession-bar-container {
-    width: 95%; /* Ligeramente más ancho */
-    height: 18px; /* Ligeramente menos alto */
+    width: 95%;
+    height: 18px;
     background-color: #e9ecef;
     border-radius: 9px;
-    margin: 10px auto; /* Reducir margen */
+    margin: 10px auto;
     position: relative;
     overflow: hidden;
 }
@@ -217,7 +213,7 @@ button:disabled {
     font-weight: bold;
     color: #333;
     text-shadow: 0 0 2px rgba(255,255,255,0.7);
-    font-size: 0.85em; /* Más pequeño */
+    font-size: 0.85em;
 }
 
 #possession-percent-A {
@@ -228,47 +224,47 @@ button:disabled {
     right: 4px;
 }
 .possession-control button#reset-possession {
-    margin-top: 5px; /* Reducir margen superior */
+    margin-top: 5px;
 }
 
 
 /* Estadísticas personalizadas */
 .add-stat-form {
     display: flex;
-    gap: 8px; /* Reducir gap */
-    margin-bottom: 15px; /* Reducir margen inferior */
+    gap: 8px;
+    margin-bottom: 15px;
     justify-content: center;
 }
 
 .add-stat-form input {
-    padding: 7px; /* Reducir padding */
+    padding: 7px;
     border: 1px solid #ddd;
     border-radius: 4px;
     flex-grow: 1;
-    max-width: 180px; /* Un poco más pequeño */
+    max-width: 180px;
     font-size: 0.9em;
 }
 
-/* Las secciones de stats personalizadas y reset total ocuparán todo el ancho */
 .custom-stats, .reset-section {
     grid-column: 1 / -1;
 }
 
 .custom-stats-grid {
     display: grid;
-    /* Ajustado para 5 columnas */
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); /* Min-width para 5 columnas */
-    gap: 12px; /* Reducir gap */
+    /* Ajuste clave para 5 columnas: minmax(180px, 1fr) permite que cada columna tenga un mínimo de 180px,
+       y 1fr distribuye el espacio restante equitativamente. Esto funcionará mejor para 5 columnas. */
+    grid-template-columns: repeat(5, minmax(180px, 1fr)); /* FORZAR 5 COLUMNAS */
+    gap: 12px;
 }
 
 .stat-card {
     background-color: #f9f9f9;
     border: 1px solid #eee;
     border-radius: 8px;
-    padding: 10px; /* Reducir padding de las tarjetas de estadística */
+    padding: 10px;
     display: flex;
     flex-direction: column;
-    gap: 8px; /* Reducir gap */
+    gap: 8px;
     box-shadow: 0 1px 3px rgba(0,0,0,0.05);
 }
 
@@ -278,8 +274,9 @@ button:disabled {
     align-items: center;
     font-weight: bold;
     color: #555;
-    margin-bottom: 3px; /* Reducir margen */
-    font-size: 0.9em; /* Títulos de estadística más pequeños */
+    margin-bottom: 3px;
+    font-size: 0.9em;
+    min-height: 20px; /* Asegurar altura mínima para el título */
 }
 
 .stat-title {
@@ -288,11 +285,11 @@ button:disabled {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    padding-right: 8px; /* Espacio antes de los iconos */
+    padding-right: 8px;
 }
 
 .stat-action-icons button {
-    font-size: 0.8em; /* Iconos de acción más pequeños */
+    font-size: 0.8em;
     padding: 3px;
 }
 
@@ -300,38 +297,41 @@ button:disabled {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-top: 5px; /* Reducir margen */
+    margin-top: auto; /* Empuja los controles hacia abajo, manteniendo la flexibilidad de altura */
 }
 
 .team-buttons-column {
     display: flex;
     flex-direction: column;
-    gap: 3px; /* Reducir gap */
+    gap: 3px;
 }
 
 .team-buttons-column button {
-    padding: 5px 10px; /* Botones de stat más pequeños */
+    padding: 5px 10px;
     font-size: 0.8em;
     min-width: 35px;
 }
 
+/* Asegurar que el display del valor de la estadística sea central y visible */
 .stat-total-display {
-    font-size: 1.2em; /* Marcador de stat más pequeño */
+    font-size: 1.3em; /* Un poco más grande para mayor visibilidad */
     font-weight: bold;
-    min-width: 50px;
+    min-width: 60px; /* Suficiente espacio para "00 - 00" */
+    text-align: center;
+    color: #000; /* Color más oscuro para que resalte */
 }
 
 /* Botón Reiniciar Todo */
 .reset-section {
     grid-column: 1 / -1;
-    margin-top: 15px; /* Reducir margen superior */
+    margin-top: 15px;
 }
 
 .reset-all-button {
     background-color: #dc3545;
     width: 100%;
-    padding: 12px; /* Reducir padding */
-    font-size: 1em; /* Ligeramente más pequeño */
+    padding: 12px;
+    font-size: 1em;
 }
 
 .reset-all-button:hover {
@@ -340,15 +340,14 @@ button:disabled {
 
 /* Modal */
 .modal {
-    /* ... (sin cambios significativos aquí) ... */
     z-index: 1000;
 }
 
 .modal-content {
-    padding: 15px; /* Reducir padding */
+    padding: 15px;
     width: 90%;
-    max-width: 450px; /* Ligeramente más pequeño */
-    max-height: 75vh; /* Ligeramente menos alto */
+    max-width: 450px;
+    max-height: 75vh;
 }
 
 .modal-content h2 {
@@ -362,37 +361,45 @@ button:disabled {
     right: 15px;
 }
 
+.event-list {
+    list-style-type: none;
+    padding: 0;
+    margin-top: 10px; /* Reducir margen */
+}
+
 .event-list li {
-    padding: 7px 10px; /* Reducir padding */
+    padding: 7px 10px;
     font-size: 0.9em;
 }
 
 /* Estilos para el selector de mitad */
 .half-selector {
-    margin-bottom: 8px; /* Reducir margen */
+    margin-bottom: 8px;
     gap: 4px;
 }
 
 .half-selector button {
-    padding: 7px 12px; /* Reducir padding */
+    padding: 7px 12px;
     font-size: 0.9em;
 }
 
-
 /* Media Queries para responsividad */
-@media (max-width: 1200px) { /* Ajustar para pantallas un poco más grandes */
+@media (max-width: 1200px) {
     .container {
-        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Puede haber 4 columnas si el espacio lo permite */
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 12px;
     }
+    /* Si la pantalla es un poco más pequeña, el repeat(5, ...) podría hacer que se vea mal,
+       así que permitimos 4 columnas si es necesario */
     .custom-stats-grid {
-        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); /* Mantener 5 columnas si es posible */
+        grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); /* Permitir 4 o 5, ajusta según el contenido */
     }
 }
 
 
-@media (max-width: 992px) { /* Este es el punto de quiebre para tabletas/portátiles pequeños */
+@media (max-width: 992px) {
     .container {
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Puede ser 3 columnas */
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
         gap: 12px;
     }
 
@@ -435,7 +442,7 @@ button:disabled {
     }
 
     .custom-stats-grid {
-        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); /* Ajustar min-width para 5 columnas si hay espacio */
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); /* Ahora 3 o 4 en tabletas */
         gap: 10px;
     }
     .stat-card {
@@ -455,8 +462,8 @@ button:disabled {
         min-width: 30px;
     }
     .stat-total-display {
-        font-size: 1.1em;
-        min-width: 45px;
+        font-size: 1.2em; /* Mantener la visibilidad */
+        min-width: 50px;
     }
 
     .reset-all-button {
@@ -475,11 +482,11 @@ button:disabled {
 }
 
 
-@media (max-width: 768px) { /* Móviles: Una columna principal, estadísticas a 2 o 3 */
+@media (max-width: 768px) {
     .container {
         grid-template-columns: 1fr;
         gap: 10px;
-        padding: 10px; /* Reducir padding en móviles */
+        padding: 10px;
     }
 
     header {
@@ -507,21 +514,19 @@ button:disabled {
         font-size: 0.95em;
     }
 
-    /* Ajuste para que los botones de score se vean bien en móvil, aunque estén al lado */
     .main-score-area {
-        flex-direction: row; /* Mantener en fila si el espacio lo permite, si no, flex-wrap */
-        flex-wrap: wrap; /* Permitir que los elementos se envuelvan si no hay espacio */
+        flex-wrap: wrap;
         justify-content: center;
         gap: 8px;
     }
     .team-score-buttons.vertical {
-        flex-direction: row; /* Botones + y - uno al lado del otro en móvil */
+        flex-direction: row;
         gap: 3px;
     }
     .team-score-buttons.vertical button {
-        padding: 6px 12px; /* Un poco más grandes para facilitar el toque */
+        padding: 6px 12px;
         font-size: 0.9em;
-        min-width: auto; /* Dejar que el contenido defina el ancho */
+        min-width: auto;
     }
 
     .score-display {
@@ -577,7 +582,7 @@ button:disabled {
         min-width: 25px;
     }
     .stat-total-display {
-        font-size: 1em;
+        font-size: 1.1em;
         min-width: 40px;
     }
 
@@ -598,5 +603,12 @@ button:disabled {
     .event-list li {
         padding: 5px 7px;
         font-size: 0.8em;
+    }
+}
+
+/* Forzar 5 columnas de estadísticas en anchos grandes */
+@media (min-width: 1100px) { /* Ajusta este valor si necesitas más o menos espacio */
+    .custom-stats-grid {
+        grid-template-columns: repeat(5, 1fr); /* 5 columnas de igual ancho */
     }
 }
