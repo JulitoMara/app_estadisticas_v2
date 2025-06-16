@@ -1,4 +1,647 @@
-/* ... (El CSS anterior se mantiene, solo se añade lo siguiente) ... */
+/*
+    Estilos Globales y Contenedor Principal
+*/
+body {
+    font-family: 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif; /* Fuente moderna */
+    margin: 0;
+    padding: 0;
+    background-color: #eef1f5; /* Fondo más suave */
+    color: #34495e; /* Texto principal oscuro y legible */
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+    padding: 25px; /* Más padding para airear */
+    box-sizing: border-box;
+}
+
+.main-app-container {
+    background-color: #ffffff;
+    border-radius: 16px; /* Bordes más suaves */
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1); /* Sombra más pronunciada pero elegante */
+    width: 100%;
+    max-width: 1300px; /* Un poco más de ancho para pantallas grandes */
+    padding: 30px; /* Más padding interno */
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: 30px; /* Espaciado entre secciones principales */
+}
+
+/*
+    Cabecera de la Aplicación
+*/
+.app-header {
+    text-align: center;
+    margin-bottom: 25px;
+    border-bottom: 1px solid #e0e6ec; /* Línea divisoria suave */
+    padding-bottom: 25px;
+}
+
+.app-header h1 {
+    color: #007bff; /* Azul brillante, distintivo */
+    margin-bottom: 15px;
+    font-size: 2.5em; /* Título principal prominente */
+    font-weight: 700; /* Más negrita */
+}
+
+.config-section {
+    display: flex;
+    justify-content: center;
+    gap: 40px; /* Más espacio entre grupos de nombre */
+    flex-wrap: wrap;
+    margin-top: 20px;
+}
+
+.team-name-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 180px; /* Ancho mínimo para entradas */
+}
+
+.team-name-group label {
+    font-weight: 600; /* Semi-negrita */
+    margin-bottom: 10px;
+    color: #555;
+    font-size: 1.1em;
+}
+
+.team-name-group input[type="text"] {
+    padding: 10px 15px;
+    border: 1px solid #c9d2da; /* Borde más sutil */
+    border-radius: 10px; /* Bordes redondeados */
+    font-size: 1.1em;
+    width: 100%;
+    max-width: 250px;
+    text-align: center;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.team-name-group input[type="text"]:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+    outline: none;
+}
+
+/*
+    Dashboard Principal del Partido
+*/
+.match-dashboard {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 30px; /* Espacio entre columnas */
+    justify-content: center;
+}
+
+.left-column {
+    flex: 0 0 22%; /* Más espacio para la columna izquierda, pero aún compacta */
+    max-width: 280px;
+    min-width: 240px;
+}
+
+.right-column {
+    flex: 1; /* Ocupa el espacio restante */
+    min-width: 680px; /* Ancho mínimo para estadísticas */
+    max-width: 950px;
+}
+
+.card {
+    background-color: #fcfcfc;
+    border: 1px solid #e6ebf0;
+    border-radius: 12px;
+    padding: 25px; /* Padding general en tarjetas */
+    margin-bottom: 25px; /* Espacio entre tarjetas */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08); /* Sombra más definida */
+}
+
+.card h2 {
+    color: #007bff;
+    margin-top: 0;
+    margin-bottom: 20px;
+    font-size: 1.8em;
+    text-align: center;
+    font-weight: 600;
+}
+
+/*
+    Estilos Comunes de Botones
+*/
+button {
+    padding: 12px 20px; /* Padding generoso para botones */
+    border: none;
+    border-radius: 10px; /* Bordes redondeados consistentes */
+    font-size: 1.05em; /* Fuente ligeramente más grande */
+    cursor: pointer;
+    transition: background-color 0.25s ease, transform 0.15s ease, box-shadow 0.25s ease;
+    white-space: nowrap;
+    font-weight: 500;
+}
+
+button:hover {
+    transform: translateY(-2px); /* Efecto 3D sutil al pasar el ratón */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Colores Específicos de Botones */
+button:not(.reset-btn):not(.minus-btn):not(.plus-btn):not(.active) { /* Default blue for play/toggle, add, etc. */
+    background-color: #007bff;
+    color: white;
+}
+button:not(.reset-btn):not(.minus-btn):not(.plus-btn):not(.active):hover {
+    background-color: #0056b3;
+}
+
+.reset-btn {
+    background-color: #6c757d; /* Gris para reiniciar */
+    color: white;
+}
+.reset-btn:hover {
+    background-color: #5a6268;
+}
+
+.minus-btn {
+    background-color: #dc3545; /* Rojo para restar */
+    color: white;
+}
+.minus-btn:hover {
+    background-color: #c82333;
+}
+
+.plus-btn {
+    background-color: #28a745; /* Verde para sumar */
+    color: white;
+}
+.plus-btn:hover {
+    background-color: #218838;
+}
+
+/*
+    Sección de Marcador (Optimizado para espacio)
+*/
+.score-section.card {
+    padding: 15px; /* Muy compacto */
+}
+
+.score-section .card h2 {
+    margin-bottom: 15px; /* Compacto */
+}
+
+.score-display-group {
+    display: flex;
+    align-items: center;
+    justify-content: space-between; /* Espacia el marcador y los botones */
+    width: 100%;
+    margin-bottom: 0;
+}
+
+#mainScoreDisplay {
+    font-size: 2.8em; /* Tamaño de fuente consistente con el tiempo */
+    font-weight: 700;
+    color: #333;
+    line-height: 1;
+    flex-shrink: 0; /* No se encoje */
+    padding: 5px 10px; /* Pequeño padding alrededor de los números */
+    background-color: #eaf5ff;
+    border-radius: 8px;
+    text-align: center; /* Asegura que el "0 - 0" esté centrado */
+    min-width: 80px; /* Asegura un ancho mínimo para el "0 - 0" */
+}
+
+.score-controls-column { /* Columnas de botones para el marcador */
+    display: flex;
+    flex-direction: column;
+    gap: 5px; /* Pequeño espacio entre botones */
+}
+
+.score-controls-column button {
+    padding: 7px 10px;
+    font-size: 0.95em;
+    width: 42px; /* Ancho fijo para botones circulares */
+    height: 42px; /* Alto fijo para botones circulares */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%; /* Botones circulares */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.score-controls-column button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+}
+
+
+/*
+    Sección de Tiempo de Partido (se mantiene compacta)
+*/
+.match-timer-section {
+    text-align: center;
+}
+
+.match-timer-section .timer { /* Mismo tamaño de fuente que el marcador */
+    font-size: 2.8em;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 8px;
+    display: block;
+    width: 100%;
+    text-align: center;
+    background-color: #eaf5ff;
+    padding: 8px 5px;
+    border-radius: 8px;
+    min-height: 1.5em;
+    line-height: 1.2;
+    box-sizing: border-box;
+}
+
+.match-timer-controls {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 20px;
+}
+
+/*
+    Sección de Posesión de Balón
+*/
+.possession-section {
+    text-align: center;
+}
+
+.possession-timers-container {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 15px;
+}
+
+.possession-timers-container .timer-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.possession-timers-container .timer-group span {
+    font-size: 1.1em;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #555;
+}
+
+.possession-timers-container .timer {
+    font-size: 1.9em;
+    font-weight: bold;
+    color: #333;
+    background-color: #eaf5ff;
+    padding: 8px 12px;
+    border-radius: 8px;
+}
+
+.possession-bar-container {
+    width: 95%;
+    height: 35px;
+    background-color: #dc3545; /* Equipo B */
+    border-radius: 8px;
+    margin: 25px auto;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.possession-bar-fill {
+    height: 100%;
+    background-color: #007bff; /* Equipo A */
+    width: 50%; /* Default */
+    border-radius: 8px;
+    transition: width 0.4s ease-in-out;
+    position: absolute;
+    left: 0;
+}
+
+.possession-percentage-text {
+    position: absolute;
+    font-weight: bold;
+    color: white;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.6);
+    z-index: 1;
+    font-size: 1.1em;
+}
+
+.left-percent {
+    left: 10px;
+}
+
+.right-percent {
+    right: 10px;
+}
+
+.possession-controls {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 20px;
+    flex-wrap: wrap;
+}
+
+.possession-controls button {
+    flex: 1 1 auto;
+    max-width: 160px;
+    padding: 12px 18px;
+    font-size: 1.0em;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.possession-controls button.active {
+    background-color: #28a745;
+    border: 2px solid #1a7e32;
+    transform: scale(1.03);
+    box-shadow: 0 4px 10px rgba(40, 167, 69, 0.4);
+}
+
+/*
+    Sección de Estadísticas Personalizadas (Ajustes para iconos de acción y botones de control de goles)
+*/
+.custom-stats-management {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.add-custom-stat-integrated {
+    display: flex;
+    gap: 12px;
+    width: 100%;
+    max-width: 450px;
+    margin-bottom: 25px;
+}
+
+.add-custom-stat-integrated input {
+    flex-grow: 1;
+    padding: 12px 18px;
+    border: 1px solid #c9d2da;
+    border-radius: 10px;
+    font-size: 1.05em;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.add-custom-stat-integrated input:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+    outline: none;
+}
+.add-custom-stat-integrated button {
+    padding: 12px 25px;
+}
+
+.custom-stats-grid {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    justify-content: center;
+}
+
+.stat-card {
+    background-color: #eaf5ff;
+    border: 1px solid #d0e8ff;
+    border-radius: 12px;
+    padding: 8px; /* Reducido de 10px a 8px para más espacio */
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-sizing: border-box;
+    justify-content: space-between;
+    height: 190px; /* Reducida ligeramente de 195px */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+}
+
+/* Título de la tarjeta centrado y botones de acción */
+.stat-card-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 0;
+    margin-bottom: 6px; /* Reducido de 8px a 6px */
+    width: 100%;
+}
+
+.stat-card-header .stat-title {
+    color: #0056b3;
+    font-size: 1.2em;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-bottom: 4px; /* Reducido de 5px a 4px */
+    line-height: 1.3;
+}
+
+.stat-action-icons {
+    display: flex;
+    gap: 4px; /* Espacio entre los botones de icono (view, edit, delete) */
+    justify-content: center; /* Centrar los iconos */
+    width: 100%;
+    flex-wrap: wrap; /* Permitir que los iconos se ajusten si es necesario */
+}
+
+.stat-action-icons button {
+    padding: 4px 7px; /* Padding interno de los botones de icono */
+    font-size: 0.65em; /* Tamaño del icono */
+    border-radius: 6px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    min-width: unset; /* Permitir que se ajusten al contenido */
+    height: unset; /* Permitir que se ajusten al contenido */
+}
+.stat-action-icons button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+}
+
+/* Controles de estadística: Main container para los 3 elementos (botones A, 0-0, botones B) */
+.stat-controls-group {
+    display: flex;
+    align-items: center;
+    justify-content: center; /* Centrado */
+    width: 100%;
+    flex-grow: 1;
+    padding: 0 1px; /* Ajustado a 1px para dar un poco de espacio sin salirse */
+    gap: 3px; /* Reducido de 4px a 3px (espacio entre columnas de botones y el display central) */
+}
+
+
+/* Grupos de botones verticales para cada equipo dentro de stat-card */
+.team-buttons-column {
+    display: flex;
+    flex-direction: column;
+    gap: 3px; /* Reducido de 4px a 3px (espacio entre botones +/-/🔄) */
+}
+
+.team-buttons-column button {
+    padding: 4px 7px; /* Reducido de 5px 8px (padding interno de los botones) */
+    font-size: 0.8em; /* Reducido de 0.85em (tamaño del icono +/-/🔄) */
+    width: 36px; /* Reducido de 38px */
+    height: 36px; /* Reducido de 38px */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    flex-shrink: 0; /* Asegurar que no se encojan */
+}
+.team-buttons-column button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* El resultado central (0 - 0) en las tarjetas de estadística */
+.stat-total-display {
+    font-size: 2.4em; /* Reducido de 2.6em */
+    font-weight: 700;
+    color: #333;
+    line-height: 1;
+    flex-shrink: 0;
+    margin: 0 5px; /* Reducido de 0 6px para más espacio */
+    min-width: 60px; /* Ajuste mínimo */
+}
+
+
+/*
+    Botón Reiniciar Todo
+*/
+.reset-all-button {
+    display: block;
+    width: fit-content;
+    margin: 40px auto 25px auto;
+    padding: 18px 35px;
+    font-size: 1.2em;
+    background-color: #ffc107;
+    color: #333;
+    border: 2px solid #e0a800;
+    border-radius: 12px;
+    cursor: pointer;
+    box-shadow: 0 5px 15px rgba(255, 193, 7, 0.3);
+}
+
+.reset-all-button:hover {
+    background-color: #e0a800;
+    transform: translateY(-3px);
+    box-shadow: 0 7px 20px rgba(255, 193, 7, 0.5);
+}
+
+.section-divider {
+    border: 0;
+    height: 2px;
+    background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.15), rgba(0, 0, 0, 0));
+    margin: 50px 0;
+}
+
+/*
+    Estilos del Modal
+*/
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: auto;
+    padding: 30px;
+    border: 1px solid #777;
+    border-radius: 15px;
+    width: 90%;
+    max-width: 650px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+    position: relative;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.modal-content h2 {
+    color: #007bff;
+    margin-top: 0;
+    margin-bottom: 25px;
+    text-align: center;
+    font-size: 2em;
+    font-weight: 600;
+}
+
+.close-button {
+    color: #888;
+    font-size: 32px;
+    font-weight: bold;
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    cursor: pointer;
+}
+
+.close-button:hover,
+.close-button:focus {
+    color: black;
+}
+
+.event-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    max-height: 450px;
+    overflow-y: auto;
+    border: 1px solid #eee;
+    border-radius: 10px;
+    background-color: #fcfcfc;
+}
+
+.event-list li {
+    padding: 12px 18px;
+    border-bottom: 1px solid #e0e0e0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 1.15em;
+}
+
+.event-list li:last-child {
+    border-bottom: none;
+}
+
+.event-list li span.event-time {
+    font-weight: bold;
+    color: #555;
+    min-width: 90px;
+}
+
+.event-list li span.event-team {
+    font-weight: 600;
+    flex-grow: 1;
+    text-align: right;
+}
+
+.event-list li.team-A {
+    color: #007bff;
+}
+
+.event-list li.team-B {
+    color: #dc3545;
+}
+
 
 /* Nuevo: Estilos para la lista de goles en el marcador */
 .goals-list-container {
@@ -49,8 +692,174 @@
     flex-shrink: 0; /* No se encoge */
 }
 
-/* Ajustes responsivos para esta nueva sección */
+
+/*
+    Media Queries para Responsividad (revisados para los nuevos tamaños de botones)
+*/
+@media (max-width: 1100px) {
+    .left-column {
+        flex: 0 0 28%;
+        max-width: 280px;
+        min-width: 250px;
+    }
+    .right-column {
+        min-width: 550px;
+    }
+    .custom-stats-grid {
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 15px;
+    }
+}
+
+@media (max-width: 992px) {
+    .left-column {
+        flex: 0 0 32%;
+        max-width: 300px;
+        min-width: 250px;
+    }
+    .right-column {
+        min-width: 400px;
+    }
+    .score-section.card {
+        padding: 12px;
+    }
+    .score-section .card h2 {
+        margin-bottom: 10px;
+    }
+    .score-controls-column button {
+        width: 38px;
+        height: 38px;
+        font-size: 0.85em;
+    }
+    #mainScoreDisplay {
+        font-size: 2.6em;
+        padding: 4px 8px;
+    }
+
+    .custom-stats-grid {
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+        gap: 12px;
+    }
+    .stat-card {
+        padding: 7px; /* Reducido de 8px a 7px */
+        height: 175px; /* Reducido de 180px a 175px */
+    }
+    .stat-card-header .stat-title {
+        font-size: 1.1em;
+        margin-bottom: 3px; /* Reducido */
+    }
+    .stat-action-icons button {
+        padding: 3px 6px;
+        font-size: 0.6em;
+    }
+    /* Ajustes para botones de estadísticas dentro de media query */
+    .team-buttons-column button {
+        width: 34px; /* Reducido de 36px */
+        height: 34px;
+        font-size: 0.75em; /* Reducido de 0.8em */
+        padding: 3px 5px; /* Ajustado */
+    }
+    .stat-total-display {
+        font-size: 2.2em; /* Reducido de 2.4em */
+        margin: 0 4px; /* Reducir margen horizontal */
+        min-width: 55px; /* Ajuste mínimo */
+    }
+    .possession-controls button {
+        max-width: 140px;
+        font-size: 0.95em;
+        padding: 10px 15px;
+    }
+}
+
 @media (max-width: 768px) {
+    .main-app-container {
+        padding: 20px;
+        gap: 20px;
+    }
+    .match-dashboard {
+        flex-direction: column;
+        align-items: center;
+        gap: 25px;
+    }
+
+    .left-column, .right-column {
+        min-width: unset;
+        width: 100%;
+        max-width: 500px;
+        margin-bottom: 0;
+    }
+    .card {
+        padding: 20px;
+        margin-bottom: 0;
+    }
+    .score-section.card {
+        padding: 10px;
+    }
+    .score-section .card h2 {
+        margin-bottom: 8px;
+    }
+    .score-controls-column button {
+        width: 36px;
+        height: 36px;
+        font-size: 0.8em;
+    }
+    #mainScoreDisplay {
+        font-size: 2.5em;
+        padding: 3px 6px;
+    }
+
+    .match-timer-section .timer {
+        font-size: 2.5em;
+    }
+
+    .match-timer-controls, .possession-controls {
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+    .possession-controls button {
+        flex: 1 1 45%;
+        max-width: unset;
+    }
+
+    .custom-stats-grid {
+        grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+        gap: 8px;
+    }
+    .stat-card {
+        padding: 5px; /* Reducido de 6px a 5px para móvil */
+        height: 160px; /* Reducido de 165px a 160px */
+    }
+    .stat-card-header .stat-title {
+        font-size: 1em;
+        margin-bottom: 3px; /* Ajustado */
+    }
+    .stat-action-icons button {
+        padding: 2px 5px;
+        font-size: 0.6em;
+    }
+    /* Ajustes para botones de estadísticas dentro de media query */
+    .team-buttons-column button {
+        width: 30px; /* Reducido de 32px */
+        height: 30px;
+        font-size: 0.65em; /* Reducido de 0.7em */
+        padding: 3px 5px; /* Ajustado */
+    }
+    .stat-total-display {
+        font-size: 2.0em; /* Reducido de 2.2em */
+        margin: 0 3px; /* Reducir margen horizontal */
+        min-width: 50px; /* Ajuste mínimo */
+    }
+
+    #mainScoreDisplay {
+        font-size: 2em;
+    }
+    .score-controls-column button {
+        width: 33px;
+        height: 33px;
+        font-size: 0.75em;
+    }
+
+    /* Ajustes responsivos para la nueva sección de goles */
     .goals-list-container {
         margin-top: 15px;
         padding-top: 10px;
@@ -65,9 +874,86 @@
         font-size: 0.9em;
         padding: 6px 10px;
     }
+
+    .reset-all-button {
+        padding: 15px 30px;
+        font-size: 1.1em;
+    }
+
+    .modal-content {
+        width: 95%;
+        padding: 25px;
+    }
+    .modal-content h2 {
+        font-size: 1.8em;
+    }
+    .close-button {
+        font-size: 28px;
+    }
+    .event-list li {
+        font-size: 1.05em;
+        padding: 10px 15px;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 5px;
+    }
+    .event-list li span.event-team {
+        text-align: left;
+    }
 }
 
 @media (max-width: 480px) {
+    .app-header h1 {
+        font-size: 2em;
+    }
+    .team-name-group input[type="text"] {
+        font-size: 1em;
+        padding: 8px 12px;
+    }
+    .card h2 {
+        font-size: 1.6em;
+    }
+    .possession-controls button {
+        flex: 1 1 100%;
+        max-width: unset;
+    }
+    .custom-stats-grid {
+        grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    }
+    .stat-card {
+        height: 145px; /* Reducido de 150px a 145px */
+        padding: 4px; /* Reducido de 5px a 4px */
+    }
+    .stat-card-header .stat-title {
+        font-size: 0.85em; /* Reducido */
+        margin-bottom: 2px; /* Reducido */
+    }
+    .stat-action-icons button {
+        padding: 1px 4px;
+        font-size: 0.55em;
+    }
+    /* Ajustes para botones de estadísticas en pantallas muy pequeñas */
+    .team-buttons-column button {
+        width: 26px; /* Reducido de 28px */
+        height: 26px;
+        font-size: 0.6em; /* Reducido de 0.65em */
+        padding: 2px 4px; /* Ajustado */
+    }
+    .stat-total-display {
+        font-size: 1.5em; /* Reducido de 1.6em */
+        margin: 0 2px; /* Muy reducido */
+        min-width: 40px; /* Mínimo */
+    }
+    #mainScoreDisplay {
+        font-size: 2em;
+    }
+    .score-controls-column button {
+        width: 33px;
+        height: 33px;
+        font-size: 0.75em;
+    }
+
+    /* Ajustes responsivos para la nueva sección de goles en móvil muy pequeño */
     .goals-list-container h3 {
         font-size: 1.1em;
     }
