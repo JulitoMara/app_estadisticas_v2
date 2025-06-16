@@ -340,14 +340,31 @@ button:disabled {
 
 /* Modal */
 .modal {
-    z-index: 1000;
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1000; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
 }
 
 .modal-content {
+    background-color: #fefefe;
+    margin: auto;
     padding: 15px;
+    border: 1px solid #888;
+    border-radius: 8px;
     width: 90%;
     max-width: 450px;
     max-height: 75vh;
+    overflow-y: auto; /* Enable vertical scroll for content */
+    position: relative; /* For close button positioning */
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
 }
 
 .modal-content h2 {
@@ -356,24 +373,43 @@ button:disabled {
 }
 
 .modal .close-button {
-    font-size: 26px;
+    color: #aaa;
+    position: absolute;
     top: 8px;
     right: 15px;
+    font-size: 26px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.modal .close-button:hover,
+.modal .close-button:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
 }
 
 .event-list {
     list-style-type: none;
     padding: 0;
-    margin-top: 10px; /* Reducir margen */
+    margin-top: 10px;
+    text-align: left; /* Align text within list items */
 }
 
 .event-list li {
     padding: 7px 10px;
+    border-bottom: 1px solid #eee;
     font-size: 0.9em;
+}
+
+.event-list li:last-child {
+    border-bottom: none;
 }
 
 /* Estilos para el selector de mitad */
 .half-selector {
+    display: flex;
+    justify-content: center; /* <-- ESTE ES EL CAMBIO CLAVE PARA CENTRARLOS */
     margin-bottom: 8px;
     gap: 4px;
 }
@@ -389,8 +425,6 @@ button:disabled {
         grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
         gap: 12px;
     }
-    /* Si la pantalla es un poco más pequeña, el repeat(5, ...) podría hacer que se vea mal,
-       así que permitimos 4 columnas si es necesario */
     .custom-stats-grid {
         grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); /* Permitir 4 o 5, ajusta según el contenido */
     }
