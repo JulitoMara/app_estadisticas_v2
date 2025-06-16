@@ -1,4 +1,4 @@
-// Constantes y variables globales (asegúrate de que estas existan)
+// Constantes y variables globales
 const teamANameInput = document.getElementById('teamA-name');
 const teamBNameInput = document.getElementById('teamB-name');
 const mainScoreDisplay = document.getElementById('mainScoreDisplay');
@@ -28,7 +28,7 @@ const eventModal = document.getElementById('eventModal');
 const closeButton = document.querySelector('.modal .close-button');
 const modalEventList = document.getElementById('modal-event-list');
 
-// NUEVO: Elemento para la lista de goles en el marcador
+// Elemento para la lista de goles en el marcador
 const goalsList = document.getElementById('goals-list');
 
 let scoreA = 0;
@@ -43,10 +43,9 @@ let possessionTimeA = 0;
 let possessionTimeB = 0;
 let currentPossessionTeam = null;
 
-let customStats = JSON.parse(localStorage.getItem('customStats')) || [];
-
-// NUEVO: Array para almacenar los goles y su tiempo
-let goalsHistory = JSON.parse(localStorage.getItem('goalsHistory')) || [];
+// Cargar estadísticas personalizadas al inicio
+let customStats = []; // Inicializamos como array vacío, se llenará en loadCustomStats()
+let goalsHistory = []; // Inicializamos como array vacío, se llenará en renderGoalsHistory()
 
 
 // Función para actualizar el marcador en el HTML
@@ -348,6 +347,14 @@ function addCustomStat() {
 // Función para renderizar todas las estadísticas personalizadas
 function renderCustomStats() {
     customStatsGrid.innerHTML = ''; // Limpiar antes de renderizar
+    if (customStats.length === 0) {
+        const noStatsMessage = document.createElement('p');
+        noStatsMessage.textContent = 'No hay estadísticas personalizadas. ¡Añade una!';
+        noStatsMessage.style.textAlign = 'center';
+        noStatsMessage.style.color = '#777';
+        noStatsMessage.style.marginTop = '20px';
+        customStatsGrid.appendChild(noStatsMessage);
+    }
     customStats.forEach(stat => {
         customStatsGrid.appendChild(renderStatCard(stat));
     });
@@ -362,9 +369,16 @@ function saveCustomStats() {
 function loadCustomStats() {
     const savedStats = localStorage.getItem('customStats');
     if (savedStats) {
-        customStats = JSON.parse(savedStats);
-        renderCustomStats();
+        try {
+            customStats = JSON.parse(savedStats);
+        } catch (e) {
+            console.error("Error parsing custom stats from localStorage:", e);
+            customStats = []; // Reset if corrupted
+        }
+    } else {
+        customStats = []; // Ensure it's an empty array if nothing in localStorage
     }
+    renderCustomStats();
 }
 
 // Funciones para el modal de eventos
@@ -390,7 +404,7 @@ function hideEventModal() {
 }
 
 
-// NUEVO: Función para añadir un gol al historial
+// Función para añadir un gol al historial
 function addGoalToHistory(teamName) {
     const goalTime = formatTime(matchTime);
     const goalEntry = { time: goalTime, team: teamName };
@@ -399,15 +413,42 @@ function addGoalToHistory(teamName) {
     renderGoalsHistory(); // Renderizar en la lista del marcador
 }
 
-// NUEVO: Función para renderizar el historial de goles
+// NUEVO: Función para eliminar el ÚLTIMO gol del equipo especificado del historial
+function removeLastGoalFromHistory(teamName) {
+    // Buscar la última ocurrencia del gol de este equipo en el historial
+    for (let i = goalsHistory.length - 1; i >= 0; i--) {
+        if (goalsHistory[i].team === teamName) {
+            goalsHistory.splice(i, 1); // Eliminar esa entrada
+            break; // Salir del bucle después de encontrar y eliminar el último
+        }
+    }
+    localStorage.setItem('goalsHistory', JSON.stringify(goalsHistory));
+    renderGoalsHistory(); // Volver a renderizar la lista
+}
+
+
+// Función para renderizar el historial de goles
 function renderGoalsHistory() {
     goalsList.innerHTML = ''; // Limpiar la lista antes de renderizar
+    const savedGoals = localStorage.getItem('goalsHistory');
+    if (savedGoals) {
+        try {
+            goalsHistory = JSON.parse(savedGoals);
+        } catch (e) {
+            console.error("Error parsing goals history from localStorage:", e);
+            goalsHistory = []; // Reset if corrupted
+        }
+    } else {
+        goalsHistory = []; // Ensure it's an empty array if nothing in localStorage
+    }
+
+
     if (goalsHistory.length === 0) {
         const li = document.createElement('li');
         li.textContent = 'Aún no se han marcado goles.';
         goalsList.appendChild(li);
     } else {
-        // Ordenar los goles por tiempo (si no lo están ya) y mostrarlos
+        // Renderizar los goles
         goalsHistory.forEach(goal => {
             const li = document.createElement('li');
             li.classList.add(goal.team === teamANameInput.value ? 'team-A' : 'team-B');
@@ -453,8 +494,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // Cargar estadísticas personalizadas
     loadCustomStats();
 
-    // NUEVO: Cargar y renderizar historial de goles
-    renderGoalsHistory();
+    // Cargar y renderizar historial de goles
+    renderGoalsHistory(); // Esta función ahora carga desde localStorage internamente
 });
 
 // Event Listeners para nombres de equipos
@@ -471,27 +512,26 @@ teamBNameInput.addEventListener('input', () => {
 plusAButton.addEventListener('click', () => {
     scoreA++;
     updateScoreDisplay();
-    addGoalToHistory(teamANameInput.value); // NUEVO: Añadir gol al historial
+    addGoalToHistory(teamANameInput.value);
 });
 minusAButton.addEventListener('click', () => {
     if (scoreA > 0) {
         scoreA--;
         updateScoreDisplay();
-        // Opcional: Podrías añadir lógica para quitar el último gol de A si se resta
-        // Por simplicidad, no lo implementamos ahora.
+        removeLastGoalFromHistory(teamANameInput.value); // NUEVO: Eliminar el último gol de A
     }
 });
 
 plusBButton.addEventListener('click', () => {
     scoreB++;
     updateScoreDisplay();
-    addGoalToHistory(teamBNameInput.value); // NUEVO: Añadir gol al historial
+    addGoalToHistory(teamBNameInput.value);
 });
 minusBButton.addEventListener('click', () => {
     if (scoreB > 0) {
         scoreB--;
         updateScoreDisplay();
-        // Opcional: Podrías añadir lógica para quitar el último gol de B si se resta
+        removeLastGoalFromHistory(teamBNameInput.value); // NUEVO: Eliminar el último gol de B
     }
 });
 
@@ -515,9 +555,9 @@ resetAllButton.addEventListener('click', () => {
         scoreA = 0;
         scoreB = 0;
         updateScoreDisplay();
-        goalsHistory = []; // NUEVO: Borrar historial de goles
-        localStorage.removeItem('goalsHistory'); // Borrar de localStorage
-        renderGoalsHistory(); // Renderizar vacío
+        goalsHistory = [];
+        localStorage.removeItem('goalsHistory');
+        renderGoalsHistory();
 
         // Reiniciar Temporizador de Partido
         resetMatchTimer();
@@ -527,8 +567,8 @@ resetAllButton.addEventListener('click', () => {
 
         // Reiniciar Estadísticas Personalizadas
         customStats = [];
-        saveCustomStats();
-        renderCustomStats();
+        saveCustomStats(); // Guarda el array vacío
+        renderCustomStats(); // Renderiza las estadísticas vacías
 
         // Limpiar nombres de equipos si se desea (opcional)
         // teamANameInput.value = 'Equipo A';
